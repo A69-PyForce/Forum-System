@@ -1,0 +1,9 @@
+src/
+├── main.py          # Entry point for the FastAPI application
+├── data.py          # Contains data models (and mock data if needed)
+├── db.py            # Database interaction logic
+├── routers/         # API route definitions
+│   └── products.py  # Routes for the products endpoint
+├── services/        # Service/business logic layer
+│   └── products_service.py
+├── utils/           # Utility functions (e.g., helpers for common tasks)
