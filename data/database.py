@@ -11,7 +11,7 @@ from mariadb import connect
 import json
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# NOTE: Must have a db_ config.json file for database connection. #
+# NOTE: Must have a db_config.json file for database connection.  #
 # If the file is missing, create it using this template:          #
 #                                                                 #
 # {                                                               #
@@ -24,26 +24,26 @@ import json
 #                                                                 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# Open db_config file.
+# Open db_config.json file.
 with open ('db_config.json', 'r') as file:
-    config = json.load(file)
+    db_config = json.load(file)
 
 def _get_connection() -> Connection:
     """
-    Get a database connection with credentials from config.json.
+    Get a database connection with credentials from db_config.json.
     """
     return connect(
-        user = config["user"],
-        password = config["password"],
-        host = config["host"],
-        port = config["port"],
-        database = config["database"]
+        user = db_config["user"],
+        password = db_config["password"],
+        host = db_config["host"],
+        port = db_config["port"],
+        database = db_config["database"]
     )
 
 # Initial try to connect to Database
 try:
     _ = _get_connection()
-    console_message("INFO", f"Database connection on adress '{config["host"]}:{config["port"]}' successful. Using schema '{config["database"]}'.")
+    console_message("INFO", f"Database connection on adress '{db_config["host"]}:{db_config["port"]}' successful. Using schema '{db_config["database"]}'.")
 
 except Exception as e:
     console_message("ERROR", e)
