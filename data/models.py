@@ -8,3 +8,18 @@ class User(BaseModel):
     username: str
     password: str
     is_admin: bool
+
+class Topic(BaseModel):
+    pass
+
+class Vote(BaseModel):
+    pass
+
+class Reply(BaseModel):
+    pass
+
+class Message(BaseModel):
+    pass
+
+class Category(BaseModel):
+    pass
