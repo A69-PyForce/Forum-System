@@ -6,7 +6,6 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from utils.console_messages import console_message
 from mariadb.connections import Connection
-from mariadb.connections import Connection
 from mariadb import connect
 import json
 

@@ -7,19 +7,40 @@ class User(BaseModel):
     id: int | None = None
     username: str
     password: str
-    is_admin: bool
+    is_admin: int # we are using tinyint which is 0 and 1 for true or false
 
 class Topic(BaseModel):
-    pass
+    id: int | None
+    title: str
+    content: str
+    categories_id: int
+    user_id: int
+    is_locked: int
 
 class Vote(BaseModel):
-    pass
+    id: int
+    reply_id: int
+    users_id: int
 
 class Reply(BaseModel):
-    pass
+    id: int
+    text: str
+    topics_id: int
+    user_id: int
 
 class Message(BaseModel):
-    pass
+    id: int
+    text: str
+    sender_id: int
+    receiver_id: int
 
 class Category(BaseModel):
-    pass
+    id: int
+    name: str
+    is_private: int  # 0 or 1
+    is_locked: int  # same 0 or 1
+
+class CategoryUserAccess(BaseModel):
+    categories_id: int
+    users_id: int
+    has_right_access: int # 0 or 1
