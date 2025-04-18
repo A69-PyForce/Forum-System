@@ -175,3 +175,6 @@ cython_debug/
 
 # Database configuration file
 db_config.json
+
+# Encryption key file
+encrypt_key.json

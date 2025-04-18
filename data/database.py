@@ -1,7 +1,8 @@
 import sys
 from pathlib import Path
 
-# Add the parent directory of 'utils' to the Python path
+# Add the parent directory of main-repo to the Python path
+# Allows imports from other folders
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from utils.console_messages import console_message
