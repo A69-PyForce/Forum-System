@@ -1,13 +1,24 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints, field_validator
+from typing import Annotated
 
 class User(BaseModel):
-    """
-    Model User, corresponding to the Database.
-    """
     id: int | None = None
-    username: str
+    username: Annotated[str, StringConstraints(pattern=r'^[a-zA-Z0-9]+$')] # Only letters, numbers and no special characters for usernames.
     password: str
     is_admin: int # we are using tinyint which is 0 and 1 for true or false
+    
+    @classmethod
+    def from_query_result(cls, id, username, password, is_admin):
+        return cls(
+            id=id,
+            username=username,
+            password=password,
+            is_admin=is_admin
+        )
+
+class UserLoginData(BaseModel):
+    username: str
+    password: str
 
 class Topic(BaseModel):
     id: int | None
