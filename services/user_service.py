@@ -65,6 +65,11 @@ def find_user_by_username(username: str) -> User | None:
     user_data = read_query("SELECT * FROM users WHERE username = ?", (username,))
     return next((User.from_query_result(*row) for row in user_data), None)
     
+def find_user_by_id(id: int) -> User | None:
+    """Return a User object if id is found in database. Otherwise return None."""
+    user_data = read_query("SELECT * FROM users WHERE id = ?", (id,))
+    return next((User.from_query_result(*row) for row in user_data), None)
+
 def is_user_authenticated(token: str) -> bool:
     """Decode a user token, generated with the generate_user_token function. \n
     Returns True if token is valid, False otherwise."""

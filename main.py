@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from routers.users import user_router
+from routers.messages import message_router
 from utils.console_messages import console_message_log
 import uvicorn
 
@@ -11,6 +12,7 @@ def homepage():
     return {"message": "Hello World!"}
 
 app.include_router(user_router, tags=["Users"])
+app.include_router(message_router, tags="Messages")
 
 if __name__ == "__main__":
     uvicorn.run(app="main:app", port=8000, reload=True)

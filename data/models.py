@@ -1,4 +1,5 @@
-from pydantic import BaseModel, StringConstraints, field_validator
+from pydantic import BaseModel, StringConstraints
+from datetime import datetime
 from typing import Annotated
 
 class User(BaseModel):
@@ -40,10 +41,11 @@ class Reply(BaseModel):
     user_id: int
 
 class Message(BaseModel):
-    id: int
+    id: int | None = None
     text: str
     sender_id: int
     receiver_id: int
+    created_at: datetime | None = None # set in DB when creating a message.
 
 class Category(BaseModel):
     id: int
