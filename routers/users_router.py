@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 from common import responses, authenticate
 from data.models import User, UserLoginData
-import services.user_service as user_service
+import services.users_service as user_service
 
 user_router = APIRouter(prefix='/users')
 

@@ -23,3 +23,7 @@ class NoContent(Response):
 class InternalServerError(Response):
     def __init__(self):
         super().__init__(status_code=500)
+        
+class Created(Response):
+    def __init__(self, content=''):
+        super().__init__(status_code=201, content=content)

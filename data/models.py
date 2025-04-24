@@ -41,12 +41,30 @@ class Reply(BaseModel):
     user_id: int
 
 class Message(BaseModel):
-    id: int | None = None
+    id: int | None = None # set by db
     text: str
-    sender_id: int
-    receiver_id: int
+    conversation_id: int | None = None # set inside conv router
+    sender_id: int | None = None # set by the u_token.
     created_at: datetime | None = None # set in DB when creating a message.
+    
+class Conversation(BaseModel):
+    id: int
+    name: str
 
+    @classmethod
+    def from_query_result(cls, id, name):
+        return cls(
+            id=id,
+            name=name
+        )
+
+class CreateConversation(BaseModel):
+    name: str
+    user_ids: list[int]
+    
+class UserConversation(BaseModel):
+    username: str
+    
 class Category(BaseModel):
     id: int
     name: str

@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`users` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_name_UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 13;
+AUTO_INCREMENT = 15;
 
 
 -- -----------------------------------------------------
@@ -64,29 +64,39 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `forum_system_db`.`conversations`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forum_system_db`.`conversations` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(90) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `forum_system_db`.`messages`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`messages` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `text` TEXT NOT NULL,
+  `conversation_id` INT NOT NULL,
   `sender_id` INT(11) NOT NULL,
-  `receiver_id` INT(11) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
+  INDEX `fk_messages_conversations1_idx` (`conversation_id` ASC) VISIBLE,
   INDEX `fk_messages_users1_idx` (`sender_id` ASC) VISIBLE,
-  INDEX `fk_messages_users2_idx` (`receiver_id` ASC) VISIBLE,
-  INDEX `idx_messages_sender_id_receiver_id` (`sender_id` ASC, `receiver_id` ASC) VISIBLE,
+  CONSTRAINT `fk_messages_conversations1`
+    FOREIGN KEY (`conversation_id`)
+    REFERENCES `forum_system_db`.`conversations` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_messages_users1`
     FOREIGN KEY (`sender_id`)
     REFERENCES `forum_system_db`.`users` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_messages_users2`
-    FOREIGN KEY (`receiver_id`)
-    REFERENCES `forum_system_db`.`users` (`id`)
-    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 9;
 
 
 -- -----------------------------------------------------
@@ -158,6 +168,28 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`votes` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_votes_users1`
+    FOREIGN KEY (`users_id`)
+    REFERENCES `forum_system_db`.`users` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forum_system_db`.`conversations_has_users`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forum_system_db`.`conversations_has_users` (
+  `conversations_id` INT NOT NULL,
+  `users_id` INT(11) NOT NULL,
+  PRIMARY KEY (`conversations_id`, `users_id`),
+  INDEX `fk_conversations_has_users_users1_idx` (`users_id` ASC) VISIBLE,
+  INDEX `fk_conversations_has_users_conversations1_idx` (`conversations_id` ASC) VISIBLE,
+  CONSTRAINT `fk_conversations_has_users_conversations1`
+    FOREIGN KEY (`conversations_id`)
+    REFERENCES `forum_system_db`.`conversations` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_conversations_has_users_users1`
     FOREIGN KEY (`users_id`)
     REFERENCES `forum_system_db`.`users` (`id`)
     ON DELETE NO ACTION
