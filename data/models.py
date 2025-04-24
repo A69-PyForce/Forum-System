@@ -1,4 +1,5 @@
-from pydantic import BaseModel, StringConstraints, field_validator
+from pydantic import BaseModel, StringConstraints
+from datetime import datetime
 from typing import Annotated
 
 
@@ -94,22 +95,35 @@ class MessageCreate(BaseModel):
     receiver_id: int
 
 class Message(BaseModel):
-    id: int | None
+    id: int | None = None # set by db
     text: str
-    sender_id: int
-    receiver_id: int
+    conversation_id: int | None = None # set inside conv router
+    sender_id: int | None = None # set by the u_token.
+    created_at: datetime | None = None # set in DB when creating a message.
+    
+class Conversation(BaseModel):
+    id: int
+    name: str
 
     @classmethod
-    def from_query_result(cls, id: int, text: str, sender_id: int, receiver_id: int) -> "Message":
+    def from_query_result(cls, id, name):
         return cls(
             id=id,
-            text=text,
-            sender_id=sender_id,
-            receiver_id=receiver_id)
+            name=name
+        )
 
-# class Token(BaseModel):
-#     access_token: str
-#     token_type: str # automatic documentation and validation of the answer
+class CreateConversation(BaseModel):
+    name: str
+    user_ids: list[int]
+    
+class UserConversation(BaseModel):
+    username: str
+    
+class Category(BaseModel):
+    id: int
+    name: str
+    is_private: int  # 0 or 1
+    is_locked: int  # same 0 or 1
 
 class CategoryUserAccess(BaseModel):
     categories_id: int

@@ -1,4 +1,4 @@
-from services.user_service import is_user_authenticated, find_user_by_token
+from services.users_service import is_user_authenticated, find_user_by_token
 from fastapi import HTTPException
 from data.models import User
 
