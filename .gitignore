@@ -178,3 +178,7 @@ db_config.json
 
 # Encryption key file
 encrypt_key.json
+
+# IDE ignores
+.vscode
+.idea
