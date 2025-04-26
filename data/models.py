@@ -90,10 +90,6 @@ class Reply(BaseModel):
             is_best=is_best
         )
 
-class MessageCreate(BaseModel):
-    text: str
-    receiver_id: int
-
 class Message(BaseModel):
     id: int | None = None # set by db
     text: str

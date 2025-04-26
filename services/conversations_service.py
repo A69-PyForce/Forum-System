@@ -65,8 +65,8 @@ def is_user_in_conversation(user_id: int, conversation_id: int) -> bool:
     data = read_query(query, (user_id, conversation_id,))
     return True if data else False
 
-def view_conversation(conversation_id: int) -> dict | None:
-    """View a conversation using it's id."""
+def get_conversation(conversation_id: int) -> dict | None:
+    """Get a conversation using it's id."""
     
     # Try to find conversation
     conversation_data = read_query("SELECT id, name FROM conversations WHERE id = ?", (conversation_id,))
@@ -94,3 +94,58 @@ def view_conversation(conversation_id: int) -> dict | None:
         "name": conversation_data[0][1],
         "messages": messages
     }
+    
+def get_all_conversations(user_ids: set[int]):
+    """Get all conversations that contain the given user ids."""
+    
+    # Convert user ids list to comma-separated string for the query
+    placeholders = ", ".join(["?"] * len(user_ids))
+    
+    # Get conversation ids
+    query = f"""
+    SELECT c.id, c.name
+    FROM conversations AS c
+    JOIN conversations_has_users AS chu 
+    ON c.id = chu.conversations_id
+    WHERE chu.users_id IN ({placeholders})
+    GROUP BY c.id, c.name
+    HAVING COUNT(DISTINCT chu.users_id) = ?"""
+               
+    # Add the count of user_ids as the last parameter
+    params = tuple(user_ids) + (len(user_ids),)
+    conversations_data = read_query(query, params)
+    print(query, params)
+    if not conversations_data: return None
+    
+    results = {"conversations": []}
+    for conv_id, conv_name in conversations_data:
+        
+        # Query to get all participants for this conversation
+        
+        participants_query = """
+        SELECT u.id, u.username
+        FROM users AS u
+        JOIN conversations_has_users AS chu
+        ON u.id = chu.users_id
+        WHERE chu.conversations_id = ?
+        ORDER BY u.username"""
+                                
+        participants_data = read_query(participants_query, (conv_id,))
+        participants = [
+            {
+                "id": row[0],
+                "username": row[1]
+            }
+            for row in participants_data
+        ]
+        
+        results["conversations"].append({
+            "id": conv_id,
+            "name": conv_name,
+            "participants": participants
+        })
+    
+    return results
+    
+    
+    
