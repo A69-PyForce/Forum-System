@@ -24,6 +24,11 @@ conversation_router = APIRouter(prefix='/conversations')
 
 @conversation_router.post('/')
 def create_conversation(c_data: CreateConversation):
+    
+    # Verify that all users exist
+    for id in c_data.user_ids:
+        if not user_service.find_user_by_id(id): return responses.NotFound(f"User with id {id} not found.")
+        
     conversation = conversation_service.create_conversation(c_data.name, c_data.user_ids)
     if not conversation: return responses.BadRequest("Error creating conversation.")
     return conversation
@@ -32,9 +37,7 @@ def create_conversation(c_data: CreateConversation):
 def create_message_in_conversation(conversation_id: int, message_data: Message, u_token: str = Header()):
     
     # Validate input params
-    response = _generic_validator(u_token, conversation_id)
-    if isinstance(response, Response): return response
-    auth_user, _ = response
+    auth_user, _ = _generic_validator(u_token, conversation_id)
     
     # Set the sender_id in message_data to match the one from the auth_user
     message_data.sender_id = auth_user.id
@@ -52,9 +55,7 @@ def create_message_in_conversation(conversation_id: int, message_data: Message, 
 def add_user_to_conversation(conversation_id: int, user_conv: UserConversation, u_token: str = Header()):
     
     # Validate input params
-    response = _generic_validator(u_token, conversation_id)
-    if isinstance(response, Response): return response
-    _, conversation = response
+    _, conversation = _generic_validator(u_token, conversation_id)
     
     # Try to find user by username
     user = user_service.find_user_by_username(user_conv.username)
@@ -70,8 +71,7 @@ def add_user_to_conversation(conversation_id: int, user_conv: UserConversation, 
 def remove_user_from_conversation(conversation_id: int, user_conv: UserConversation, u_token: str = Header()):
     
     # Validate input params
-    response = _generic_validator(u_token, conversation_id)
-    _, conversation = response
+    _, conversation = _generic_validator(u_token, conversation_id)
     
     # Try to find user by username
     user = user_service.find_user_by_username(user_conv.username)
@@ -85,13 +85,34 @@ def remove_user_from_conversation(conversation_id: int, user_conv: UserConversat
     
 
 @conversation_router.get('/{conversation_id}')
-def view_conversation(conversation_id: int, u_token: str = Header()):
+def get_conversation(conversation_id: int, u_token: str = Header()):
     
     # Validate input params
     _generic_validator(u_token, conversation_id)
     
     # Try to view conversation
-    conversation = conversation_service.view_conversation(conversation_id)
+    conversation = conversation_service.get_conversation(conversation_id)
     if not conversation: return responses.NotFound(f"Conversation with id {conversation_id} not found.")
 
     return conversation
+
+@conversation_router.get('/')
+def get_all_conversations(contains_user: str | None = None, u_token: str = Header()):
+    
+    # List for filtering conversations
+    user_ids = set()
+    
+    # Validate user token
+    auth_user = authenticate.get_user_or_raise_401(u_token)
+    user_ids.add(auth_user.id)
+    
+    # Try to get id from contains_user query parameter
+    if contains_user:
+        user = user_service.find_user_by_username(contains_user)
+        if not user: return responses.NotFound(f"No conversations of user '{auth_user.username}' found.")
+        user_ids.add(user.id)
+    
+    conversations = conversation_service.get_all_conversations(user_ids)
+    if not conversations: return responses.NotFound(f"No conversations of user '{auth_user.username}' found.")
+    
+    return conversations
