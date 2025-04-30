@@ -1,16 +1,33 @@
 from fastapi import APIRouter
-from data.models import TopicCreate
+from common import responses
+from data.models import Topic
+from services import topics_service
 
 topics_router = APIRouter(prefix="/topics")
 
-@topics_router.get("/")
-def get_topics():
-    pass
+@topics_router.get("/",response_model=list[Topic])
+def get_topics(
+    sort: str | None = None,
+    sort_by: str | None = None,
+    search: str | None = None,
+    page: int = 1,
+    size: int = 5
+):
+    offset = (page - 1) * size
 
-@topics_router.get('/{id}')
+    result = topics_service.all(search, limit=size, offset=offset)
+
+    if sort and (sort == "asc" or sort == "desc"):
+        return topics_service.sort(result, reverse=sort == 'desc', attribute=sort_by)
+    else:
+        return result
+
+
+@topics_router.get("/{id}")
 def get_topic_by_id(id: int):
-    pass
+    topic = topics_service.get_by_id(id)
 
-@topics_router.post('/')
-def create_topic(topic: TopicCreate):
-    pass
+    if topic is None:
+        return responses.NotFound(f"Topic with ID '{id}' not found.")
+    else:
+        return topic
