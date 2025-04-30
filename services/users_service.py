@@ -5,8 +5,9 @@ from pathlib import Path
 # Allows imports from other folders
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
+from data.models import User, UserLoginData, UserRegisterData
 from data.database import read_query, insert_query
-from data.models import User, UserLoginData
+from mariadb import IntegrityError
 from jose import jwt
 import hashlib
 import json
@@ -45,7 +46,7 @@ def login_user(login_data: UserLoginData) -> User | None:
     if not query_data: return None
     return next((User.from_query_result(*row) for row in query_data), None)
 
-def register_user(user: User) -> User | None:
+def register_user(user: UserRegisterData) -> User | None:
     """Register a User into the database. If successful, returns the User object \n 
     with the generated id from DB, or None if some issue occured during execution."""
     
@@ -56,8 +57,7 @@ def register_user(user: User) -> User | None:
         
     if not generated_id: return None
         
-    user.id = generated_id
-    return user
+    return User(id=generated_id, username=user.username, password="", is_admin=user.is_admin)
     
 def find_user_by_username(username: str) -> User | None:
     """Return a User object if username is found in database. Otherwise return None."""

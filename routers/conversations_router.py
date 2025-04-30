@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Header, Response, HTTPException
-from common import responses, authenticate
-from data.models import Message, CreateConversation, UserConversation, User, Conversation
 import services.conversations_service as conversation_service
+from fastapi import APIRouter, Header, HTTPException
 import services.users_service as user_service
+from common import responses, authenticate
+from data.models import *
 
 def _generic_validator(u_token: str, conversation_id: int) -> tuple[User, Conversation]:
     """Helper function for validating that the user from given token belongs to the conversation from the given id."""
@@ -20,84 +20,16 @@ def _generic_validator(u_token: str, conversation_id: int) -> tuple[User, Conver
     
     return auth_user, conversation
 
+# ------------------------ CONVERSATIONS ROUTER BEGIN -------------------------
+
 conversation_router = APIRouter(prefix='/conversations')
 
-@conversation_router.post('/')
-def create_conversation(c_data: CreateConversation):
-    
-    # Verify that all users exist
-    for id in c_data.user_ids:
-        if not user_service.find_user_by_id(id): return responses.NotFound(f"User with id {id} not found.")
-        
-    conversation = conversation_service.create_conversation(c_data.name, c_data.user_ids)
-    if not conversation: return responses.BadRequest("Error creating conversation.")
-    return conversation
-
-@conversation_router.post('/{conversation_id}')
-def create_message_in_conversation(conversation_id: int, message_data: Message, u_token: str = Header()):
-    
-    # Validate input params
-    auth_user, _ = _generic_validator(u_token, conversation_id)
-    
-    # Set the sender_id in message_data to match the one from the auth_user
-    message_data.sender_id = auth_user.id
-    
-    # Set the conversation_id in message_data to match the one from the conversation.id
-    message_data.conversation_id = conversation_id
-    
-    # If all checks are passed, create the message
-    if conversation_service.create_new_message(message_data):
-        return responses.Created("Message successfully created.")
-    
-    return responses.InternalServerError("Message not created.")
-
-@conversation_router.put('/{conversation_id}/users')
-def add_user_to_conversation(conversation_id: int, user_conv: UserConversation, u_token: str = Header()):
-    
-    # Validate input params
-    _, conversation = _generic_validator(u_token, conversation_id)
-    
-    # Try to find user by username
-    user = user_service.find_user_by_username(user_conv.username)
-    if not user: return responses.NotFound(f"User with name '{user_conv.username}' not found.")
-    
-    # Try to add user to conversation
-    if conversation_service.add_user_to_conversation(user.id, conversation.id):
-        return responses.Created(f"User with name '{user.username}' added successfuly.")
-    
-    return responses.InternalServerError(f"User with name '{user.username}' not added.")
-
-@conversation_router.delete('/{conversation_id}/users')
-def remove_user_from_conversation(conversation_id: int, user_conv: UserConversation, u_token: str = Header()):
-    
-    # Validate input params
-    _, conversation = _generic_validator(u_token, conversation_id)
-    
-    # Try to find user by username
-    user = user_service.find_user_by_username(user_conv.username)
-    if not user: return responses.NotFound(f"User with name '{user_conv.username}' not found.")
-    
-    # Try to remove user from conversation
-    if conversation_service.remove_user_from_conversation(user.id, conversation.id):
-        return responses.Created(f"User with name '{user_conv.username}' removed successfuly.")
-    
-    return responses.InternalServerError(f"User with name '{user_conv.username}' not removed.")
-    
-
-@conversation_router.get('/{conversation_id}')
-def get_conversation(conversation_id: int, u_token: str = Header()):
-    
-    # Validate input params
-    _generic_validator(u_token, conversation_id)
-    
-    # Try to view conversation
-    conversation = conversation_service.get_conversation(conversation_id)
-    if not conversation: return responses.NotFound(f"Conversation with id {conversation_id} not found.")
-
-    return conversation
+# -----------------------------------------------------------------------------
+# CONVERSATIONS - GET REQUESTS
+# -----------------------------------------------------------------------------
 
 @conversation_router.get('/')
-def get_all_conversations(contains_user: str | None = None, u_token: str = Header()):
+def get_all_conversations(contains_user: str | None = None, u_token: str = Header()) -> list[AllConversationsResponse]:
     
     # List for filtering conversations
     user_ids = set()
@@ -116,3 +48,99 @@ def get_all_conversations(contains_user: str | None = None, u_token: str = Heade
     if not conversations: return responses.NotFound(f"No conversations of user '{auth_user.username}' found.")
     
     return conversations
+
+@conversation_router.get('/{conversation_id}')
+def get_conversation(conversation_id: int, u_token: str = Header()) -> ConversationResponse:
+    
+    # Validate input params
+    _generic_validator(u_token, conversation_id)
+    
+    # Try to view conversation
+    conversation = conversation_service.get_conversation(conversation_id)
+    if not conversation: return responses.NotFound(f"Conversation with id {conversation_id} not found.")
+
+    return conversation
+
+# -----------------------------------------------------------------------------
+# CONVERSATIONS - POST REQUESTS
+# -----------------------------------------------------------------------------
+
+@conversation_router.post('/')
+def create_conversation(conv_data: CreateConversation, u_token = Header(), create_with: int | None = None) -> CreateConversationResponse:
+    
+    auth_user = authenticate.get_user_or_raise_401(u_token)
+    
+    # Create a set of user ids
+    user_ids = set()
+    if conv_data.user_ids: 
+        for id in conv_data.user_ids: user_ids.add(id)
+    if create_with: 
+        user_ids.add(create_with)
+    user_ids.add(auth_user.id)
+    
+    # Verify that all users exist
+    for id in user_ids:
+        if not user_service.find_user_by_id(id): return responses.NotFound(f"User with id {id} not found.")
+        
+    conversation = conversation_service.create_conversation(conv_data.name, user_ids)
+    if not conversation: return responses.BadRequest("Error creating conversation.")
+    return conversation
+
+@conversation_router.post('/{conversation_id}')
+def create_message_in_conversation(conversation_id: int, message_data: CreateMessage, u_token: str = Header()):
+    
+    # Validate input params
+    auth_user, _ = _generic_validator(u_token, conversation_id)
+    
+    # Create a Message
+    message = Message(text=message_data.text, conversation_id=conversation_id, sender_id=auth_user.id)
+    if conversation_service.create_new_message(message):
+        return responses.Created("Message send.")
+    
+    return responses.InternalServerError("Message not send.")
+
+# -----------------------------------------------------------------------------
+# CONVERSATIONS - PUT REQUESTS
+# -----------------------------------------------------------------------------
+
+@conversation_router.put('/{conversation_id}/users')
+def add_user_to_conversation(conversation_id: int, username: Name, u_token: str = Header()):
+    
+    # Validate input params
+    _, conversation = _generic_validator(u_token, conversation_id)
+    
+    # Try to find user by username
+    user = user_service.find_user_by_username(username.name)
+    if not user: return responses.NotFound(f"User with name '{username.name}' not found.")
+    
+    # Check if user is already in conversation
+    if conversation_service.is_user_in_conversation(user.id, conversation.id):
+        return responses.BadRequest(f"User with name '{username.name}' is already in this conversation.")
+    
+    # Try to add user to conversation
+    if conversation_service.add_user_to_conversation(user.id, conversation.id):
+        return responses.Created(f"User with name '{user.username}' added successfuly.")
+    
+    return responses.InternalServerError(f"User with name '{user.username}' not added.")
+
+# -----------------------------------------------------------------------------
+# CONVERSATIONS - DELETE REQUESTS
+# -----------------------------------------------------------------------------
+
+@conversation_router.delete('/{conversation_id}/users')
+def remove_user_from_conversation(conversation_id: int, username: Name, u_token: str = Header()):
+    
+    # Validate input params
+    _, conversation = _generic_validator(u_token, conversation_id)
+    
+    # Try to find user by username
+    user = user_service.find_user_by_username(username.name)
+    if not user: return responses.NotFound(f"User with name '{username.name}' not found.")
+    
+    # Try to remove user from conversation
+    if conversation_service.remove_user_from_conversation(user.id, conversation.id):
+        return responses.Created(f"User with name '{username.name}' removed successfuly.")
+    
+    return responses.InternalServerError(f"User with name '{username.name}' not removed.")
+
+# ------------------------- CONVERSATIONS ROUTER END -------------------------
