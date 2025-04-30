@@ -7,7 +7,6 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from data.models import User, UserLoginData, UserRegisterData
 from data.database import read_query, insert_query
-from mariadb import IntegrityError
 from jose import jwt
 import hashlib
 import json
