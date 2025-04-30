@@ -11,8 +11,8 @@ class User(BaseModel):
     id: int | None = None
     username: Annotated[str, StringConstraints(pattern=r'^[a-zA-Z0-9]+$')] # Only letters, numbers and no special characters for usernames.
     password: str
-    is_admin: int # we are using tinyint which is 0 and 1 for true or false ?
-    # will Pydantic automatically - converts it to true or False
+    is_admin: int
+
     @classmethod
     def from_query_result(cls, id, username, password, is_admin):
         return cls(
@@ -21,8 +21,7 @@ class User(BaseModel):
             password=password,
             is_admin=is_admin
         )
-    # def is_admin(self):
-    #     return self.role == 'Admin'
+
 
 class CategoryCreate(BaseModel):
     name: str
@@ -30,8 +29,8 @@ class CategoryCreate(BaseModel):
 class Category(BaseModel):
     id: int | None
     name: str
-    is_private: int  # 0 or 1
-    is_locked: int  # same 0 or 1
+    is_private: int  # 0 or 1 # we are using tinyint which is 0 and 1 for true or false ?
+    is_locked: int  # same 0 or 1  # will Pydantic automatically - converts it to true or False
 
     @classmethod
     def from_query_result(cls, id: int, name: str, is_private: int, is_locked: int):
