@@ -1,25 +1,26 @@
-from fastapi import APIRouter, Header
-from common import responses, authenticate
-from data.models import User, UserLoginData
+from data.models import UserRegisterData, UserLoginData, User
 import services.users_service as user_service
+from common import responses, authenticate
+from fastapi import APIRouter, Header
 
 user_router = APIRouter(prefix='/users')
 
 @user_router.post('/login')
 def user_login(login_data: UserLoginData):
     user = user_service.login_user(login_data)
-    
-    if user:
-        token = user_service.generate_user_token(user)
-        return {"token": token}
-    else:
+    if not user:
         return responses.BadRequest('Invalid login data.')
+    return user_service.generate_user_token(user)
+    
     
 @user_router.post('/register')
-def user_register(user_data: User):
+def user_register(user_data: UserRegisterData):
+    # Check if username exists
+    if user_service.find_user_by_username(user_data.username):
+        return responses.BadRequest(f"Username '{user_data.username}' is already in use.")
     user = user_service.register_user(user_data)
-    if user: return user
-    else: return responses.BadRequest('Invalid register data.')
+    if not user: responses.BadRequest('Invalid register data.')
+    return responses.Created('User created.')
 
 @user_router.get('/info', response_model=User, response_model_exclude={"password"})
 def user_info(u_token: str = Header()):

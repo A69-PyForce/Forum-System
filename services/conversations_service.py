@@ -1,5 +1,5 @@
 from data.database import insert_query, read_query, update_query
-from data.models import Message, Conversation
+from data.models import *
 
 def create_new_message(message_data: Message) -> bool:
     """Create a new message using Message model. Return bool if successful."""
@@ -13,7 +13,7 @@ def create_new_message(message_data: Message) -> bool:
     
     return True if last_row_id else False
 
-def create_conversation(name: str, user_ids: list[int]) -> dict | None:
+def create_conversation(conversation_name: str, user_ids: list[int]) -> CreateConversationResponse | None:
     """Create a new conversation with a name and a user id. \n
     Return the Conversation with id, name and user_ids list if successful."""
     
@@ -21,7 +21,7 @@ def create_conversation(name: str, user_ids: list[int]) -> dict | None:
     
     # Create a new conversation in conversations table
     query = "INSERT INTO conversations(name) VALUES (?)"
-    conversation_id = insert_query(query, (name,))
+    conversation_id = insert_query(query, (conversation_name,))
     
     if not conversation_id: return None
     
@@ -29,13 +29,7 @@ def create_conversation(name: str, user_ids: list[int]) -> dict | None:
     query = "INSERT INTO conversations_has_users(conversations_id, users_id) VALUES (?, ?)"
     for id in user_ids: insert_query(query, (conversation_id, id,))
 
-    return {
-        "conversation": {
-            "id": conversation_id,
-            "name": name,
-            "user_ids": user_ids
-        }
-    }
+    return CreateConversationResponse.from_query_result(id=conversation_id, name=conversation_name, user_ids=user_ids)
 
 def add_user_to_conversation(user_id: int, conversation_id: int) -> bool:
     """Add user to a conversation using user id and conversation id. Return bool if successful."""
@@ -65,8 +59,8 @@ def is_user_in_conversation(user_id: int, conversation_id: int) -> bool:
     data = read_query(query, (user_id, conversation_id,))
     return True if data else False
 
-def get_conversation(conversation_id: int) -> dict | None:
-    """Get a conversation using it's id."""
+def get_conversation(conversation_id: int) -> ConversationResponse | None:
+    """Get a conversation using it's id. Returns ConversationResponse model or None type if not found."""
     
     # Try to find conversation
     conversation_data = read_query("SELECT id, name FROM conversations WHERE id = ?", (conversation_id,))
@@ -80,23 +74,16 @@ def get_conversation(conversation_id: int) -> dict | None:
                ORDER BY m.created_at ASC'''
                
     messages_data = read_query(query, (conversation_id,))
-    messages = [
-        {
-            "text": row[0],
-            "user": row[1],
-            "date": row[2]
-        }
-        for row in messages_data
-    ]
+    messages = (MessageResponse.from_query_result(*row) for row in messages_data)
     
-    return {
-        "id": conversation_data[0][0],
-        "name": conversation_data[0][1],
-        "messages": messages
-    }
+    return ConversationResponse.from_query_result(
+        id=conversation_data[0][0],
+        name=conversation_data[0][1],
+        messages=messages
+    )
     
-def get_all_conversations(user_ids: set[int]):
-    """Get all conversations that contain the given user ids."""
+def get_all_conversations(user_ids: set[int]) -> list[AllConversationsResponse] | None:
+    """Get all conversations that contain the given user ids. Returns list of AllConversationsResponse model or None type if not found."""
     
     # Convert user ids list to comma-separated string for the query
     placeholders = ", ".join(["?"] * len(user_ids))
@@ -114,10 +101,9 @@ def get_all_conversations(user_ids: set[int]):
     # Add the count of user_ids as the last parameter
     params = tuple(user_ids) + (len(user_ids),)
     conversations_data = read_query(query, params)
-    print(query, params)
     if not conversations_data: return None
     
-    results = {"conversations": []}
+    results = []
     for conv_id, conv_name in conversations_data:
         
         # Query to get all participants for this conversation
@@ -131,19 +117,9 @@ def get_all_conversations(user_ids: set[int]):
         ORDER BY u.username"""
                                 
         participants_data = read_query(participants_query, (conv_id,))
-        participants = [
-            {
-                "id": row[0],
-                "username": row[1]
-            }
-            for row in participants_data
-        ]
+        participants = (ParticipantsResponse.from_query_result(*row) for row in participants_data)
         
-        results["conversations"].append({
-            "id": conv_id,
-            "name": conv_name,
-            "participants": participants
-        })
+        results.append(AllConversationsResponse.from_query_result(id=conv_id, name=conv_name, participants=participants))
     
     return results
     
