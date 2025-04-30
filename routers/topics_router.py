@@ -1,16 +1,17 @@
 from fastapi import APIRouter
-from data.models import TopicCreate
+from services import topics_service
 
 topics_router = APIRouter(prefix="/topics")
 
 @topics_router.get("/")
-def get_topics():
-    pass
+def get_topics(
+    sort: str | None = None,
+    sort_by: str | None = None,
+    search: str | None = None
+):
+    result = topics_service.all(search)
 
-@topics_router.get('/{id}')
-def get_topic_by_id(id: int):
-    pass
-
-@topics_router.post('/')
-def create_topic(topic: TopicCreate):
-    pass
+    if sort and (sort == 'asc' or sort == 'desc'):
+        return topics_service.sort(result, reverse=sort == 'desc', attribute=sort_by)
+    else:
+        return result
