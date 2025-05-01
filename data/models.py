@@ -201,12 +201,6 @@ class AllConversationsResponse(BaseModel):
 class CreateConversation(BaseModel):
     name: str
     user_ids: list[int] | None = None
-    
-class Category(BaseModel):
-    id: int
-    name: str
-    is_private: int  # 0 or 1
-    is_locked: int  # same 0 or 1
 
 class CategoryUserAccess(BaseModel):
     categories_id: int

@@ -41,5 +41,5 @@ def get_by_id(id: int):
         """SELECT id, title, content, categories_id, user_id, is_locked
             FROM topics 
             WHERE id = ?""", (id,))
-
+# to implement list of Reply resources
     return next((Topic.from_query_result(*row) for row in data), None)
