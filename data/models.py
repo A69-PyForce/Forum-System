@@ -46,8 +46,6 @@ class User(BaseModel):
             password=password,
             is_admin=is_admin
         )
-    # def is_admin(self):
-    #     return self.role == 'Admin'
 
 class Category(BaseModel):
     id: int | None
@@ -58,11 +56,6 @@ class Category(BaseModel):
     @classmethod
     def from_query_result(cls, id: int, name: str, is_private: int, is_locked: int):
         return cls(id=id, name=name, is_private=is_private, is_locked=is_locked)
-
-class TopicCreate(BaseModel):
-    title: str
-    content: str
-    category_id: int
 
 class Topic(BaseModel):
     id: int | None
@@ -85,9 +78,15 @@ class Topic(BaseModel):
             content=content,
             category_id=category_id,
             user_id=user_id,
-            is_locked=is_locked
-        )
+            is_locked=is_locked)
 
+# class CategoryWithTopics(Category):
+#     topics: list[Topic] = []
+
+class TopicCreate(BaseModel):
+    title: str
+    content: str
+    category_id: int
 
 class ReplyCreate(BaseModel):
     text: str
