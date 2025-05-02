@@ -5,16 +5,16 @@ from data.models import Topic
 def all(search: str = None, *, limit: int = None, offset: int = None):
     if search is None:
         sql = """
-            SELECT id, title, content, categories_id, user_id, is_locked
-              FROM topics
-        """
+        SELECT id, title, content, categories_id, user_id, is_locked
+        FROM topics"""
         params: tuple = ()
+
     else:
         sql = """
-            SELECT id, title, content, categories_id, user_id, is_locked
-              FROM topics
-             WHERE title LIKE ?
-        """
+        SELECT id, title, content, categories_id, user_id, is_locked
+        FROM topics
+        WHERE title LIKE ?"""
+
         params = (f"%{search}%",)
 
     if limit is not None and offset is not None:

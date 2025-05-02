@@ -7,11 +7,11 @@ topics_router = APIRouter(prefix="/topics")
 
 @topics_router.get("/",response_model=list[Topic])
 def get_topics(
-    sort: str | None = None,
-    sort_by: str | None = None,
-    search: str | None = None,
-    page: int = 1,
-    size: int = 5
+        sort: str | None = None,
+        sort_by: str | None = None,
+        search: str | None = None,
+        page: int = 1,
+        size: int = 5
 ):
     offset = (page - 1) * size
 
