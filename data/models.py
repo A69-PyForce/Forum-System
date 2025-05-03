@@ -80,13 +80,14 @@ class Topic(BaseModel):
             user_id=user_id,
             is_locked=is_locked)
 
-# class CategoryWithTopics(Category):
-#     topics: list[Topic] = []
+class CategoryResponseModel(BaseModel):
+    category: Category
+    topics: list[Topic]
 
 class TopicCreate(BaseModel):
     title: str
     content: str
-    category_id: int
+    categories_id: int
 
 class ReplyCreate(BaseModel):
     text: str
@@ -95,10 +96,8 @@ class ReplyCreate(BaseModel):
 class Reply(BaseModel):
     id: int | None
     text: str
-    topic_id: int
+    topics_id: int
     user_id: int
-    votes: int
-    is_best: int
 
     @classmethod
     def from_query_result(cls, id: int, text: str, topic_id: int, user_id: int, votes: int, is_best: int):
@@ -110,6 +109,8 @@ class Reply(BaseModel):
             votes=votes,
             is_best=is_best
         )
+
+
 
 class Name(BaseModel):
     name: str

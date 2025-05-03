@@ -1,5 +1,5 @@
-from data.database import read_query
-from data.models import Topic
+from data.database import read_query, insert_query
+from data.models import Topic, TopicCreate
 
 
 def all(search: str = None, *, limit: int = None, offset: int = None):
@@ -41,5 +41,23 @@ def get_by_id(id: int):
         """SELECT id, title, content, categories_id, user_id, is_locked
             FROM topics 
             WHERE id = ?""", (id,))
-# to implement list of Reply resources
+
     return next((Topic.from_query_result(*row) for row in data), None)
+
+
+def create(topic: TopicCreate, user_id: int):
+    new_id = insert_query(
+        'INSERT INTO topics(title ,content , categories_id, user_id, is_locked) VALUES(?,?,?,?,?)',
+        (topic.title, topic.content, topic.categories_id, user_id, 0))
+
+    if not new_id:
+        return None
+
+    return Topic.from_query_result(
+        new_id,
+        topic.title,
+        topic.content,
+        topic.categories_id,
+        user_id,
+        0
+    )
