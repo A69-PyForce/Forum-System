@@ -7,6 +7,13 @@ from services import topics_service, replies_service, categories_service
 
 
 class TopicResponseModel(BaseModel):
+    """
+    Response model combining a topic with its associated replies.
+
+    Attributes:
+        topic (Topic): The main topic data.
+        replies (list[Reply]): List of replies to the topic.
+    """
     topic: Topic
     replies: list[Reply]
 
@@ -20,6 +27,19 @@ def get_topics(
     page: int = 1,
     size: int = 5
 ):
+    """
+    Retrieve paginated list of topics with optional filtering and sorting.
+
+    Args:
+        sort (str | None): Sort order; 'asc' or 'desc' to apply sorting by the specified attribute.
+        sort_by (str | None): Attribute name to sort by (e.g., 'title', 'content').
+        search (str | None): Substring to filter topics by title.
+        page (int): Page number for pagination (1-indexed).
+        size (int): Number of topics per page.
+
+    Returns:
+        list[Topic]: A list of Topic instances matching the given parameters.
+    """
     offset = (page - 1) * size
 
     result = topics_service.all(search, limit=size, offset=offset)
@@ -32,6 +52,15 @@ def get_topics(
 
 @topics_router.get("/{id}")
 def get_topic_by_id(id: int):
+    """
+    Retrieve a single topic by its ID along with its replies.
+
+    Args:
+        id (int): The ID of the topic to retrieve.
+
+    Returns:
+        TopicResponseModel | JSONResponse: A TopicResponseModel if found, otherwise a NotFound response.
+    """
     topic = topics_service.get_by_id(id)
 
     if topic is None:
@@ -43,6 +72,16 @@ def get_topic_by_id(id: int):
 
 @topics_router.post("/", status_code=201)
 def create_topic(topic: TopicCreate, u_token: str = Header()):
+    """
+    Create a new topic under a given category, authenticated via header token.
+
+    Args:
+        topic (TopicCreate): Pydantic model containing title, content, and categories_id.
+        u_token (str): User authentication token passed in HTTP header.
+
+    Returns:
+        Topic | JSONResponse: The newly created Topic model, or a BadRequest response on failure.
+    """
     user = get_user_or_raise_401(u_token)
 
     if not categories_service.exists(topic.categories_id):
