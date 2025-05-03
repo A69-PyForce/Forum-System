@@ -1,5 +1,5 @@
 from data.database import read_query
-from data.models import Category, Topic
+from data.models import Category, Topic, TopicCreate
 
 
 def all():
@@ -41,13 +41,8 @@ def topics_by_category(
     rows = read_query(sql, params)
     return (Topic.from_query_result(*row) for row in rows)
 
-    # row = next(read_query(
-    #     "SELECT id, name, is_private, is_locked FROM categories WHERE id = ?",
-    #     (category_id,)), None)
-    # if row is None:
-    #     return None
-    # category = CategoryWithTopics.from_query_result(*row)
-    #
-    # category.topics = list(
-    #     topics_service.all(search=search, category_id=category_id, limit=limit, offset=offset))
-    # return category
+def exists(id: int):
+    return any(
+        read_query(
+            'select id, name, is_private, is_locked from categories where id = ?',
+            (id,)))

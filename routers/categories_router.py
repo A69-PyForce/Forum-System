@@ -1,15 +1,14 @@
 from fastapi import APIRouter
-import common.responses
-from data.models import Category
-from services import topics_service
-from services.categories_service import all as get_all_categories, topics_by_category
+from data.models import TopicCreate
+from services import topics_service, categories_service
+from services.categories_service import topics_by_category
 
 categories_router = APIRouter(prefix="/categories")
 
 
-@categories_router.get("/", response_model=list[Category])
+@categories_router.get('/')
 def get_categories():
-    return list(get_all_categories())
+    return categories_service.all()
 
 @categories_router.get("/{id}/topics")
 def get_category_by_id(
@@ -27,3 +26,7 @@ def get_category_by_id(
         return topics_service.sort(result, reverse=sort == 'desc', attribute=sort_by)
     else:
         return result
+
+@categories_router.post("/")
+def create_category(create_topic: TopicCreate, u_token: str = None):
+    new_topic = categories_service.create(create_topic)
