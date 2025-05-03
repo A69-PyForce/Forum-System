@@ -87,8 +87,14 @@ def create_topic(topic: TopicCreate, u_token: str = Header()):
     if not categories_service.exists(topic.categories_id):
         return responses.BadRequest("Category does not exist.")
 
+    if topic.title == "":
+        return responses.BadRequest("Title cannot be empty.")
+
+    if topic.content == "":
+        return responses.BadRequest("Content cannot be empty.")
+
     new_topic = topics_service.create(topic, user.id)
     if not new_topic:
-        return responses.BadRequest("Failed to create topic. Please check your payload.")
+        return responses.InternalServerError()
 
     return new_topic
