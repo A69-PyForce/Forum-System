@@ -1,6 +1,7 @@
 from pydantic import BaseModel, StringConstraints, field_validator
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Literal
+
 
 class UserLoginData(BaseModel):
     username: str
@@ -204,7 +205,20 @@ class CategoryUserAccess(BaseModel):
     users_id: int
     has_right_access: int # 0 or 1
 
+class VoteCreate(BaseModel):
+    type_vote: Literal['up','down']
+
 class Vote(BaseModel):
     id: int | None
     reply_id: int
     users_id: int
+    type_vote: str
+
+    @classmethod
+    def from_query_result(cls, id: int, reply_id: int, users_id: int, type_vote: str) -> "Vote":
+        return cls(
+            id=id,
+            reply_id=reply_id,
+            users_id=users_id,
+            type_vote=type_vote
+        )
