@@ -2,7 +2,8 @@ from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from common import responses
 from common.authenticate import get_user_or_raise_401
-from data.models import Topic, Reply, TopicCreate
+from common.responses import BadRequest, InternalServerError
+from data.models import Topic, Reply, TopicCreate, ReplyCreate
 from services import topics_service, replies_service, categories_service
 
 
@@ -98,3 +99,16 @@ def create_topic(topic: TopicCreate, u_token: str = Header()):
         return responses.InternalServerError()
 
     return new_topic
+
+@topics_router.post("/{topic_id}/replies",response_model=Reply, status_code=201)
+def create_reply(topic_id: int, reply_data: ReplyCreate, u_token: str = Header()):
+    user = get_user_or_raise_401(u_token)
+
+    if not topics_service.get_by_id(topic_id):
+        return BadRequest(f"Topic with ID '{topic_id}' not found.")
+
+    new_reply = replies_service.create(reply_data, topic_id=topic_id, user_id=user.id)
+    if not new_reply:
+        return InternalServerError()
+
+    return new_reply

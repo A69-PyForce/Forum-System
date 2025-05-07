@@ -131,14 +131,15 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `text` VARCHAR(45) NULL DEFAULT NULL,
-  `topics_id` INT(11) NOT NULL,
+  `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   UNIQUE INDEX `text_UNIQUE` (`text` ASC) VISIBLE,
-  INDEX `fk_replies_topics1_idx` (`topics_id` ASC) VISIBLE,
+  INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
   INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `fk_replies_topics1`
-    FOREIGN KEY (`topics_id`)
+    FOREIGN KEY (`topic_id`)
     REFERENCES `forum_system_db`.`topics` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
