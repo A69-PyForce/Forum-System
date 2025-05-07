@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from common import responses
 from common.authenticate import get_user_or_raise_401
 from common.responses import BadRequest, InternalServerError
-from data.models import Topic, Reply, TopicCreate, ReplyCreate
-from services import topics_service, replies_service, categories_service
+from data.models import Topic, Reply, TopicCreate, ReplyCreate, Vote, VoteCreate
+from services import topics_service, replies_service, categories_service, votes_service
 
 
 class TopicResponseModel(BaseModel):
@@ -112,3 +112,16 @@ def create_reply(topic_id: int, reply_data: ReplyCreate, u_token: str = Header()
         return InternalServerError()
 
     return new_reply
+
+@topics_router.post("/{topic_id}/replies/{reply_id}/votes",response_model=Vote)
+def vote_reply(topic_id: int, reply_id: int, vote_data: VoteCreate, u_token: str = Header()):
+    user = get_user_or_raise_401(u_token)
+
+    if not topics_service.get_by_id(topic_id):
+        return BadRequest(f"Topic {topic_id} not found.")
+
+    new_vote = votes_service.vote(reply_id=reply_id, users_id=user.id, type_vote=vote_data.type_vote)
+    if not new_vote:
+        return InternalServerError()
+
+    return new_vote
