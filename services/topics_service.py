@@ -15,13 +15,13 @@ def all(search: str = None, *, limit: int = None, offset: int = None):
         Generator[Topic]: A generator yielding Topic instances.
     """
     if search is None:
-        sql = """
+        query = """
         SELECT id, title, content, categories_id, user_id, is_locked
         FROM topics"""
         params: tuple = ()
 
     else:
-        sql = """
+        query = """
         SELECT id, title, content, categories_id, user_id, is_locked
         FROM topics
         WHERE title LIKE ?"""
@@ -29,10 +29,10 @@ def all(search: str = None, *, limit: int = None, offset: int = None):
         params = (f"%{search}%",)
 
     if limit is not None and offset is not None:
-        sql += " LIMIT ? OFFSET ?"
+        query += " LIMIT ? OFFSET ?"
         params += (limit, offset)
 
-    data = read_query(sql, params)
+    data = read_query(query, params)
     return (Topic.from_query_result(*row) for row in data)
 
 

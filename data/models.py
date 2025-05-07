@@ -91,26 +91,23 @@ class TopicCreate(BaseModel):
 
 class ReplyCreate(BaseModel):
     text: str
-    topic_id: int
 
 class Reply(BaseModel):
     id: int | None
     text: str
-    topics_id: int
+    topic_id: int
     user_id: int
+    created_at: datetime
 
     @classmethod
-    def from_query_result(cls, id: int, text: str, topic_id: int, user_id: int, votes: int, is_best: int):
+    def from_query_result(cls, id: int, text: str, topic_id: int, user_id: int, created_at: datetime) -> "Reply":
         return cls(
             id=id,
             text=text,
             topic_id=topic_id,
             user_id=user_id,
-            votes=votes,
-            is_best=is_best
+            created_at=created_at
         )
-
-
 
 class Name(BaseModel):
     name: str
