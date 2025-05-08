@@ -1,8 +1,14 @@
 from fastapi import APIRouter
-from data.models import TopicCreate
+from pydantic import BaseModel
+from common.responses import NotFound
+from data.models import TopicCreate, Category, Topic
 from services import topics_service, categories_service
-from services.categories_service import topics_by_category
 
+
+
+class CategoryTopicResponseModel(BaseModel):
+    category: Category
+    topics: list[Topic]
 
 categories_router = APIRouter(prefix="/categories")
 
@@ -25,27 +31,19 @@ def get_category_by_id(
         sort_by: str | None = None,
         page: int = 1,
         size: int = 5):
-    """
-    Retrieve topics belonging to a specific category, with optional filtering, sorting, and pagination.
 
-    Args:
-        id (int): The ID of the category to fetch topics for.
-        search (str | None): Optional substring to filter topics by title.
-        sort (str | None): Sort order; must be 'asc' or 'desc' to apply sorting.
-        sort_by (str | None): Attribute name to sort by (e.g., 'title', 'content').
-        page (int): Page number for pagination (1-indexed).
-        size (int): Number of items per page.
+    category = categories_service.get_by_id(id)
+    if not category:
+        return NotFound(f"Category with ID '{id}' not found.")
 
-    Returns:
-        list[Topic]: A list of Topic instances matching the query parameters.
-    """
     offset = (page - 1) * size
-    result = topics_by_category(id, search, limit=size, offset=offset)
+    result = categories_service.topics_by_category(category_id=id, search=search, limit=size, offset=offset)
+    topics = list(result)
 
     if sort in ("asc", "desc"):
-        return topics_service.sort(result, reverse=sort == 'desc', attribute=sort_by)
-    else:
-        return result
+        return topics_service.sort(topics, reverse=sort == 'desc', attribute=sort_by)
+
+    return CategoryTopicResponseModel(category=category, topics=topics)
 
 @categories_router.post("/")
 def create_category(create_topic: TopicCreate, u_token: str = None):
