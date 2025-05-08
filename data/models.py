@@ -221,3 +221,6 @@ class Vote(BaseModel):
             users_id=users_id,
             type_vote=type_vote
         )
+
+class CategoryPrivacyUpdate(BaseModel):
+    is_private: bool

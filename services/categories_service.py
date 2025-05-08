@@ -1,5 +1,5 @@
-from data.database import read_query, insert_query
-from data.models import Category, Topic, TopicCreate
+from data.database import read_query, insert_query, update_query
+from data.models import Category, Topic
 
 
 def all():
@@ -87,3 +87,8 @@ def create(name: str) -> Category:
     new_id = insert_query(sql, (name,))
 
     return Category.from_query_result(id=new_id, name=name, is_private=0, is_locked=0)
+
+def set_privacy(category_id: int, is_private: bool) -> bool:
+    sql = """UPDATE categories SET is_private = ? WHERE id = ?"""
+    rows = update_query(sql, (1 if is_private else 0, category_id))
+    return rows == 1

@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Header
 from pydantic import BaseModel
-
 from common.authenticate import get_user_or_raise_401
 from common.responses import NotFound, Unauthorized, BadRequest
-from data.models import TopicCreate, Category, Topic
+from data.models import TopicCreate, Category, Topic, CategoryPrivacyUpdate
 from services import topics_service, categories_service
 
 
@@ -61,3 +60,18 @@ def create_category(category_data: CategoryCreate, u_token: str = Header()):
 
     new_category = categories_service.create(name)
     return new_category
+
+@categories_router.patch("/{id}/privacy", response_model=Category)
+def update_category_privacy(id: int, category_data: CategoryPrivacyUpdate, u_token: str = Header()):
+    user = get_user_or_raise_401(u_token)
+    if not user.is_admin:
+        return Unauthorized("Admin access required.")
+
+    category = categories_service.get_by_id(id)
+    if not category:
+        return NotFound(f"Category with ID '{id}' not found.")
+
+    updated = categories_service.set_privacy(id, category_data.is_private)
+    if not updated:
+        return BadRequest("Could not update privacy. Try again?")
+    return categories_service.get_by_id(id)
