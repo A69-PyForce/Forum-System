@@ -2,7 +2,7 @@ from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from common import responses
 from common.authenticate import get_user_or_raise_401
-from common.responses import BadRequest, InternalServerError
+from common.responses import BadRequest, InternalServerError, NotFound, Unauthorized, NoContent
 from data.models import Topic, Reply, TopicCreate, ReplyCreate, Vote, VoteCreate
 from services import topics_service, replies_service, categories_service, votes_service
 
@@ -17,6 +17,9 @@ class TopicResponseModel(BaseModel):
     """
     topic: Topic
     replies: list[Reply]
+
+class BestReplyRequest(BaseModel):
+    reply_id: int
 
 topics_router = APIRouter(prefix="/topics")
 
@@ -125,3 +128,23 @@ def vote_reply(topic_id: int, reply_id: int, vote_data: VoteCreate, u_token: str
         return InternalServerError()
 
     return new_vote
+
+@topics_router.post("/{topic_id}/best")
+def choose_best_reply(topic_id: int, body: BestReplyRequest, u_token: str = Header()):
+    user = get_user_or_raise_401(u_token)
+
+    topic = topics_service.get_by_id(topic_id)
+    if topic is None:
+        return NotFound(f"Topic {topic_id} not found.")
+
+    if topic.user_id != user.id:
+        return Unauthorized("Only the topic author can select the best reply.")
+
+    reply = replies_service.get_by_id(body.reply_id)
+    if reply is None or reply.topic_id != topic_id:
+        return BadRequest(f"Reply {body.reply_id} does not belong to topic {topic_id}.")
+
+    if not topics_service.select_best_reply(topic_id, body.reply_id):
+        return BadRequest("Failed to set best reply; please try again.")
+
+    return NoContent()

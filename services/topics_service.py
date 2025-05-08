@@ -1,4 +1,4 @@
-from data.database import read_query, insert_query
+from data.database import read_query, insert_query, update_query
 from data.models import Topic, TopicCreate
 
 
@@ -16,13 +16,13 @@ def all(search: str = None, *, limit: int = None, offset: int = None):
     """
     if search is None:
         query = """
-        SELECT id, title, content, categories_id, user_id, is_locked
+        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
         FROM topics"""
         params: tuple = ()
 
     else:
         query = """
-        SELECT id, title, content, categories_id, user_id, is_locked
+        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
         FROM topics
         WHERE title LIKE ?"""
 
@@ -69,7 +69,7 @@ def get_by_id(id: int):
         Topic | None: The Topic instance if found, else None.
     """
     data = read_query(
-        """SELECT id, title, content, categories_id, user_id, is_locked
+        """SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
             FROM topics 
             WHERE id = ?""", (id,))
 
@@ -100,5 +100,14 @@ def create(topic: TopicCreate, user_id: int):
         topic.content,
         topic.categories_id,
         user_id,
-        0
+        0,
+        None
     )
+
+def select_best_reply(topic_id: int, reply_id: int) -> bool:
+    """
+    Marks reply_id as the best reply for topic_id.
+    Returns True if the update affected a row.
+    """
+    sql = "UPDATE topics SET best_reply_id = ? WHERE id = ?"
+    return update_query(sql, (reply_id, topic_id)) > 0

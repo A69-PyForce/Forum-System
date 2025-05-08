@@ -36,3 +36,12 @@ def create(reply_data: ReplyCreate, user_id: int, topic_id: int):
 
 def exists(reply_id: int):
     return any(read_query("""SELECT 1 FROM replies WHERE id = ?""",(reply_id,)))
+
+
+def get_by_id(reply_id):
+    data = read_query(
+        """SELECT id, text, topic_id, user_id, created_at
+            FROM replies 
+            WHERE id = ?""", (reply_id,))
+
+    return next((Reply.from_query_result(*row) for row in data), None)
