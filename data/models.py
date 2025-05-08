@@ -85,10 +85,6 @@ class Topic(BaseModel):
             best_reply_id=best_reply_id
         )
 
-class CategoryResponseModel(BaseModel):
-    category: Category
-    topics: list[Topic]
-
 class TopicCreate(BaseModel):
     title: str
     content: str

@@ -37,14 +37,14 @@ def topics_by_category(
     """
     if search is None:
         sql = """
-        SELECT id, title, content, categories_id, user_id, is_locked
+        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
         FROM topics
         WHERE categories_id = ?"""
         params: tuple = (category_id,)
 
     else:
         sql = """
-        SELECT id, title, content, categories_id, user_id, is_locked
+        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
         FROM topics
         WHERE categories_id = ?
         AND title LIKE ?"""
@@ -72,3 +72,12 @@ def exists(id: int):
         read_query(
             'select id, name, is_private, is_locked from categories where id = ?',
             (id,)))
+
+
+def get_by_id(category_id: int):
+    data = read_query(
+        """SELECT id, name, is_private, is_locked
+            FROM categories 
+            WHERE id = ?""", (category_id,))
+
+    return next((Category.from_query_result(*row) for row in data), None)
