@@ -36,8 +36,7 @@ class User(BaseModel):
     id: int
     username: str
     password: str
-    is_admin: int # we are using tinyint which is 0 and 1 for true or false ?
-    # will Pydantic automatically - converts it to true or False
+    is_admin: int
     
     @classmethod
     def from_query_result(cls, id, username, password, is_admin):
@@ -51,8 +50,8 @@ class User(BaseModel):
 class Category(BaseModel):
     id: int | None
     name: str
-    is_private: int  # 0 or 1
-    is_locked: int  # same 0 or 1
+    is_private: int
+    is_locked: int
 
     @classmethod
     def from_query_result(cls, id: int, name: str, is_private: int, is_locked: int):

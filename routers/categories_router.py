@@ -1,14 +1,18 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 from pydantic import BaseModel
-from common.responses import NotFound
+
+from common.authenticate import get_user_or_raise_401
+from common.responses import NotFound, Unauthorized, BadRequest
 from data.models import TopicCreate, Category, Topic
 from services import topics_service, categories_service
-
 
 
 class CategoryTopicResponseModel(BaseModel):
     category: Category
     topics: list[Topic]
+
+class CategoryCreate(BaseModel):
+    name: str
 
 categories_router = APIRouter(prefix="/categories")
 
@@ -46,5 +50,14 @@ def get_category_by_id(
     return CategoryTopicResponseModel(category=category, topics=topics)
 
 @categories_router.post("/")
-def create_category(create_topic: TopicCreate, u_token: str = None):
-    new_topic = categories_service.create(create_topic)
+def create_category(category_data: CategoryCreate, u_token: str = Header()):
+    user = get_user_or_raise_401(u_token)
+    if not user.is_admin:
+        return Unauthorized("Admin access required.")
+
+    name = category_data.name.strip()
+    if not name:
+        return BadRequest("Category name must not be empty.")
+
+    new_category = categories_service.create(name)
+    return new_category
