@@ -56,7 +56,12 @@ class Category(BaseModel):
 
     @classmethod
     def from_query_result(cls, id: int, name: str, is_private: int, is_locked: int):
-        return cls(id=id, name=name, is_private=is_private, is_locked=is_locked)
+        return cls(
+            id=id,
+            name=name,
+            is_private=is_private,
+            is_locked=is_locked
+        )
 
 class Topic(BaseModel):
     id: int | None
@@ -65,21 +70,20 @@ class Topic(BaseModel):
     category_id: int
     user_id: int
     is_locked: int
+    best_reply_id: int | None = None
 
     @classmethod
-    def from_query_result(cls, id: int,
-                          title: str,
-                          content: str,
-                          category_id: int,
-                          user_id: int,
-                          is_locked: int) -> "Topic":
+    def from_query_result(cls, id: int, title: str, content: str,
+                          category_id: int, user_id: int, is_locked: int, best_reply_id: int | None) -> "Topic":
         return cls(
             id=id,
             title=title,
             content=content,
             category_id=category_id,
             user_id=user_id,
-            is_locked=is_locked)
+            is_locked=is_locked,
+            best_reply_id=best_reply_id
+        )
 
 class CategoryResponseModel(BaseModel):
     category: Category

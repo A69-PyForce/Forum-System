@@ -109,9 +109,16 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`topics` (
   `categories_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `is_locked` TINYINT(4) NOT NULL,
+  `best_reply_id` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_topics_categories_idx` (`categories_id` ASC) VISIBLE,
   INDEX `fk_topics_users1_idx` (`user_id` ASC) VISIBLE,
+  INDEX `fk_topics_best_reply` (`best_reply_id` ASC) VISIBLE,
+  CONSTRAINT `fk_topics_best_reply`
+    FOREIGN KEY (`best_reply_id`)
+    REFERENCES `forum_system_db`.`replies` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_topics_categories`
     FOREIGN KEY (`categories_id`)
     REFERENCES `forum_system_db`.`categories` (`id`)
@@ -122,7 +129,8 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`topics` (
     REFERENCES `forum_system_db`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 13;
 
 
 -- -----------------------------------------------------
