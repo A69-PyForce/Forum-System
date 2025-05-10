@@ -6,7 +6,7 @@
 - [Table of Contents](#table-of-contents)
 - [Features](#features)
 - [Project Structure](#project-structure)
-- [Database Schema](#database-schema)
+- [Database Schema](#database-eer-diagram)
 - [Setup](#setup)
 - [API Overview](#api-overview)
 - [License](#license)
@@ -23,8 +23,8 @@
 ## Project Structure
 ![Project Structure](others/readme_project_structure.png)
 
-## Database Schema
-![DB Schema](others/db_eer_diagram.png)
+## Database EER Diagram
+![DB Diagram](others/db_eer_diagram.png)
 
 ## Setup
 
