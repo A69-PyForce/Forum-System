@@ -111,3 +111,11 @@ def select_best_reply(topic_id: int, reply_id: int) -> bool:
     """
     sql = "UPDATE topics SET best_reply_id = ? WHERE id = ?"
     return update_query(sql, (reply_id, topic_id)) > 0
+
+def set_locked(topic_id: int, locked: bool) -> bool:
+    """
+    Toggle the is_locked flag for a topic.
+    Returns True if exactly one row was updated.
+    """
+    sql = "UPDATE topics SET is_locked = ? WHERE id = ?"
+    return update_query(sql, (1 if locked else 0, topic_id)) == 1
