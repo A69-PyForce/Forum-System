@@ -21,6 +21,10 @@ class TopicResponseModel(BaseModel):
 class BestReplyRequest(BaseModel):
     reply_id: int
 
+class TopicLockRequest(BaseModel):
+    is_locked: bool
+
+
 topics_router = APIRouter(prefix="/topics")
 
 @topics_router.get("/",response_model=list[Topic])
@@ -114,6 +118,10 @@ def create_reply(topic_id: int, reply_data: ReplyCreate, u_token: str = Header()
     if not topics_service.get_by_id(topic_id):
         return BadRequest(f"Topic with ID '{topic_id}' not found.")
 
+    topic = topics_service.get_by_id(topic_id)
+    if topic.is_locked:
+        return BadRequest("Topic is locked. Cannot accept new replies.")
+
     new_reply = replies_service.create(reply_data, topic_id=topic_id, user_id=user.id)
     if not new_reply:
         return InternalServerError()
@@ -152,3 +160,18 @@ def choose_best_reply(topic_id: int, body: BestReplyRequest, u_token: str = Head
         return BadRequest("Failed to set best reply; please try again.")
 
     return NoContent()
+
+@topics_router.patch("/{id}/lock",response_model=Topic)
+def set_topic_lock(id: int, topic_data: TopicLockRequest, u_token: str = Header()):
+    user = get_user_or_raise_401(u_token)
+    if not user.is_admin:
+        return Unauthorized("Admin access required.")
+
+    topic = topics_service.get_by_id(id)
+    if not topic:
+        return NotFound(f"Topic {id} not found.")
+
+    if not topics_service.set_locked(id, topic_data.is_locked):
+        return BadRequest("Could not update topic lock status.")
+
+    return topics_service.get_by_id(id)
