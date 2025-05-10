@@ -199,11 +199,6 @@ class CreateConversation(BaseModel):
     name: str
     user_ids: list[int] | None = None
 
-class CategoryUserAccess(BaseModel):
-    categories_id: int
-    users_id: int
-    has_right_access: int # 0 or 1
-
 class VoteCreate(BaseModel):
     type_vote: Literal['up','down']
 

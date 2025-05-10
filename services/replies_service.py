@@ -1,6 +1,4 @@
 from datetime import datetime, timezone
-
-
 from data.database import read_query, insert_query
 from data.models import Reply, ReplyCreate
 

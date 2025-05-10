@@ -2,7 +2,7 @@ from fastapi import APIRouter, Header
 from pydantic import BaseModel
 from common.authenticate import get_user_or_raise_401
 from common.responses import NotFound, Unauthorized, BadRequest
-from data.models import TopicCreate, Category, Topic, CategoryPrivacyUpdate
+from data.models import Category, Topic, CategoryPrivacyUpdate
 from services import topics_service, categories_service
 
 
