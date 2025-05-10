@@ -97,6 +97,10 @@ def create_topic(topic: TopicCreate, u_token: str = Header()):
     if topic.content == "":
         return responses.BadRequest("Content cannot be empty.")
 
+    category = categories_service.get_by_id(topic.categories_id)
+    if category.is_locked:
+        return BadRequest("Category is locked. Cannot create new topics.")
+
     new_topic = topics_service.create(topic, user.id)
     if not new_topic:
         return responses.InternalServerError()
