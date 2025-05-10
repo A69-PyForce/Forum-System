@@ -6,7 +6,7 @@
 - [Table of Contents](#table-of-contents)
 - [Features](#features)
 - [Project Structure](#project-structure)
-- [Database Schema](#database-eer-diagram)
+- [Database Diagram](#database-eer-diagram)
 - [Setup](#setup)
 - [API Overview](#api-overview)
 - [License](#license)
