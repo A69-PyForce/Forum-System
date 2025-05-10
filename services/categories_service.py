@@ -92,3 +92,11 @@ def set_privacy(category_id: int, is_private: bool) -> bool:
     sql = """UPDATE categories SET is_private = ? WHERE id = ?"""
     rows = update_query(sql, (1 if is_private else 0, category_id))
     return rows == 1
+
+def set_locked(category_id: int, locked: bool) -> bool:
+    """
+    Set the is_locked flag on a category.
+    Returns True if exactly one row was updated.
+    """
+    sql = "UPDATE categories SET is_locked = ? WHERE id = ?"
+    return update_query(sql, (1 if locked else 0, category_id)) == 1

@@ -13,6 +13,9 @@ class CategoryTopicResponseModel(BaseModel):
 class CategoryCreate(BaseModel):
     name: str
 
+class CategoryLockRequest(BaseModel):
+    is_locked: bool
+
 categories_router = APIRouter(prefix="/categories")
 
 
@@ -74,4 +77,19 @@ def update_category_privacy(id: int, category_data: CategoryPrivacyUpdate, u_tok
     updated = categories_service.set_privacy(id, category_data.is_private)
     if not updated:
         return BadRequest("Could not update privacy. Try again?")
+    return categories_service.get_by_id(id)
+
+@categories_router.patch("/{id}/lock", response_model=Category)
+def set_category_lock(id: int, data: CategoryLockRequest, u_token: str = Header()):
+    user = get_user_or_raise_401(u_token)
+    if not user.is_admin:
+        return Unauthorized("Admin access required.")
+
+    category = categories_service.get_by_id(id)
+    if not category:
+        return NotFound(f"Category {id} not found.")
+
+    if not categories_service.set_locked(id, data.is_locked):
+        return BadRequest("Could not update lock status.")
+
     return categories_service.get_by_id(id)
