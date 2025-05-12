@@ -97,17 +97,17 @@ All authenticated endpoints require a user token (`u-token`) to be included in t
 ### Users
 User-related endpoints for authentication and profile management:
 
-- `POST /users/login`
+- ***POST*** `/users/login`
   - **Purpose**: Authenticate an existing user.
   - **Request Body**: User credentials (username and password).
   - **Response**: User authentication token (`u-token`).
 
-- `POST /users/register`
+- ***POST*** `/users/register`
   - **Purpose**: Create a new user account.
   - **Request Body**: User registration details (username and password).
   - **Response**: Information about if account is created or not.
 
-- `GET /users/info`
+- ***GET*** `/users/info`
   - **Purpose**: Retrieve current user's profile information.
   - **Authentication**: Required (u-token).
   - **Response**: User profile data.
@@ -115,34 +115,34 @@ User-related endpoints for authentication and profile management:
 ### Conversations
 Endpoints for managing user conversations:
 
-- `GET /conversations/`
+- ***GET*** `/conversations/`
   - **Purpose**: Retrieve user's conversations.
   - **Authentication**: Required (u-token).
   - **Query Parameters**:
     - `contains_user` (optional): Filter conversations by username.
   - **Response**: List of conversation summaries.
 
-- `GET /conversations/{conversation_id}`
+- ***GET*** `/conversations/{conversation_id}`
   - **Purpose**: Get details of a specific conversation.
   - **Authentication**: Required (u-token).
   - **Response**: Full conversation details including messages.
 
-- `POST /conversations/`
+- ***POST*** `/conversations/`
   - **Purpose**: Create a new conversation.
   - **Authentication**: Required (u-token).
   - **Request Body**: Conversation details and initial participants.
 
-- `POST /conversations/{conversation_id}`
+- ***POST*** `/conversations/{conversation_id}`
   - **Purpose**: Add a new message to a conversation.
   - **Authentication**: Required (u-token).
   - **Request Body**: Message content.
 
-- `PUT /conversations/{conversation_id}/users`
+- ***PUT*** `/conversations/{conversation_id}/users`
   - **Purpose**: Add a new user to a conversation.
   - **Authentication**: Required (u-token).
   - **Request Body**: Username to add.
 
-- `DELETE /conversations/{conversation_id}/users`
+- ***DELETE*** `/conversations/{conversation_id}/users`
   - **Purpose**: Remove a user from a conversation.
   - **Authentication**: Required (u-token).
   - **Request Body**: Username to remove.
@@ -150,7 +150,7 @@ Endpoints for managing user conversations:
 ### Topics
 Endpoints for managing topics:
 
-- `GET /topics/`
+- ***GET*** `/topics/`
   - **Purpose**: Retrieve topics with advanced filtering.
   - **Query Parameters**:
     - `sort`: Sorting order ("asc" or "desc").
@@ -158,29 +158,29 @@ Endpoints for managing topics:
     - `search`: Filter topics by title.
   - **Response**: Paginated list of topics.
 
-- `GET /topics/{topic_id}/`
+- ***GET*** `/topics/{topic_id}/`
   - **Purpose**: Retrieve a specific topic with its replies.
   - **Response**: Topic information and associated replies.
 
-- `POST /topics/`
+- ***POST*** `/topics/`
   - **Purpose**: Create a new topic in a specific category.
   - **Authentication**: Required (u-token).
   - **Request Body**: Topic details and category ID.
   - **Response**: Topic information.
 
-- `POST /topics/{topic_id}/replies/`
+- ***POST*** `/topics/{topic_id}/replies/`
   - **Purpose**: Add a reply to a topic.
   - **Authentication**: Required (u-token).
   - **Request Body**: Reply content.
   - **Response**: Created reply content.
 
-- `POST /topics/{topic_id}/replies/{reply_id}/votes/`
+- ***POST*** `/topics/{topic_id}/replies/{reply_id}/votes/`
   - **Purpose**: Vote on a specific reply.
   - **Authentication**: Required (u-token).
   - **Request Body**: Vote type (up/down).
   - **Response**: Created vote type.
 
-- `POST /topics/{topic_id}/best/`
+- ***POST*** `/topics/{topic_id}/best/`
   - **Purpose**: Mark a reply as the best.
   - **Authentication**: Required (u-token).
   - **Request Body**: Reply ID to mark as best.
@@ -192,13 +192,13 @@ Endpoints for managing topics:
   - **Response**: The updated topic.
 
 ### Categories
-Endpoints for managing discussion categories:
+Endpoints for managing topic categories:
 
-- `GET /categories`
+- ***GET*** `/categories`
   - **Purpose**: Retrieve all available categories.
   - **Response**: List of category summaries.
 
-- `GET /categories/{category_id}/topics`
+- ***GET*** `/categories/{category_id}/topics`
   - **Purpose**: Retrieve topics within a specific category.
   - **Query Parameters**:
     - `sort`: Sorting order ("asc" or "desc").
@@ -206,18 +206,18 @@ Endpoints for managing discussion categories:
     - `search`: Filter topics by title.
   - **Response**: Paginated list of topics in the given category.
 
-- `POST /categories/`
+- ***POST*** `/categories/`
   - **Purpose**: Create a new category.
   - **Authentication**: Required (u-token).
   - **Request Body**: Category details.
   - **Response**: The newly created category.
 
-- `PATCH /categories/{category_id}/privacy`
+- ***PATCH*** `/categories/{category_id}/privacy`
   - **Purpose**: Update a category's privacy settings.
   - **Authentication**: Required (u-token).
   - **Request Body**: New privacy status.
 
-- `PATCH /categories/{category_id}/lock`
+- ***PATCH*** `/categories/{category_id}/lock`
   - **Purpose**: Lock a category to prevent new topics in it.
   - **Authentication**: Required (u-token).
   - **Response**: The updated category.
