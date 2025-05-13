@@ -26,7 +26,7 @@ def create_conversation(conversation_name: str, user_ids: list[int]) -> CreateCo
     if not conversation_id: return None
     
     # Update conversations_has_users table
-    query = "INSERT INTO conversations_has_users(conversations_id, users_id) VALUES (?, ?)"
+    query = "INSERT INTO conversations_has_users(conversation_id, user_id) VALUES (?, ?)"
     for id in user_ids: insert_query(query, (conversation_id, id,))
 
     return CreateConversationResponse.from_query_result(id=conversation_id, name=conversation_name, user_ids=user_ids)
@@ -34,13 +34,13 @@ def create_conversation(conversation_name: str, user_ids: list[int]) -> CreateCo
 def add_user_to_conversation(user_id: int, conversation_id: int) -> bool:
     """Add user to a conversation using user id and conversation id. Return bool if successful."""
     
-    query = "INSERT INTO conversations_has_users(users_id, conversations_id) VALUES (?, ?)"
+    query = "INSERT INTO conversations_has_users(user_id, conversation_id) VALUES (?, ?)"
     return update_query(query, (user_id, conversation_id,))
 
 def remove_user_from_conversation(user_id: int, conversation_id: int) -> bool:
     """Remove user from a conversation using user id and conversation id. Return bool if successful."""
     
-    query = "DELETE FROM conversations_has_users WHERE users_id = ? AND conversations_id = ?"
+    query = "DELETE FROM conversations_has_users WHERE user_id = ? AND conversation_id = ?"
     return update_query(query, (user_id, conversation_id,))
      
 def find_conversation_by_id(conversation_id: int) -> Conversation | None:
@@ -54,7 +54,7 @@ def is_user_in_conversation(user_id: int, conversation_id: int) -> bool:
     """Function for authenticating if user belongs to a given conversation."""
     
     query = '''SELECT * FROM conversations_has_users
-               WHERE users_id = ? AND conversations_id = ?'''
+               WHERE user_id = ? AND conversation_id = ?'''
     
     data = read_query(query, (user_id, conversation_id,))
     return True if data else False
@@ -93,10 +93,10 @@ def get_all_conversations(user_ids: set[int]) -> list[AllConversationsResponse] 
     SELECT c.id, c.name
     FROM conversations AS c
     JOIN conversations_has_users AS chu 
-    ON c.id = chu.conversations_id
-    WHERE chu.users_id IN ({placeholders})
+    ON c.id = chu.conversation_id
+    WHERE chu.user_id IN ({placeholders})
     GROUP BY c.id, c.name
-    HAVING COUNT(DISTINCT chu.users_id) = ?"""
+    HAVING COUNT(DISTINCT chu.user_id) = ?"""
                
     # Add the count of user_ids as the last parameter
     params = tuple(user_ids) + (len(user_ids),)
@@ -112,8 +112,8 @@ def get_all_conversations(user_ids: set[int]) -> list[AllConversationsResponse] 
         SELECT u.id, u.username
         FROM users AS u
         JOIN conversations_has_users AS chu
-        ON u.id = chu.users_id
-        WHERE chu.conversations_id = ?
+        ON u.id = chu.user_id
+        WHERE chu.conversation_id = ?
         ORDER BY u.username"""
                                 
         participants_data = read_query(participants_query, (conv_id,))

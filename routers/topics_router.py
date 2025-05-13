@@ -84,7 +84,7 @@ def create_topic(topic: TopicCreate, u_token: str = Header()):
     Create a new topic under a given category, authenticated via header token.
 
     Args:
-        topic (TopicCreate): Pydantic model containing title, content, and categories_id.
+        topic (TopicCreate): Pydantic model containing title, content, and category_id.
         u_token (str): User authentication token passed in HTTP header.
 
     Returns:
@@ -92,7 +92,7 @@ def create_topic(topic: TopicCreate, u_token: str = Header()):
     """
     user = get_user_or_raise_401(u_token)
 
-    if not categories_service.exists(topic.categories_id):
+    if not categories_service.exists(topic.category_id):
         return responses.BadRequest("Category does not exist.")
 
     if topic.title == "":
@@ -101,7 +101,7 @@ def create_topic(topic: TopicCreate, u_token: str = Header()):
     if topic.content == "":
         return responses.BadRequest("Content cannot be empty.")
 
-    category = categories_service.get_by_id(topic.categories_id)
+    category = categories_service.get_by_id(topic.category_id)
     if category.is_locked:
         return BadRequest("Category is locked. Cannot create new topics.")
 
@@ -135,7 +135,7 @@ def vote_reply(topic_id: int, reply_id: int, vote_data: VoteCreate, u_token: str
     if not topics_service.get_by_id(topic_id):
         return BadRequest(f"Topic {topic_id} not found.")
 
-    new_vote = votes_service.vote(reply_id=reply_id, users_id=user.id, type_vote=vote_data.type_vote)
+    new_vote = votes_service.vote(reply_id=reply_id, user_id=user.id, type_vote=vote_data.type_vote)
     if not new_vote:
         return InternalServerError()
 

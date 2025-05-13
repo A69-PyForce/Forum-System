@@ -37,16 +37,16 @@ def topics_by_category(
     """
     if search is None:
         sql = """
-        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
         FROM topics
-        WHERE categories_id = ?"""
+        WHERE category_id = ?"""
         params: tuple = (category_id,)
 
     else:
         sql = """
-        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
         FROM topics
-        WHERE categories_id = ?
+        WHERE  = ?
         AND title LIKE ?"""
         params = (category_id, f"%{search}%")
 

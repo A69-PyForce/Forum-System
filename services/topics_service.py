@@ -16,13 +16,13 @@ def all(search: str = None, *, limit: int = None, offset: int = None):
     """
     if search is None:
         query = """
-        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
         FROM topics"""
         params: tuple = ()
 
     else:
         query = """
-        SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
         FROM topics
         WHERE title LIKE ?"""
 
@@ -69,7 +69,7 @@ def get_by_id(id: int):
         Topic | None: The Topic instance if found, else None.
     """
     data = read_query(
-        """SELECT id, title, content, categories_id, user_id, is_locked, best_reply_id
+        """SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
             FROM topics 
             WHERE id = ?""", (id,))
 
@@ -81,15 +81,15 @@ def create(topic: TopicCreate, user_id: int):
     Create a new topic record in the database.
 
     Args:
-        topic (TopicCreate): Model containing title, content, and categories_id.
+        topic (TopicCreate): Model containing title, content, and category_id.
         user_id (int): ID of the user creating the topic.
 
     Returns:
         Topic | None: The newly created Topic instance, or None on failure.
     """
     new_id = insert_query(
-        'INSERT INTO topics(title ,content , categories_id, user_id, is_locked) VALUES(?,?,?,?,?)',
-        (topic.title, topic.content, topic.categories_id, user_id, 0))
+        'INSERT INTO topics(title ,content , category_id, user_id, is_locked) VALUES(?,?,?,?,?)',
+        (topic.title, topic.content, topic.category_id, user_id, 0))
 
     if not new_id:
         return None
@@ -98,7 +98,7 @@ def create(topic: TopicCreate, user_id: int):
         new_id,
         topic.title,
         topic.content,
-        topic.categories_id,
+        topic.category_id,
         user_id,
         0,
         None

@@ -1,7 +1,6 @@
 from pydantic import BaseModel, StringConstraints, field_validator
 from datetime import datetime
-from typing import Annotated, Literal
-
+from typing import Annotated, Literal, Optional
 
 class UserLoginData(BaseModel):
     username: str
@@ -87,7 +86,7 @@ class Topic(BaseModel):
 class TopicCreate(BaseModel):
     title: str
     content: str
-    categories_id: int
+    category_id: int
 
 class ReplyCreate(BaseModel):
     text: str
@@ -113,23 +112,23 @@ class Name(BaseModel):
     name: str
 
 class Message(BaseModel):
-    id: int | None = None # set by db
+    id: Optional[int] = None
     text: str
     conversation_id: int
     sender_id: int
-    created_at: datetime | None = None # set by db
+    created_at: Optional[datetime] = None
     
 class MessageResponse(BaseModel):
     text: str
     username: str
-    date: datetime
+    created_at: datetime
     
     @classmethod
-    def from_query_result(cls, text, username, date):
+    def from_query_result(cls, text, username, created_at):
         return cls(
             text=text,
             username=username,
-            date=date
+            created_at=created_at
         )
         
 class CreateMessage(BaseModel):
@@ -197,7 +196,7 @@ class AllConversationsResponse(BaseModel):
 
 class CreateConversation(BaseModel):
     name: str
-    user_ids: list[int] | None = None
+    user_ids: Optional[list[int]] = None
 
 class VoteCreate(BaseModel):
     type_vote: Literal['up','down']
@@ -205,15 +204,15 @@ class VoteCreate(BaseModel):
 class Vote(BaseModel):
     id: int | None
     reply_id: int
-    users_id: int
+    user_id: int
     type_vote: str
 
     @classmethod
-    def from_query_result(cls, id: int, reply_id: int, users_id: int, type_vote: str) -> "Vote":
+    def from_query_result(cls, id: int, reply_id: int, user_id: int, type_vote: str) -> "Vote":
         return cls(
             id=id,
             reply_id=reply_id,
-            users_id=users_id,
+            user_id=user_id,
             type_vote=type_vote
         )
 

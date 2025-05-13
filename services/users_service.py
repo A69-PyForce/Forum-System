@@ -1,43 +1,8 @@
-import sys
-from pathlib import Path
-
-# Add the parent directory of main-repo to the Python path
-# Allows imports from other folders
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-
 from data.models import User, UserLoginData, UserRegisterData
+from utils.auth_utils import *
 
 # Default db import, will be overriden when injected
 import data.database as db
-
-from jose import jwt, exceptions
-import hashlib
-import json
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# NOTE: Must have a encrypt_key.json file for user tokens.        #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-# Read encryption key from file
-with open ('encrypt_key.json', 'r') as file:
-    _ENCRYPT_KEY = json.load(file)["key"]
-
-def generate_user_token(user: User) -> str | None:
-    """Generates a token from the User object. Returns the token string or None if unsuccessful."""
-    
-    if not isinstance(user, User): return None
-    return jwt.encode({"id": user.id, "username": user.username}, _ENCRYPT_KEY, algorithm='HS256')
-
-def decode_user_token(token: str) -> dict | None:
-    """Decodes a user token using the encryption key. Returns dict: {"id": int, "username": str} or None if unsuccessful."""
-    
-    try: return jwt.decode(token, _ENCRYPT_KEY, algorithms=['HS256'])
-    except exceptions.JWTError: return None 
-
-def hash_user_password(password: str) -> str:
-    """Irreversibly hashes a password from a password string. Returns the generated string."""
-    
-    return hashlib.sha224(password.encode('utf-8')).hexdigest()
 
 def register_user(user: UserRegisterData, test_db = None) -> User | None:
     """Register a User into the database. If successful, returns the User object \n 
