@@ -47,7 +47,7 @@ class User(BaseModel):
         )
 
 class Category(BaseModel):
-    id: int | None
+    id: Optional[int] = None
     name: str
     is_private: int
     is_locked: int
@@ -62,13 +62,13 @@ class Category(BaseModel):
         )
 
 class Topic(BaseModel):
-    id: int | None
+    id: Optional[int] = None
     title: str
     content: str
     category_id: int
     user_id: int
     is_locked: int
-    best_reply_id: int | None = None
+    best_reply_id: Optional[int] = None
 
     @classmethod
     def from_query_result(cls, id: int, title: str, content: str,
@@ -92,7 +92,7 @@ class ReplyCreate(BaseModel):
     text: str
 
 class Reply(BaseModel):
-    id: int | None
+    id: Optional[int] = None
     text: str
     topic_id: int
     user_id: int
@@ -202,7 +202,7 @@ class VoteCreate(BaseModel):
     type_vote: Literal['up','down']
 
 class Vote(BaseModel):
-    id: int | None
+    id: Optional[int] = None
     reply_id: int
     user_id: int
     type_vote: str

@@ -1,0 +1,1218 @@
+{
+	"info": {
+		"_postman_id": "79cd60a4-5f10-404d-b220-5fbf5a08117b",
+		"name": "Forum_System",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43753642",
+		"_collection_link": "https://emanuil-6494318.postman.co/workspace/Emanuil's-Workspace~8efdc1fb-faa4-4a58-8922-204036cada9a/collection/43753642-79cd60a4-5f10-404d-b220-5fbf5a08117b?action=share&source=collection_link&creator=43753642"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "users/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"ivo1\",\r\n    \"password\": \"ivo1\",\r\n    \"is_admin\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"ivo1\",\r\n    \"password\": \"ivo1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "users/info",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/users/info",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Conversations",
+			"item": [
+				{
+					"name": "Create a conversation with user_ids from body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"newww312ww\",\r\n    \"user_ids\": [16]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/conversations",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"conversations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a conversation with user_ids from token and path",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"path paramed\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/conversations?create_with=16",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"conversations"
+							],
+							"query": [
+								{
+									"key": "create_with",
+									"value": "16"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a message in conversation",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"newewadsaa s ads dsa\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/conversations/2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"conversations",
+								"2"
+							]
+						},
+						"description": "Post message in convo"
+					},
+					"response": []
+				},
+				{
+					"name": "Get a conversation with messages",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/conversations/2",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"conversations",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add user to a conversation",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ivo1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/conversations/2/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"conversations",
+								"2",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user from a conversation",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ivo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/conversations/2/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"conversations",
+								"2",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all conversations of user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/conversations",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"conversations"
+							],
+							"query": [
+								{
+									"key": "contains_user",
+									"value": "ivo",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Topics",
+			"item": [
+				{
+					"name": "Get all topics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/topics",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"topics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get topic by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/topics/13",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"topics",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new topic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"New topic :)\",\r\n    \"content\": \"opkfesopfsdopkfdsoipfdiospj\",\r\n    \"category_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/topics",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"topics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create reply under topic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"text\": \"IKR! LOL\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/topics/13/replies",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"topics",
+								"13",
+								"replies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vote a reply under topic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type_vote\": \"up\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/topics/13/replies/1/votes",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"topics",
+								"13",
+								"replies",
+								"1",
+								"votes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Choose best reply under topic",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reply_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/topics/13/best",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"topics",
+								"13",
+								"best"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lock a topic",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"is_locked\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/topics/13/lock",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"topics",
+								"13",
+								"lock"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Create a category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"new category dasdsadas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/categories",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all categories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"new category 319032901013929021309213\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/categories",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get category by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZXZhYTEifQ.hgw0Y5tWG5h8liKY8q9PfuKjnfCv-E95iygfHO-41dI",
+								"description": "name/pass evaa1, noob, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMSJ9.IPL9hkYzzHGT680GS6W4psnJJy4KDZ5IyYwwiFt4xR0",
+								"description": "name/pass emo1, admin, id 16",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZW1vMiJ9.6m3wvp5u3Enu-aVvS8hlJuQf8oyub7bEp1C8C0pZBkE",
+								"description": "name/pass emo2, admin, id17 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/categories/1/topics",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"categories",
+								"1",
+								"topics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update category privacy",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"is_private\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/categories/1/privacy",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"categories",
+								"1",
+								"privacy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set category lock",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTUsInVzZXJuYW1lIjoiZW1vMSJ9.f61jeXTwsXMiOidhkuvcB1KSWp4eLNJTbYgXzHKDhXM",
+								"description": "name/pass emo1, admin, id 15",
+								"type": "text"
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTYsInVzZXJuYW1lIjoiZW1vMiJ9.Y9m_D2OHG6PGsWLINEmrs1KfK6PncFma2uBjIdGRnU4",
+								"description": "name/pass emo2, admin, id16 ",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTcsInVzZXJuYW1lIjoiZXZhYTEifQ.ywx7MIbA4StQiyVGl2XR4Wft9_kFBf20TrIKGaCo2fs",
+								"description": "name/pass evaa1, noob, id 17",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "u-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInVzZXJuYW1lIjoiaXZvMSJ9.40CjZY67WAT0aUrTSgAUnw1MJjCV9tqLZuAgHlKYCjI",
+								"description": "name/pass ivo1, noob, id 18",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"is_locked\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/categories/1/lock",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"categories",
+								"1",
+								"lock"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

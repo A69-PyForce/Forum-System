@@ -5,9 +5,6 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
 -- Schema forum_system_db
 -- -----------------------------------------------------
 
@@ -131,12 +128,12 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`topics` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NOT NULL,
   `content` TEXT NOT NULL,
-  `categories_id` INT(11) NOT NULL,
+  `category_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `is_locked` TINYINT(4) NOT NULL,
   `best_reply_id` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `fk_topics_categories_idx` (`categories_id` ASC) VISIBLE,
+  INDEX `fk_topics_categories_idx` (`category_id` ASC) VISIBLE,
   INDEX `fk_topics_users1_idx` (`user_id` ASC) VISIBLE,
   INDEX `fk_topics_best_reply` (`best_reply_id` ASC) VISIBLE,
   CONSTRAINT `fk_topics_best_reply`
@@ -145,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`topics` (
     ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_topics_categories`
-    FOREIGN KEY (`categories_id`)
+    FOREIGN KEY (`category_id`)
     REFERENCES `forum_system_db`.`categories` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -163,12 +160,11 @@ AUTO_INCREMENT = 13;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `text` VARCHAR(45) NULL DEFAULT NULL,
+  `text` VARCHAR(45) NOT NULL,
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `text_UNIQUE` (`text` ASC) VISIBLE,
   INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
   INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,
   CONSTRAINT `fk_replies_topics1`
