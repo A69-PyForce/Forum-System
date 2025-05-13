@@ -14,18 +14,41 @@ load_dotenv()
 _ENCRYPT_KEY = os.getenv("ENCRYPT_KEY")
 
 def generate_user_token(user: User) -> str | None:
-    """Generates a token from the User object. Returns the token string or None if unsuccessful."""
-    
+    """
+    Generate a JWT token from a User object.
+
+    Args:
+        user (User): The user object to encode.
+
+    Returns:
+        str: The generated JWT token as a string if successful.
+        None: If the input is not a valid User object.
+    """
     if not isinstance(user, User): return None
     return jwt.encode({"id": user.id, "username": user.username}, _ENCRYPT_KEY, algorithm='HS256')
 
 def decode_user_token(token: str) -> dict | None:
-    """Decodes a user token using the encryption key. Returns dict: {"id": int, "username": str} or None if unsuccessful."""
-    
+    """
+    Decode a JWT user token using the encryption key.
+
+    Args:
+        token (str): The JWT token string.
+
+    Returns:
+        dict: A dictionary with user data ({"id": int, "username": str}) if decoding is successful.
+        None: If decoding fails or the token is invalid.
+    """
     try: return jwt.decode(token, _ENCRYPT_KEY, algorithms=['HS256'])
     except exceptions.JWTError: return None 
 
 def hash_user_password(password: str) -> str:
-    """Irreversibly hashes a password from a password string. Returns the generated string."""
-    
+    """
+    Irreversibly hash a password string using the SHA-224 algorithm.
+
+    Args:
+        password (str): The plain text password.
+
+    Returns:
+        str: The hashed password as a hexadecimal string.
+    """
     return hashlib.sha224(password.encode('utf-8')).hexdigest()

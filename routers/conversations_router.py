@@ -29,9 +29,16 @@ conversation_router = APIRouter(prefix='/conversations')
 # -----------------------------------------------------------------------------
 
 @conversation_router.get('/')
-def get_all_conversations(contains_user: str | None = None, u_token: str = Header()) -> list[AllConversationsResponse]:
+def get_all_conversations(contains_user: str | None = None, u_token: str = Header()) -> responses.NotFound | list[AllConversationsResponse]:
+    """
+    Retrieve paginated list of conversations with optional filtering.
+    Args:
+        contains_user (str | None): Query parameter for filtering conversations that contain the user (via username).
+    Returns:
+        list[AllConversationsResponse]: The newly created AllConversationsResponse model, or NotFound.
+    """
     
-    # List for filtering conversations
+    # Set for filtering conversations
     user_ids = set()
     
     # Validate user token
@@ -50,8 +57,15 @@ def get_all_conversations(contains_user: str | None = None, u_token: str = Heade
     return conversations
 
 @conversation_router.get('/{conversation_id}')
-def get_conversation(conversation_id: int, u_token: str = Header()) -> ConversationResponse:
-    
+def get_conversation(conversation_id: int, u_token: str = Header()) -> responses.NotFound | ConversationResponse:
+    """
+    Retrieve a conversation with a given id.
+    Args:
+        conversation_id (int): ID of the conversation.
+        u_token (str): User authentication token from header.
+    Returns:
+        ConversationResponse: The newly created ConversationResponse model, or NotFound.
+    """
     # Validate input params
     _generic_validator(u_token, conversation_id)
     
@@ -66,8 +80,18 @@ def get_conversation(conversation_id: int, u_token: str = Header()) -> Conversat
 # -----------------------------------------------------------------------------
 
 @conversation_router.post('/')
-def create_conversation(conv_data: CreateConversation, u_token = Header(), create_with: int | None = None) -> CreateConversationResponse:
-    
+def create_conversation(conv_data: CreateConversation, u_token = Header(), create_with: int | None = None) -> responses.NotFound | responses.BadRequest | conversation_service.CreateConversationResponse:
+    """
+    Create a new conversation with the given name and participants.
+
+    Args:
+        conv_data (CreateConversation): Data for the new conversation (name, user_ids).
+        u_token (str): User authentication token from header.
+        create_with (int | None): Optional user ID to add as participant.
+
+    Returns:
+        CreateConversationResponse | NotFound | BadRequest: The created conversation or error response.
+    """
     auth_user = authenticate.get_user_or_raise_401(u_token)
     
     # Create a set of user ids
@@ -87,8 +111,18 @@ def create_conversation(conv_data: CreateConversation, u_token = Header(), creat
     return conversation
 
 @conversation_router.post('/{conversation_id}')
-def create_message_in_conversation(conversation_id: int, message_data: CreateMessage, u_token: str = Header()):
-    
+def create_message_in_conversation(conversation_id: int, message_data: CreateMessage, u_token: str = Header()) -> responses.Created | responses.InternalServerError:
+    """
+    Add a new message to a conversation.
+
+    Args:
+        conversation_id (int): ID of the conversation.
+        message_data (CreateMessage): Message content.
+        u_token (str): User authentication token from header.
+
+    Returns:
+        Created | InternalServerError: Success or error response.
+    """
     # Validate input params
     auth_user, _ = _generic_validator(u_token, conversation_id)
     
@@ -104,8 +138,18 @@ def create_message_in_conversation(conversation_id: int, message_data: CreateMes
 # -----------------------------------------------------------------------------
 
 @conversation_router.put('/{conversation_id}/users')
-def add_user_to_conversation(conversation_id: int, username: Name, u_token: str = Header()):
-    
+def add_user_to_conversation(conversation_id: int, username: Name, u_token: str = Header()) -> responses.NotFound | responses.BadRequest | responses.Created | responses.InternalServerError:
+    """
+    Add a user to a conversation by username.
+
+    Args:
+        conversation_id (int): ID of the conversation.
+        username (Name): Username to add.
+        u_token (str): User authentication token from header.
+
+    Returns:
+        Created | NotFound | BadRequest | InternalServerError: Success or error response.
+    """
     # Validate input params
     _, conversation = _generic_validator(u_token, conversation_id)
     
@@ -128,8 +172,18 @@ def add_user_to_conversation(conversation_id: int, username: Name, u_token: str 
 # -----------------------------------------------------------------------------
 
 @conversation_router.delete('/{conversation_id}/users')
-def remove_user_from_conversation(conversation_id: int, username: Name, u_token: str = Header()):
-    
+def remove_user_from_conversation(conversation_id: int, username: Name, u_token: str = Header()) -> responses.NotFound | responses.Created | responses.InternalServerError:
+    """
+    Remove a user from a conversation by username.
+
+    Args:
+        conversation_id (int): ID of the conversation.
+        username (Name): Username to remove.
+        u_token (str): User authentication token from header.
+
+    Returns:
+        Created | NotFound | InternalServerError: Success or error response.
+    """
     # Validate input params
     _, conversation = _generic_validator(u_token, conversation_id)
     
