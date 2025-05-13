@@ -1,24 +1,22 @@
 from mariadb.connections import Connection
+from dotenv import load_dotenv
 from mariadb import connect
-import json
+import os
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# NOTE: Must have a db_config.json file for database connection.  #
-# If the file is missing, create it using this template:          #
-#                                                                 #
-# {                                                               #
-#     "user": "",                                                 #
-#     "password": "",                                             #
-#     "host": "",                                                 #
-#     "port": 0,                                                  #
-#     "database": ""                                              #
-# }                                                               #
-#                                                                 #
+# NOTE: Must have a .env file for database connection.            #
+#       Check README for instructions.                            #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# Open db_config.json file.
-with open ('db_config.json', 'r') as file:
-    db_config = json.load(file)
+# Load environment variables from .env file
+load_dotenv()
+db_config = {
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT")),
+    "database": os.getenv("DB_NAME"),
+}
 
 def _get_connection() -> Connection:
     """
@@ -31,14 +29,6 @@ def _get_connection() -> Connection:
         port = db_config["port"],
         database = db_config["database"]
     )
-
-# Initial try to connect to Database
-try:
-    _ = _get_connection()
-    print(f"Database connection on adress '{db_config["host"]}:{db_config["port"]}' successful. Using schema '{db_config["database"]}'.")
-
-except Exception as e:
-    print(e)
     
 def read_query(sql: str, sql_params=()) -> list[tuple]:
     """

@@ -1,18 +1,17 @@
 from jose import jwt, exceptions
+from dotenv import load_dotenv
 from data.models import User
 import hashlib
-import json
+import os
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# NOTE: Must have a encrypt_key.json file for user tokens:        #
-# {                                                               #
-#    "key": "secret_key"                                          #
-# }                                                               #
+# NOTE: Must have a .env file for auth utils.                     #
+#       Check README for instructions.                            #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-# Read encryption key from file
-with open ('encrypt_key.json', 'r') as file:
-    _ENCRYPT_KEY = json.load(file)["key"]
+# Load environment variables from .env file
+load_dotenv()
+_ENCRYPT_KEY = os.getenv("ENCRYPT_KEY")
 
 def generate_user_token(user: User) -> str | None:
     """Generates a token from the User object. Returns the token string or None if unsuccessful."""
