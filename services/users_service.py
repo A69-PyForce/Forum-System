@@ -1,8 +1,5 @@
 import sys
 from pathlib import Path
-from tkinter import N, NO
-
-from annotated_types import T
 
 # Add the parent directory of main-repo to the Python path
 # Allows imports from other folders
