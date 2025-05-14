@@ -99,7 +99,7 @@ class UsersServiceTest(unittest.TestCase):
     
     def test_findUser_byToken_returnsUser_when_userFound(self):
         user = fake_user()
-        token = users_service.generate_user_token(user)
+        token = users_service.encode_user_token(user)
         mock_db = Mock(spec=database)
         mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin)]
         
@@ -109,7 +109,7 @@ class UsersServiceTest(unittest.TestCase):
     
     def test_findUser_byToken_returnsNone_when_userNotFound(self):
         user = fake_user()
-        token = users_service.generate_user_token(user)
+        token = users_service.encode_user_token(user)
         mock_db = Mock(spec=database)
         mock_db.read_query.return_value = []
         
@@ -118,7 +118,7 @@ class UsersServiceTest(unittest.TestCase):
         
     def test_isUserAuthenticated_returnsTrue_when_userFound(self):
         user = fake_user()
-        token = users_service.generate_user_token(user)
+        token = users_service.encode_user_token(user)
         mock_db = Mock(spec=database)
         mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin)]
         
@@ -127,7 +127,7 @@ class UsersServiceTest(unittest.TestCase):
         
     def test_isUserAuthenticated_returnsFalse_when_userNotFound(self):
         user = fake_user()
-        token = users_service.generate_user_token(user)
+        token = users_service.encode_user_token(user)
         mock_db = Mock(spec=database)
         mock_db.read_query.return_value = []
         

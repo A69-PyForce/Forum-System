@@ -25,9 +25,9 @@ class TopicLockRequest(BaseModel):
     is_locked: bool
 
 
-topics_router = APIRouter(prefix="/topics")
+api_topics_router = APIRouter(prefix="/api/topics")
 
-@topics_router.get("/",response_model=list[Topic])
+@api_topics_router.get("/",response_model=list[Topic])
 def get_topics(
     sort: str | None = None,
     sort_by: str | None = None,
@@ -58,7 +58,7 @@ def get_topics(
         return result
 
 
-@topics_router.get("/{id}")
+@api_topics_router.get("/{id}")
 def get_topic_by_id(id: int):
     """
     Retrieve a single topic by its ID along with its replies.
@@ -78,7 +78,7 @@ def get_topic_by_id(id: int):
 
     return TopicResponseModel(topic=topic,replies=replies)
 
-@topics_router.post("/", status_code=201)
+@api_topics_router.post("/", status_code=201)
 def create_topic(topic: TopicCreate, u_token: str = Header()):
     """
     Create a new topic under a given category, authenticated via header token.
@@ -111,7 +111,7 @@ def create_topic(topic: TopicCreate, u_token: str = Header()):
 
     return new_topic
 
-@topics_router.post("/{topic_id}/replies",response_model=Reply, status_code=201)
+@api_topics_router.post("/{topic_id}/replies",response_model=Reply, status_code=201)
 def create_reply(topic_id: int, reply_data: ReplyCreate, u_token: str = Header()):
     user = get_user_or_raise_401(u_token)
 
@@ -128,7 +128,7 @@ def create_reply(topic_id: int, reply_data: ReplyCreate, u_token: str = Header()
 
     return new_reply
 
-@topics_router.post("/{topic_id}/replies/{reply_id}/votes",response_model=Vote)
+@api_topics_router.post("/{topic_id}/replies/{reply_id}/votes",response_model=Vote)
 def vote_reply(topic_id: int, reply_id: int, vote_data: VoteCreate, u_token: str = Header()):
     user = get_user_or_raise_401(u_token)
 
@@ -141,7 +141,7 @@ def vote_reply(topic_id: int, reply_id: int, vote_data: VoteCreate, u_token: str
 
     return new_vote
 
-@topics_router.post("/{topic_id}/best")
+@api_topics_router.post("/{topic_id}/best")
 def choose_best_reply(topic_id: int, body: BestReplyRequest, u_token: str = Header()):
     user = get_user_or_raise_401(u_token)
 
@@ -161,7 +161,7 @@ def choose_best_reply(topic_id: int, body: BestReplyRequest, u_token: str = Head
 
     return NoContent()
 
-@topics_router.patch("/{id}/lock",response_model=Topic)
+@api_topics_router.patch("/{id}/lock",response_model=Topic)
 def set_topic_lock(id: int, topic_data: TopicLockRequest, u_token: str = Header()):
     user = get_user_or_raise_401(u_token)
     if not user.is_admin:

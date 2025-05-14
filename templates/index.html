@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../static/css/styles.css" type="text/css" rel="stylesheet">
+    <title>Forum system index page!!!!!!!!!!!!!!!</title>
+</head>
+
+<body>
+    {% if user %}
+    <div>
+        Welcome, {{ user.username }}
+        <form action="/users/logout" method="post" style="display:inline;">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+    {% else %}
+    <div>
+        <a href="/users/login">Login</a>
+    </div>
+    {% endif %}
+    <h1 class="index-meme-title">*INSERT FANCY FRONTEND DESIGN HERE*</h1>
+    <img src="../static/images/index_meme.png" class="index-meme-image">
+</body>
+
+</html>

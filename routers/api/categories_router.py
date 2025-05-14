@@ -16,10 +16,10 @@ class CategoryCreate(BaseModel):
 class CategoryLockRequest(BaseModel):
     is_locked: bool
 
-categories_router = APIRouter(prefix="/categories")
+api_categories_router = APIRouter(prefix="/api/categories")
 
 
-@categories_router.get('/')
+@api_categories_router.get('/')
 def get_categories():
     """
     Retrieve all categories.
@@ -29,7 +29,7 @@ def get_categories():
     """
     return categories_service.all()
 
-@categories_router.get("/{id}/topics")
+@api_categories_router.get("/{id}/topics")
 def get_category_by_id(
         id: int,
         search: str | None = None,
@@ -51,7 +51,7 @@ def get_category_by_id(
 
     return CategoryTopicResponseModel(category=category, topics=topics)
 
-@categories_router.post("/")
+@api_categories_router.post("/")
 def create_category(category_data: CategoryCreate, u_token: str = Header()):
     user = get_user_or_raise_401(u_token)
     if not user.is_admin:
@@ -64,7 +64,7 @@ def create_category(category_data: CategoryCreate, u_token: str = Header()):
     new_category = categories_service.create(name)
     return new_category
 
-@categories_router.patch("/{id}/privacy", response_model=Category)
+@api_categories_router.patch("/{id}/privacy", response_model=Category)
 def update_category_privacy(id: int, category_data: CategoryPrivacyUpdate, u_token: str = Header()):
     user = get_user_or_raise_401(u_token)
     if not user.is_admin:
@@ -79,7 +79,7 @@ def update_category_privacy(id: int, category_data: CategoryPrivacyUpdate, u_tok
         return BadRequest("Could not update privacy. Try again?")
     return categories_service.get_by_id(id)
 
-@categories_router.patch("/{id}/lock", response_model=Category)
+@api_categories_router.patch("/{id}/lock", response_model=Category)
 def set_category_lock(id: int, data: CategoryLockRequest, u_token: str = Header()):
     user = get_user_or_raise_401(u_token)
     if not user.is_admin:
