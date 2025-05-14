@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../static/css/styles.css" type="text/css" rel="stylesheet">
+    {% from 'macros.html' import load_userdata %}
+    <title>Tech Shop</title>
+</head>
+
+<body>
+    <h1>Login</h1>
+    <div class="grid-form-container">
+        <form action="" method="post">
+            <div>
+                {{ load_userdata(error) }}
+                <fieldset>
+                    <button>Log in</button>
+                </fieldset>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

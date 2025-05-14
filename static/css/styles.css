@@ -1,0 +1,15 @@
+.index-meme-title {
+    text-align: center;
+    background: linear-gradient(to right, red, orange, yellow, green, cyan, blue, violet);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 60px;
+    line-height: 60px;
+}
+
+.index-meme-image {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+}

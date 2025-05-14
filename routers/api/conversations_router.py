@@ -4,7 +4,7 @@ import services.users_service as user_service
 from common import responses, authenticate
 from data.models import *
 
-def _generic_validator(u_token: str, conversation_id: int) -> tuple[User, Conversation]:
+def _generic_validator(u_token: str, conversation_id: int):
     """Helper function for validating that the user from given token belongs to the conversation from the given id."""
     
     # Authenticate and get user from token
@@ -22,14 +22,14 @@ def _generic_validator(u_token: str, conversation_id: int) -> tuple[User, Conver
 
 # ------------------------ CONVERSATIONS ROUTER BEGIN -------------------------
 
-conversation_router = APIRouter(prefix='/conversations')
+api_conversations_router = APIRouter(prefix='/api/conversations')
 
 # -----------------------------------------------------------------------------
 # CONVERSATIONS - GET REQUESTS
 # -----------------------------------------------------------------------------
 
-@conversation_router.get('/')
-def get_all_conversations(contains_user: str | None = None, u_token: str = Header()) -> responses.NotFound | list[AllConversationsResponse]:
+@api_conversations_router.get('/')
+def get_all_conversations(contains_user: str | None = None, u_token: str = Header()):
     """
     Retrieve paginated list of conversations with optional filtering.
     Args:
@@ -56,8 +56,8 @@ def get_all_conversations(contains_user: str | None = None, u_token: str = Heade
     
     return conversations
 
-@conversation_router.get('/{conversation_id}')
-def get_conversation(conversation_id: int, u_token: str = Header()) -> responses.NotFound | ConversationResponse:
+@api_conversations_router.get('/{conversation_id}')
+def get_conversation(conversation_id: int, u_token: str = Header()):
     """
     Retrieve a conversation with a given id.
     Args:
@@ -79,8 +79,8 @@ def get_conversation(conversation_id: int, u_token: str = Header()) -> responses
 # CONVERSATIONS - POST REQUESTS
 # -----------------------------------------------------------------------------
 
-@conversation_router.post('/')
-def create_conversation(conv_data: CreateConversation, u_token = Header(), create_with: int | None = None) -> responses.NotFound | responses.BadRequest | conversation_service.CreateConversationResponse:
+@api_conversations_router.post('/')
+def create_conversation(conv_data: CreateConversation, u_token = Header(), create_with: int | None = None):
     """
     Create a new conversation with the given name and participants.
 
@@ -110,8 +110,8 @@ def create_conversation(conv_data: CreateConversation, u_token = Header(), creat
     if not conversation: return responses.BadRequest("Error creating conversation.")
     return conversation
 
-@conversation_router.post('/{conversation_id}')
-def create_message_in_conversation(conversation_id: int, message_data: CreateMessage, u_token: str = Header()) -> responses.Created | responses.InternalServerError:
+@api_conversations_router.post('/{conversation_id}')
+def create_message_in_conversation(conversation_id: int, message_data: CreateMessage, u_token: str = Header()):
     """
     Add a new message to a conversation.
 
@@ -137,8 +137,8 @@ def create_message_in_conversation(conversation_id: int, message_data: CreateMes
 # CONVERSATIONS - PUT REQUESTS
 # -----------------------------------------------------------------------------
 
-@conversation_router.put('/{conversation_id}/users')
-def add_user_to_conversation(conversation_id: int, username: Name, u_token: str = Header()) -> responses.NotFound | responses.BadRequest | responses.Created | responses.InternalServerError:
+@api_conversations_router.put('/{conversation_id}/users')
+def add_user_to_conversation(conversation_id: int, username: Name, u_token: str = Header()):
     """
     Add a user to a conversation by username.
 
@@ -171,8 +171,8 @@ def add_user_to_conversation(conversation_id: int, username: Name, u_token: str 
 # CONVERSATIONS - DELETE REQUESTS
 # -----------------------------------------------------------------------------
 
-@conversation_router.delete('/{conversation_id}/users')
-def remove_user_from_conversation(conversation_id: int, username: Name, u_token: str = Header()) -> responses.NotFound | responses.Created | responses.InternalServerError:
+@api_conversations_router.delete('/{conversation_id}/users')
+def remove_user_from_conversation(conversation_id: int, username: Name, u_token: str = Header()):
     """
     Remove a user from a conversation by username.
 

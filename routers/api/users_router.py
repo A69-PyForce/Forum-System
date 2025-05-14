@@ -3,10 +3,10 @@ import services.users_service as user_service
 from common import responses, authenticate
 from fastapi import APIRouter, Header
 
-user_router = APIRouter(prefix='/users')
+api_users_router = APIRouter(prefix='/api/users')
 
-@user_router.post('/login')
-def user_login(login_data: UserLoginData) -> responses.BadRequest | str | None:
+@api_users_router.post('/login')
+def user_login(login_data: UserLoginData):
     """
     Authenticate a user and return a token if successful.
 
@@ -21,11 +21,11 @@ def user_login(login_data: UserLoginData) -> responses.BadRequest | str | None:
     user = user_service.login_user(login_data)
     if not user:
         return responses.BadRequest('Invalid login data.')
-    return user_service.generate_user_token(user)
+    return user_service.encode_user_token(user)
     
     
-@user_router.post('/register')
-def user_register(user_data: UserRegisterData) -> responses.BadRequest | responses.Created:
+@api_users_router.post('/register')
+def user_register(user_data: UserRegisterData):
     """
     Register a new user.
 
@@ -43,8 +43,8 @@ def user_register(user_data: UserRegisterData) -> responses.BadRequest | respons
     if not user: responses.BadRequest('Invalid register data.')
     return responses.Created('User created.')
 
-@user_router.get('/info', response_model=User, response_model_exclude={"password"})
-def user_info(u_token: str = Header()) -> User:
+@api_users_router.get('/info', response_model=User, response_model_exclude={"password"})
+def user_info(u_token: str = Header()):
     """
     Retrieve information about the authenticated user.
 

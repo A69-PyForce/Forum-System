@@ -13,9 +13,9 @@ import os
 load_dotenv()
 _ENCRYPT_KEY = os.getenv("ENCRYPT_KEY")
 
-def generate_user_token(user: User) -> str | None:
+def encode_user_token(user: User) -> str | None:
     """
-    Generate a JWT token from a User object.
+    Encode a JWT User token from a User object.
 
     Args:
         user (User): The user object to encode.
@@ -29,7 +29,7 @@ def generate_user_token(user: User) -> str | None:
 
 def decode_user_token(token: str) -> dict | None:
     """
-    Decode a JWT user token using the encryption key.
+    Decode a JWT User token using the encryption key.
 
     Args:
         token (str): The JWT token string.

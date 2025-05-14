@@ -17,17 +17,17 @@ class AuthUtilsTest(unittest.TestCase):
     def test_generate_userToken_returns_correctInstance(self):
         user = fake_user()
         
-        result = auth_utils.generate_user_token(user)
+        result = auth_utils.encode_user_token(user)
         self.assertIsInstance(result, str)
         
     def test_generate_userToken_returns_noneType_when_invalidParams(self):
-        result = auth_utils.generate_user_token(_INVALID_USER)
+        result = auth_utils.encode_user_token(_INVALID_USER)
         self.assertIsNone(result)
         
     def test_decode_userToken_returns_correctDict(self):
         user = fake_user()
         
-        token = auth_utils.generate_user_token(user)
+        token = auth_utils.encode_user_token(user)
         result = auth_utils.decode_user_token(token)
         self.assertEqual(result["id"] == user.id, result["username"] == user.username)
         
