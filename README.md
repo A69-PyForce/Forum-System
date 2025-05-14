@@ -99,15 +99,15 @@ Forum-System/
 
      ```sh
      # ================= PRIVATE MariaDB Connection Params =================
-     DB_USER="your_db_user"
-     DB_PASSWORD="your_db_password"
-     DB_HOST="your_host_address"
-     DB_PORT="your_host_port"
-     DB_NAME="forum_system_db"
+     DB_USER=your_db_user
+     DB_PASSWORD=your_db_password
+     DB_HOST=your_host_address
+     DB_PORT=your_host_port
+     DB_NAME=forum_system_db
      # =====================================================================
 
      # ==================== PRIVATE JWT Encryption Key =====================
-     ENCRYPT_KEY="your_secret_key"
+     ENCRYPT_KEY=your_secret_key
      # =====================================================================
      ```
 
