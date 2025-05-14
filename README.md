@@ -121,29 +121,29 @@ Forum-System/
 
 ### API Endpoints Summary
 
-| Method | Endpoint                                       | Description                      | Auth Required |
-| ------ | ---------------------------------------------- | -------------------------------- | ------------- |
-| POST   | `/users/login`                                 | Authenticate user                | No            |
-| POST   | `/users/register`                              | Register new user                | No            |
-| GET    | `/users/info`                                  | Get current user info            | Yes           |
-| GET    | `/conversations/`                              | List user's conversations        | Yes           |
-| GET    | `/conversations/{conversation_id}`             | Get conversation details         | Yes           |
-| POST   | `/conversations/`                              | Create new conversation          | Yes           |
-| POST   | `/conversations/{conversation_id}`             | Add message to conversation      | Yes           |
-| PUT    | `/conversations/{conversation_id}/users`       | Add user to conversation         | Yes           |
-| DELETE | `/conversations/{conversation_id}/users`       | Remove user from conversation    | Yes           |
-| GET    | `/topics/`                                     | List topics (filter/sort/search) | No            |
-| GET    | `/topics/{topic_id}/`                          | Get topic with replies           | No            |
-| POST   | `/topics/`                                     | Create topic                     | Yes           |
-| POST   | `/topics/{topic_id}/replies/`                  | Add reply to topic               | Yes           |
-| POST   | `/topics/{topic_id}/replies/{reply_id}/votes/` | Vote on a reply                  | Yes           |
-| POST   | `/topics/{topic_id}/best/`                     | Mark reply as best               | Yes           |
-| PATCH  | `/topics/{topic_id}/lock/`                     | Lock topic                       | Yes           |
-| GET    | `/categories`                                  | List categories                  | No            |
-| GET    | `/categories/{category_id}/topics`             | List topics in category          | No            |
-| POST   | `/categories/`                                 | Create category                  | Yes           |
-| PATCH  | `/categories/{category_id}/privacy`            | Update category privacy          | Yes           |
-| PATCH  | `/categories/{category_id}/lock`               | Lock category                    | Yes           |
+| Method | Endpoint                                           | Description                      | Auth Required |
+| ------ | -------------------------------------------------- | -------------------------------- | ------------- |
+| POST   | `/api/users/login`                                 | Authenticate user                | No            |
+| POST   | `/api/users/register`                              | Register new user                | No            |
+| GET    | `/api/users/info`                                  | Get current user info            | Yes           |
+| GET    | `/api/conversations/`                              | List user's conversations        | Yes           |
+| GET    | `/api/conversations/{conversation_id}`             | Get conversation details         | Yes           |
+| POST   | `/api/conversations/`                              | Create new conversation          | Yes           |
+| POST   | `/api/conversations/{conversation_id}`             | Add message to conversation      | Yes           |
+| PUT    | `/api/conversations/{conversation_id}/users`       | Add user to conversation         | Yes           |
+| DELETE | `/api/conversations/{conversation_id}/users`       | Remove user from conversation    | Yes           |
+| GET    | `/api/topics/`                                     | List topics (filter/sort/search) | No            |
+| GET    | `/api/topics/{topic_id}/`                          | Get topic with replies           | No            |
+| POST   | `/api/topics/`                                     | Create topic                     | Yes           |
+| POST   | `/api/topics/{topic_id}/replies/`                  | Add reply to topic               | Yes           |
+| POST   | `/api/topics/{topic_id}/replies/{reply_id}/votes/` | Vote on a reply                  | Yes           |
+| POST   | `/api/topics/{topic_id}/best/`                     | Mark reply as best               | Yes           |
+| PATCH  | `/api/topics/{topic_id}/lock/`                     | Lock topic                       | Yes           |
+| GET    | `/api/categories`                                  | List categories                  | No            |
+| GET    | `/api/categories/{category_id}/topics`             | List topics in category          | No            |
+| POST   | `/api/categories/`                                 | Create category                  | Yes           |
+| PATCH  | `/api/categories/{category_id}/privacy`            | Update category privacy          | Yes           |
+| PATCH  | `/api/categories/{category_id}/lock`               | Lock category                    | Yes           |
 
 ---
 
@@ -155,17 +155,17 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ### Users
 
-#### **POST** `/users/login`
+#### **POST** `/api/users/login`
 - **Purpose:** Authenticate an existing user.
 - **Request Body:** User credentials (username and password).
 - **Response:** User authentication token (`u-token`).
 
-#### **POST** `/users/register`
+#### **POST** `/api/users/register`
 - **Purpose:** Create a new user account.
 - **Request Body:** User credentials (username and password).
 - **Response:** Account creation status.
 
-#### **GET** `/users/info`
+#### **GET** `/api/users/info`
 - **Purpose:** Retrieve current user's profile information.
 - **Authentication:** Required (`u-token`).
 - **Response:** User profile data.
@@ -174,33 +174,33 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ### Conversations
 
-#### **GET** `/conversations/`
+#### **GET** `/api/conversations/`
 - **Purpose:** Retrieve user's conversations.
 - **Authentication:** Required (`u-token`).
 - **Query Parameters:** `contains_user` (optional)
 - **Response:** List of conversation summaries.
 
-#### **GET** `/conversations/{conversation_id}`
+#### **GET** `/api/conversations/{conversation_id}`
 - **Purpose:** Get details of a specific conversation.
 - **Authentication:** Required (`u-token`).
 - **Response:** Conversation details and messages.
 
-#### **POST** `/conversations/`
+#### **POST** `/api/conversations/`
 - **Purpose:** Create a new conversation.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Conversation details and participants.
 
-#### **POST** `/conversations/{conversation_id}`
+#### **POST** `/api/conversations/{conversation_id}`
 - **Purpose:** Add a new message to a conversation.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Message content.
 
-#### **PUT** `/conversations/{conversation_id}/users`
+#### **PUT** `/api/conversations/{conversation_id}/users`
 - **Purpose:** Add a user to a conversation.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Username to add.
 
-#### **DELETE** ` /conversations/{conversation_id}/users`
+#### **DELETE** `/api/conversations/{conversation_id}/users`
 - **Purpose:** Remove a user from a conversation.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Username to remove.
@@ -209,36 +209,36 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ### Topics
 
-#### **GET** `/topics/`
+#### **GET** `/api/topics/`
 - **Purpose:** Retrieve topics with filtering.
 - **Query Parameters:** `sort`, `sort_by`, `search`
 - **Response:** Paginated list of topics.
 
-#### **GET** `/topics/{topic_id}/`
+#### **GET** `/api/topics/{topic_id}/`
 - **Purpose:** Retrieve a specific topic with its replies.
 - **Response:** Topic and replies.
 
-#### **POST** `/topics/`
+#### **POST** `/api/topics/`
 - **Purpose:** Create a new topic in a category.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Topic details and category ID.
 
-#### **POST** `/topics/{topic_id}/replies/`
+#### **POST** `/api/topics/{topic_id}/replies/`
 - **Purpose:** Add a reply to a topic.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Reply content.
 
-#### **POST** `/topics/{topic_id}/replies/{reply_id}/votes/`
+#### **POST** `/api/topics/{topic_id}/replies/{reply_id}/votes/`
 - **Purpose:** Vote on a reply.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Vote type (up/down).
 
-#### **POST** `/topics/{topic_id}/best/`
+#### **POST** `/api/topics/{topic_id}/best/`
 - **Purpose:** Mark a reply as the best.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Reply ID.
 
-#### **PATCH** `/topics/{topic_id}/lock/`
+#### **PATCH** `/api/topics/{topic_id}/lock/`
 - **Purpose:** Lock a topic.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** New locked status.
@@ -247,26 +247,26 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ### Categories
 
-#### **GET** `/categories`
+#### **GET** `/api/categories`
 - **Purpose:** Retrieve all categories.
 - **Response:** List of categories.
 
-#### **GET** `/categories/{category_id}/topics`
+#### **GET** `/api/categories/{category_id}/topics`
 - **Purpose:** Retrieve topics in a category.
 - **Query Parameters:** `sort`, `sort_by`, `search`
 - **Response:** Paginated list of topics.
 
-#### **POST** `/categories/`
+#### **POST** `/api/categories/`
 - **Purpose:** Create a new category.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** Category details.
 
-#### **PATCH** `/categories/{category_id}/privacy`
+#### **PATCH** `/api/categories/{category_id}/privacy`
 - **Purpose:** Update category privacy.
 - **Authentication:** Required (`u-token`).
 - **Request Body:** New privacy status.
 
-#### **PATCH** `/categories/{category_id}/lock`
+#### **PATCH** `/api/categories/{category_id}/lock`
 - **Purpose:** Lock a category.
 - **Authentication:** Required (`u-token`).
 - **Response:** Updated category.
