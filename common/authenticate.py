@@ -11,5 +11,5 @@ def get_user_or_raise_401(u_token: str) -> User:
 
 def get_user_if_token(request: Request) -> User | None:
     """Get User obj from Request cookies or None."""
-    token = request.cookies.get('token')
+    token = request.cookies.get('u-token')
     return find_user_by_token(token)

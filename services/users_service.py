@@ -107,7 +107,9 @@ def find_user_by_token(token: str, test_db = None) -> User | None:
         User: The User object if found.
         None: If not found or token is invalid.
     """
-    _, username = decode_user_token(token).values()
+    result = decode_user_token(token)
+    if not result: return None
+    _, username = result.values()
     return find_user_by_username(username, test_db)
 
 def is_user_authenticated(token: str, test_db = None) -> bool:
