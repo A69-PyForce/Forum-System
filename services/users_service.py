@@ -1,8 +1,21 @@
 from data.models import User, UserLoginData, UserRegisterData
+from mariadb import IntegrityError
 from utils.auth_utils import *
 
 # Default db import, will be overriden when injected
 import data.database as db
+
+def _get_db(test_db = None):
+    """
+    Helper function that gets the database object to use for queries.
+
+    Args:
+        test_db: Optional database object for testing.
+
+    Returns:
+        Database object to use for queries.
+    """
+    return test_db or db
 
 def register_user(user: UserRegisterData, test_db = None) -> User | None:
     """
@@ -14,19 +27,18 @@ def register_user(user: UserRegisterData, test_db = None) -> User | None:
 
     Returns:
         User: The created User object with generated ID if successful.
-        None: If registration failed.
+        None: If registration failed because of duplicate name key.
     """
-    # DB Injection: default db from imports or test_db if param is != None.
-    used_db = test_db or db
+    used_db = _get_db(test_db)
     
     hashed_password = hash_user_password(user.password)
-    generated_id = used_db.insert_query(
-        "INSERT INTO users(username, password_hash, is_admin) VALUES (?, ?, ?)",
-        (user.username, hashed_password, user.is_admin,))
-        
-    if not generated_id: return None
-    return User(id=generated_id, username=user.username, password="", is_admin=user.is_admin)
-
+    try:
+        generated_id = used_db.insert_query(
+            "INSERT INTO users(username, password_hash, is_admin) VALUES (?, ?, ?)",
+            (user.username, hashed_password, user.is_admin,))
+        return User(id=generated_id, username=user.username, password="", is_admin=user.is_admin)
+    except IntegrityError: return None
+    
 def login_user(login_data: UserLoginData, test_db = None) -> User | None:
     """
     Authenticate a user by username and password.
@@ -39,8 +51,7 @@ def login_user(login_data: UserLoginData, test_db = None) -> User | None:
         User: The authenticated User object if credentials are valid.
         None: If authentication fails.
     """
-    # DB Injection: default db from imports or test_db if param is != None.
-    used_db = test_db or db
+    used_db = _get_db(test_db)
     
     hashed_password = hash_user_password(login_data.password)
     query_data = used_db.read_query(
@@ -62,8 +73,7 @@ def find_user_by_username(username: str, test_db = None) -> User | None:
         User: The User object if found.
         None: If not found.
     """
-    # DB Injection: default db from imports or test_db if param is != None.
-    used_db = test_db or db
+    used_db = _get_db(test_db)
     
     user_data = used_db.read_query("SELECT * FROM users WHERE username = ?", (username,))
     return next((User.from_query_result(*row) for row in user_data), None)
@@ -80,8 +90,7 @@ def find_user_by_id(id: int, test_db = None) -> User | None:
         User: The User object if found.
         None: If not found.
     """
-    # DB Injection: default db from imports or test_db if param is != None.
-    used_db = test_db or db
+    used_db = _get_db(test_db)
     
     user_data = used_db.read_query("SELECT * FROM users WHERE id = ?", (id,))
     return next((User.from_query_result(*row) for row in user_data), None)
@@ -112,8 +121,7 @@ def is_user_authenticated(token: str, test_db = None) -> bool:
     Returns:
         bool: True if the token is valid and user exists, False otherwise.
     """
-    # DB Injection: default db from imports or test_db if param is != None.
-    used_db = test_db or db
+    used_db = _get_db(test_db)
     
     decoded = decode_user_token(token)
     if not decoded: return False

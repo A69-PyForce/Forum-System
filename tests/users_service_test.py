@@ -1,9 +1,9 @@
-import unittest
-from unittest.mock import Mock
-from services import users_service
 from data.models import User, UserLoginData, UserRegisterData
+from mariadb import IntegrityError
+from services import users_service
+from unittest.mock import Mock
 from data import database
-
+import unittest
 
 _INVALID_TOKEN = "I am an invalid token :)"
 _INVALID_USER = "I am an invalid user :)"
@@ -38,8 +38,9 @@ class UsersServiceTest(unittest.TestCase):
     def test_registerUser_returnsNone_when_usernameTaken(self):
         user = fake_user()
         mock_db = Mock(spec=database)
-        mock_db.insert_query.return_value = 0
-        
+        # Simulate IntegrityError when username is taken
+        mock_db.insert_query.side_effect = IntegrityError()
+
         register_data = UserRegisterData(username=user.username, password=user.password, is_admin=user.is_admin)
         result = users_service.register_user(register_data, mock_db)
         self.assertIsNone(result)
