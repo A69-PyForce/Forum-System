@@ -49,7 +49,7 @@ def get_all_conversations(contains_user: str | None = None, u_token: str = Heade
     if contains_user:
         user = user_service.find_user_by_username(contains_user)
         if not user: return responses.NotFound(f"No conversations of user '{auth_user.username}' found.")
-        user_ids.add(user.id)
+    user_ids.add(user.id)
     
     conversations = conversation_service.get_all_conversations(user_ids)
     if not conversations: return responses.NotFound(f"No conversations of user '{auth_user.username}' found.")

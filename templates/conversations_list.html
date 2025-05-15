@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversations</title>
+    <link href="../static/css/styles.css" rel="stylesheet">
+    {% from 'macros.html' import load_navbar, load_footer %}
+</head>
+
+<body>
+    {{ load_navbar(get_user(request)) }}
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">Your Conversations</h1>
+        </div>
+
+        <div class="content-grid">
+            <div class="conversations-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">All Conversations</h2>
+                    </div>
+
+                    <form method="get" action="/conversations/" class="filter-form">
+                        <input type="text" name="contains_user" class="filter-input" placeholder="Filter by username"
+                            value="{{ request.query_params.get('contains_user', '') }}">
+                        <button type="submit" class="btn">Filter</button>
+                    </form>
+
+                    {% if conversations %}
+                    <ul class="conversation-list">
+                        {% for conv in conversations %}
+                        <li class="conversation-item">
+                            <a href="/conversations/{{ conv.id }}" class="conversation-link">{{ conv.name }}</a>
+                            <div class="conversation-participants">
+                                <strong>Participants:</strong>
+                                {% for p in conv.participants %}
+                                {{ p.name }}{% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <div class="empty-state">
+                        <p>No conversations found.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="create-container">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Create New</h2>
+                    </div>
+
+                    <form action="/conversations/" method="post" class="create-form">
+                        <div class="form-group">
+                            <label for="conv-name" class="form-label">Conversation Name</label>
+                            <input id="conv-name" name="name" type="text" class="form-input"
+                                placeholder="e.g. Project Team" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="conv-participants" class="form-label">Participant</label>
+                            <input id="conv-participants" name="participants" type="text" class="form-input"
+                                placeholder="Username">
+                        </div>
+
+                        <button type="submit" class="submit-btn">Create Conversation</button>
+                    </form>
+
+                    {% if error %}
+                    <div class="form-error">{{ error }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ load_footer() }}
+</body>
+
+</html>

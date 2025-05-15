@@ -39,7 +39,7 @@ def decode_user_token(token: str) -> dict | None:
         None: If decoding fails or the token is invalid.
     """
     try: return jwt.decode(token, _ENCRYPT_KEY, algorithms=['HS256'])
-    except exceptions.JWTError: return None 
+    except: return None 
 
 def hash_user_password(password: str) -> str:
     """

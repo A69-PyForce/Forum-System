@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request
-from fastapi.templating import Jinja2Templates
 import common.authenticate as authenticate
+from common.template_config import CustomJinja2Templates
 
 home_router = APIRouter(prefix='')
-templates = Jinja2Templates(directory='templates')
+templates = CustomJinja2Templates(directory='templates')
 
 @home_router.get('/')
 def serve_index(request: Request):

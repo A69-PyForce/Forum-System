@@ -20,9 +20,11 @@ app.include_router(api_categories_router, tags=["API - Categories"])
 # =============================== WEB ROUTERS ===============================
 from routers.web.home_router import home_router
 from routers.web.users_router import users_router
+from routers.web.conversations_router import conversations_router
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 app.include_router(home_router, tags=["WEB - Home"])
 app.include_router(users_router, tags=["WEB - Users"])
+app.include_router(conversations_router, tags=["WEB - Conversations"])
 # ============================================================================
 
 if __name__ == "__main__":

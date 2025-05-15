@@ -33,7 +33,12 @@ def serve_register(request: Request):
 @users_router.post('/register')
 def register(request: Request, username: str = Form(...), password: str = Form(...)):
     
-    register_data = UserRegisterData(username=username, password=password, is_admin=0) # is_admin always 0 for now because no field for it
+    try:
+        register_data = UserRegisterData(username=username, password=password, is_admin=0) # is_admin always 0 for now because no field for it
+    except ValueError: return templates.TemplateResponse(request=request, name="register.html", context={
+        "error": f"Password must be at least 4 characters and contain at least 1 letter and 1 number."
+    })
+    
     user = users_service.register_user(register_data)
 
     if user:

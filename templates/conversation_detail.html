@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ conversation.name }}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    {% from 'macros.html' import load_navbar %}
+</head>
+
+<body>
+    {{ load_navbar(get_user(request)) }}
+
+    <div class="main-container">
+        <div class="conversation-header">
+            <h1 class="conversation-title">{{ conversation.name }}</h1>
+        </div>
+
+        <div class="messages-card">
+            <div class="messages">
+                {% if conversation.messages %}
+                {% for msg in conversation.messages %}
+                {% if msg.username == get_user(request).username %}
+                <div class="message" style="background-color: rgba(128, 255, 0, 0.41);">
+                    <div class="message-header">
+                        <span class="sender">{{ msg.username }}</span>
+                        <span class="timestamp">{{ msg.created_at }}</span>
+                    </div>
+                    <div class="text">{{ msg.text }}</div>
+                </div>
+                {% else %}
+                <div class="message" style="background-color: rgba(0, 229, 255, 0.41);">
+                    <div class="message-header">
+                        <span class="sender">{{ msg.username }}</span>
+                        <span class="timestamp">{{ msg.created_at }}</span>
+                    </div>
+                    <div class="text">{{ msg.text }}</div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <h4 class="info-message"> No messages found in this conversation.</h4>
+                {% endif %}
+            </div>
+        </div>
+
+        <form method="post" action="/conversations/{{ conversation.id }}" class="message-form">
+            <input type="text" name="text" class="message-input" placeholder="Type your message..." required>
+            <button type="submit" class="send-btn">Send</button>
+        </form>
+
+        <div class="user-management">
+            <div class="user-card">
+                <div class="user-card-header">
+                    <h3 class="user-card-title">Add User</h3>
+                </div>
+                <form method="post" action="/conversations/{{ conversation.id }}/add_user" class="user-form">
+                    <input type="text" name="username" class="user-input" placeholder="Username" required>
+                    <button type="submit" class="add-btn">Add</button>
+                </form>
+            </div>
+
+            <div class="user-card">
+                <div class="user-card-header">
+                    <h3 class="user-card-title">Remove User</h3>
+                </div>
+                <form method="post" action="/conversations/{{ conversation.id }}/remove_user" class="user-form">
+                    <input type="text" name="username" class="user-input" placeholder="Username" required>
+                    <button type="submit" class="remove-btn">Remove</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

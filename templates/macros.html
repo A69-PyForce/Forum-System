@@ -26,6 +26,29 @@
     <h3 style="color: red;"> Error: {{error}} </h3>
     {% endif %}
     {% endmacro %}
+
+    {% macro load_navbar(user = None) %}
+    <nav class="navbar">
+        <a href="/">Home</a>
+        <a href="/conversations/">Conversations</a>
+        <a href="/categories/">Categories</a>
+        <a href="/topics/">Topics</a>
+        {% if user %}
+        <span style="margin-left:auto; margin-right: 1%;">Welcome, {{ user.username }}</span>
+        <form action="/users/logout" method="post" style="display:inline;">
+            <button type="submit">Logout</button>
+        </form>
+        {% else %}
+        <a href="/users/login" style="margin-left:auto;">Login</a>
+        {% endif %}
+    </nav>
+    {% endmacro %}
+
+    {% macro load_footer() %}
+    <footer style="text-align:center; margin-top:3em; color:#888;">
+        &copy; {{ now().year if now else "2025" }} Forum System &mdash; Built with FastAPI & MariaDB
+    </footer>
+    {% endmacro %}
 </body>
 
 </html>

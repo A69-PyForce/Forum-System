@@ -1,4 +1,5 @@
 from data.database import insert_query, read_query, update_query
+from mariadb import IntegrityError
 from data.models import *
 
 def create_new_message(message_data: Message) -> bool:
@@ -58,7 +59,10 @@ def add_user_to_conversation(user_id: int, conversation_id: int) -> bool:
         bool: True if the user was added successfully, False otherwise.
     """
     query = "INSERT INTO conversations_has_users(user_id, conversation_id) VALUES (?, ?)"
-    return update_query(query, (user_id, conversation_id,))
+    try:
+        return update_query(query, (user_id, conversation_id,))
+    except IntegrityError:
+        return False
 
 def remove_user_from_conversation(user_id: int, conversation_id: int) -> bool:
     """

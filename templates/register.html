@@ -5,22 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../static/css/styles.css" type="text/css" rel="stylesheet">
-    {% from 'macros.html' import load_userdata %}
-    <title>Tech Shop</title>
+    {% from 'macros.html' import load_navbar, load_userdata %}
+    <title>Register</title>
 </head>
 
 <body>
-    <h1>Register</h1>
+    {{ load_navbar(get_user(request)) }}
 
-    <div>
-        <form action="" method="post">
-            <div>
-                {{ load_userdata(error) }}
-                <fieldset>
-                    <button type="submit">Register</button>
-                </fieldset>
+    <div class="login-container">
+        <div class="page-header">
+            <h1 class="page-title">Well met!</h1>
+            <p class="page-subtitle">Register your new account here</p>
+        </div>
+
+        <div class="login-card">
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
             </div>
-        </form>
+            {% endif %}
+
+            <form action="" method="post">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" id="username" name="username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" required>
+                </div>
+
+                <div class="btn-container">
+                    <button type="submit" class="btn-primary">Log In</button>
+                </div>
+            </form>
+
+            <div class="alternative-actions">
+                <p>Already have an account? <a href="/users/login">Login</a></p>
+                <p><a href="/users/register">Forgot your password?</a></p>
+            </div>
+        </div>
     </div>
 </body>
 
