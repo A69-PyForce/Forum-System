@@ -34,7 +34,11 @@
         <a href="/categories/">Categories</a>
         <a href="/topics/">Topics</a>
         {% if user %}
-        <span style="margin-left:auto; margin-right: 1%;">Welcome, {{ user.username }}</span>
+        <a href="/users/info" class="navbar-user-info">
+            <img src="{{ user.avatar_url or '/static/images/default_user_avatar.png' }}" alt="User Avatar"
+                class="navbar-user-avatar">
+            <span>Welcome, {{user.username}}</span>
+        </a>
         <form action="/users/logout" method="post" style="display:inline;">
             <button type="submit">Logout</button>
         </form>

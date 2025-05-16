@@ -10,7 +10,7 @@ import os
 
 # Load environment variables from .env file
 load_dotenv()
-db_config = {
+DB_CONFIG = {
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
     "host": os.getenv("DB_HOST"),
@@ -20,14 +20,14 @@ db_config = {
 
 def _get_connection() -> Connection:
     """
-    Get a database connection with credentials from db_config.json.
+    Get a database connection with credentials from DB_CONFIG.
     """
     return connect(
-        user = db_config["user"],
-        password = db_config["password"],
-        host = db_config["host"],
-        port = db_config["port"],
-        database = db_config["database"]
+        user = DB_CONFIG["user"],
+        password = DB_CONFIG["password"],
+        host = DB_CONFIG["host"],
+        port = DB_CONFIG["port"],
+        database = DB_CONFIG["database"]
     )
     
 def read_query(sql: str, sql_params=()) -> list[tuple]:

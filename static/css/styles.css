@@ -171,6 +171,33 @@ a:hover {
     color: var(--nav-hover);
 }
 
+/* Navbar user info (avatar + username) */
+.navbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.navbar-user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+    margin-right: 1%;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 500;
+}
+
+.navbar-user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--border-color, #ccc);
+    background: #f5f7fa;
+}
+
 /* ====================== */
 /* Cards & Panels        */
 /* ====================== */
@@ -377,6 +404,75 @@ select:focus {
     color: var(--primary-color);
     font-size: 1.8rem;
     margin: 0;
+}
+
+.messages-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.message {
+    border-radius: 8px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    max-width: 70%;
+    min-width: 180px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.message-me {
+    background: #e6ffe6;
+    align-self: flex-end;
+    border: 1.5px solid #80ff00;
+}
+
+.message-other {
+    background: #e6f7ff;
+    align-self: flex-start;
+    border: 1.5px solid #00e5ff;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.3rem;
+}
+
+.message-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1.5px solid var(--border-color, #ccc);
+    background: #f5f7fa;
+}
+
+.sender {
+    font-weight: 600;
+    color: #333;
+}
+
+.timestamp {
+    font-size: 0.85em;
+    color: #888;
+    margin-left: auto;
+}
+
+.text {
+    font-size: 1.05em;
+    color: #222;
+    word-break: break-word;
 }
 
 /* ====================== */
@@ -683,6 +779,7 @@ select:focus {
     border-left: 4px solid var(--info-color);
 }
 
+
 /* ====================== */
 /* Utilities             */
 /* ====================== */
@@ -735,4 +832,124 @@ select:focus {
     .navbar-brand {
         margin-bottom: 0.5rem;
     }
+}
+
+/* ====================== */
+/* User info page         */
+/* ====================== */
+.avatar-upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.user-avatar-large {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color, #ccc);
+    background: #f5f7fa;
+    margin-bottom: 1rem;
+}
+
+.avatar-upload-form {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Highlight the upload form background when a file is selected */
+.avatar-upload-form:has(input[type="file"]:valid):not(:has(input[type="file"]:placeholder-shown)) .custom-file-upload,
+.avatar-upload-form input[type="file"]:focus+.custom-file-upload {
+    background-color: #80ff0069;
+    transition: background 0.2s;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    padding: 6px 16px;
+    cursor: pointer;
+    background: #f0f0f0;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+
+.custom-file-upload:hover {
+    background: #e0e0e0;
+}
+
+.custom-file-upload input[type="file"] {
+    display: none;
+}
+
+.avatar-upload-btn {
+    padding: 6px 18px;
+    background: var(--primary-color, #3b82f6);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.avatar-upload-btn:hover {
+    background: #2563eb;
+}
+
+.avatar-display-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.user-avatar-large {
+    width: 192px;
+    height: 192px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-color, #ccc);
+    background: #f5f7fa;
+}
+
+.account-details {
+    background: #f8fafc;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #555;
+    font-size: 1.05rem;
+}
+
+.detail-value {
+    color: #222;
+    font-size: 1.05rem;
+    font-family: Arial, Helvetica, sans-serif, monospace;
 }

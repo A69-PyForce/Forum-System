@@ -1,9 +1,33 @@
-from fastapi import APIRouter, Request, Form
-from fastapi.responses import RedirectResponse
-from common.template_config import CustomJinja2Templates
+import os
+import io
+import traceback
+import cloudinary
+from PIL import Image
+import cloudinary.uploader
+from dotenv import load_dotenv
 from services import users_service
 import utils.auth_utils as auth_utils
+import common.authenticate as authenticate
+from fastapi.responses import RedirectResponse
 from data.models import UserLoginData, UserRegisterData
+from common.template_config import CustomJinja2Templates
+from fastapi import APIRouter, Request, Form, File, UploadFile
+
+# Load Claudinary config from .env
+load_dotenv()
+CLDNR_CONFIG = {
+    "cldnr_cloud_name": os.getenv("CLDNR_CLOUD_NAME"),
+    "cldnr_api_key": os.getenv("CLDNR_API_KEY"),
+    "cldnr_api_secret": os.getenv("CLDNR_API_SECRET")
+}
+if all(CLDNR_CONFIG.values()) != None:
+    cloudinary.config(
+        cloud_name=CLDNR_CONFIG["cldnr_cloud_name"],
+        api_key=CLDNR_CONFIG["cldnr_api_key"],
+        api_secret=CLDNR_CONFIG["cldnr_api_secret"]
+    )
+else:
+    CLDNR_CONFIG = None
 
 users_router = APIRouter(prefix="/users")
 templates = CustomJinja2Templates(directory='templates')
@@ -35,8 +59,9 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
     
     try:
         register_data = UserRegisterData(username=username, password=password, is_admin=0) # is_admin always 0 for now because no field for it
-    except ValueError: return templates.TemplateResponse(request=request, name="register.html", context={
-        "error": f"Password must be at least 4 characters and contain at least 1 letter and 1 number."
+    except ValueError as e: 
+        return templates.TemplateResponse(request=request, name="register.html", context={
+        "error": "Password must be at least 4 characters and contain at least 1 letter and 1 number."
     })
     
     user = users_service.register_user(register_data)
@@ -51,3 +76,47 @@ def logout():
     response = RedirectResponse(url='/', status_code=302)
     response.delete_cookie("u-token")
     return response
+
+@users_router.get('/info')
+def info(request: Request):
+    user = authenticate.get_user_if_token(request)
+    if not user:
+        return RedirectResponse("/users/login", status_code=302)
+    
+    user.password = "" # Hide password hash
+    return templates.TemplateResponse(request=request, name="user_info.html", context={"user": user})
+
+@users_router.post('/avatar')
+def change_avatar(request: Request, file: UploadFile = File(...)):
+    user = authenticate.get_user_if_token(request)
+    if not user:
+        return RedirectResponse("/users/login", status_code=302)
+    
+    if CLDNR_CONFIG:
+        
+        try:
+            # Read uploader image
+            image_contents = file.file.read()
+            
+            # Process image with Pillow & resize
+            image = Image.open(io.BytesIO(image_contents))
+            resized_image = image.resize((192, 192))
+            
+            # Save resized image to buffer
+            buffer = io.BytesIO()
+            resized_image.save(buffer, format=image.format or "JPEG")
+            buffer.seek(0)
+            
+            # Upload image with Cloudinary and get the generated URL
+            result = cloudinary.uploader.upload(buffer, folder="forum-system-user-avatars")
+            image_url = result["secure_url"]
+            
+            # Set avatar url in DB and redirect to same page to refresh
+            users_service.update_user_avatar_url(user.id, image_url)
+            return RedirectResponse("/users/info", status_code=302)
+        
+        except Exception:
+            print(traceback.format_exc())
+            pass
+    
+    return templates.TemplateResponse(request=request, name="user_info.html", context={"user": user, "error": "Avatar service unavailable."})

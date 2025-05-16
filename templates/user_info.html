@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} info</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    {% from 'macros.html' import load_navbar, load_footer %}
+</head>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.querySelector('.avatar-upload-form input[type="file"]');
+        const label = document.querySelector('.avatar-upload-form .custom-file-upload');
+        if (fileInput && label) {
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files.length > 0) {
+                    label.style.backgroundColor = '#80ff0069';
+                } else {
+                    label.style.backgroundColor = '';
+                }
+            });
+        }
+    });
+</script>
+
+<body>
+    {{ load_navbar(get_user(request)) }}
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">{{ user.username }}</h1>
+            <p class="page-subtitle">User Profile</p>
+        </div>
+
+        <div class="card" style="max-width: 500px; margin: 0 auto;">
+            <div class="card-header">
+                <h2 class="card-title">Account Details</h2>
+            </div>
+
+            <div class="avatar-display-section">
+                <img src="{{ user.avatar_url or '/static/images/default_user_avatar.png' }}" alt="User Avatar"
+                    class="user-avatar-large">
+            </div>
+
+            <div class="avatar-upload-section">
+                <form action="/users/avatar" method="post" enctype="multipart/form-data" class="avatar-upload-form">
+                    <label class="custom-file-upload">
+                        <input type="file" name="file" accept="image/*" required>
+                        Choose Image
+                    </label>
+                    <button type="submit" class="avatar-upload-btn">Upload Avatar</button>
+                </form>
+            </div>
+
+            {% if error %}
+            <h4 class="error-message"> {{ error }}</h4>
+            {% endif %}
+
+            <div class="account-details">
+                <div class="detail-row">
+                    <span class="detail-label">Username:</span>
+                    <span class="detail-value">{{ user.username }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Role:</span>
+                    <span class="detail-value">
+                        {% if user.is_admin == 1 %}Admin{% else %}Member{% endif %}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Joined:</span>
+                    <span class="detail-value">{{ user.created_at or '—' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ load_footer() }}
+</body>
+
+</html>

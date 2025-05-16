@@ -109,6 +109,12 @@ Forum-System/
      # ==================== PRIVATE JWT Encryption Key =====================
      ENCRYPT_KEY=your_secret_key
      # =====================================================================
+
+     # =============== PRIVATE Cloudinary Config (Optional) ================
+     CLDNR_CLOUD_NAME=your_cloudinary_cloud_name
+     CLDNR_API_KEY=your_cloudinary_api_key
+     CLDNR_API_SECRET=your_cloudinary_api_secret
+     # =====================================================================
      ```
 
    - Import the schema from `db_schema.sql` (located in the `data` folder) into your running MariaDB server.

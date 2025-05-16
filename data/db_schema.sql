@@ -7,10 +7,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema forum_system_db
 -- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema forum_system_db
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `forum_system_db` ;
 USE `forum_system_db` ;
 
@@ -34,10 +30,12 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`users` (
   `username` VARCHAR(45) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
   `is_admin` TINYINT(4) NOT NULL,
+  `avatar_url` VARCHAR(255) NULL DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_name_UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 15;
+AUTO_INCREMENT = 16;
 
 
 -- -----------------------------------------------------
@@ -160,10 +158,10 @@ AUTO_INCREMENT = 13;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `text` VARCHAR(45) NOT NULL,
+  `text` VARCHAR(255) NOT NULL,
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   INDEX `fk_replies_topics1_idx` (`topic_id` ASC) VISIBLE,
   INDEX `fk_replies_users1_idx` (`user_id` ASC) VISIBLE,

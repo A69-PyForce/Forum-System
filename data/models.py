@@ -8,8 +8,9 @@ class UserLoginData(BaseModel):
 
 class UserRegisterData(BaseModel):
     
-     # Username - Only letters, numbers and no special characters.
-    username: Annotated[str, StringConstraints(pattern=r'^[a-zA-Z0-9]+$')]
+    # Username - Only letters, numbers and no special characters.
+    # username: Annotated[str, StringConstraints(pattern=r'^[a-zA-Z0-9]+$')]
+    username: str
     
     # Password - Must be at least 4 characters and contain at least 1 letter and 1 number.
     password: str
@@ -36,14 +37,18 @@ class User(BaseModel):
     username: str
     password: str
     is_admin: int
+    avatar_url: Optional[str] = None
+    created_at: Optional[datetime] = None
     
     @classmethod
-    def from_query_result(cls, id, username, password, is_admin):
+    def from_query_result(cls, id, username, password, is_admin, avatar_url, created_at):
         return cls(
             id=id,
             username=username,
             password=password,
-            is_admin=is_admin
+            is_admin=is_admin,
+            avatar_url=avatar_url,
+            created_at=created_at
         )
 
 class Category(BaseModel):
