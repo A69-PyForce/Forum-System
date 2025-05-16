@@ -26,10 +26,15 @@ app.include_router(api_categories_router, tags=["API - Categories"])
 from routers.web.home_router import home_router
 from routers.web.users_router import users_router
 from routers.web.conversations_router import conversations_router
+from routers.web.topics_router import topic_router
+from routers.web.categories_router import category_router
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 app.include_router(home_router, tags=["WEB - Home"])
 app.include_router(users_router, tags=["WEB - Users"])
 app.include_router(conversations_router, tags=["WEB - Conversations"])
+app.include_router(topic_router, tags=["WEB - Topics"])
+app.include_router(category_router, tags=["WEB - Categories"])
+
 # ============================================================================
 
 if __name__ == "__main__":

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Topic</title>
+</head>
+<body>
+    {% from 'macros.html' import load_navbar %}
+    {{ load_navbar(user) }}
+
+    <h1>Create New Topic</h1>
+
+    <form action="/topics/create" method="post">
+        <fieldset>
+            <input name="title" type="text" placeholder="Title" required>
+        </fieldset>
+        <fieldset>
+            <textarea name="content" placeholder="Content" required></textarea>
+        </fieldset>
+        <fieldset>
+            <select name="category_id" required>
+                <option disabled selected>Select a category</option>
+                {% for c in categories.values() %}
+                    <option value="{{ c.id }}">{{ c.name }}</option>
+                {% endfor %}
+            </select>
+        </fieldset>
+        <button type="submit">Create</button>
+    </form>
+
+    <a href="/topics">← Back to all topics</a>
+</body>
+</html>
