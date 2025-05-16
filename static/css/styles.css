@@ -261,6 +261,33 @@ button[type="submit"]:hover {
     background-color: #c82333;
 }
 
+.vote-box {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+    margin: 0.5em 0;
+}
+
+.vote-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 0.4em 0.6em;
+    border-radius: 5px;
+    font-size: 0.95em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    transition: background-color 0.2s ease;
+}
+
+.vote-button:hover {
+    background-color: #e0e0e0;
+}
+
+.vote-button span {
+    font-weight: bold;
+}
 /* ====================== */
 /* Forms                 */
 /* ====================== */

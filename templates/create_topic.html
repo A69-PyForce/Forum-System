@@ -2,32 +2,42 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Topic</title>
+    <title>Create New Topic</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 <body>
     {% from 'macros.html' import load_navbar %}
     {{ load_navbar(user) }}
 
-    <h1>Create New Topic</h1>
+    <div class="page-container">
+        <h1 class="page-title">📝 Create New Topic</h1>
 
-    <form action="/topics/create" method="post">
-        <fieldset>
-            <input name="title" type="text" placeholder="Title" required>
-        </fieldset>
-        <fieldset>
-            <textarea name="content" placeholder="Content" required></textarea>
-        </fieldset>
-        <fieldset>
-            <select name="category_id" required>
-                <option disabled selected>Select a category</option>
-                {% for c in categories.values() %}
-                    <option value="{{ c.id }}">{{ c.name }}</option>
-                {% endfor %}
-            </select>
-        </fieldset>
-        <button type="submit">Create</button>
-    </form>
+        <div class="card">
+            <form action="/topics/create" method="post" class="create-form">
+                <div class="form-group">
+                    <input type="text" name="title" placeholder="Title" class="form-input" required>
+                </div>
 
-    <a href="/topics">← Back to all topics</a>
+                <div class="form-group">
+                    <textarea name="content" placeholder="Content" class="form-input" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <select name="category_id" class="form-input" required>
+                        <option value="" disabled selected>Select a category</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat.id }}">{{ cat.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="submit-btn">➕ Create</button>
+            </form>
+
+            <div class="back-link">
+                <a href="/topics">← Back to all topics</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

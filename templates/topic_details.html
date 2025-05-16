@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ topic.title }}</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    {% from 'macros.html' import load_navbar %}
+    {{ load_navbar(user) }}
+
+    <div class="page-container">
+        <h1 class="page-title">
+            {{ topic.title }}
+            {% if topic.is_locked %}
+                <span class="status-lock">[Locked]</span>
+            {% endif %}
+        </h1>
+
+        <p class="topic-content">{{ topic.content }}</p>
+
+        {% if is_admin %}
+        <div class="admin-controls">
+            <form method="post" action="/topics/{{ topic.id }}/toggle-lock">
+                <button class="btn btn-danger" type="submit">
+                    {% if topic.is_locked %}🔓 Unlock Topic{% else %}🔒 Lock Topic{% endif %}
+                </button>
+            </form>
+        </div>
+        {% endif %}
+
+        <hr>
+
+        <h2>Replies</h2>
+
+        {% if replies %}
+            <ul class="reply-list">
+                {% for reply in replies %}
+                <li class="reply-item">
+                    <div class="reply-meta">
+                        <p class="reply-text">{{ reply.text }}</p>
+                        <small>
+                            By <strong>{{ reply.username }}</strong>
+                            — <em>{{ reply.created_at.strftime("%Y-%m-%d %H:%M") }}</em>
+                        </small>
+                    </div>
+
+                    <div class="vote-box">
+                        {% set reply_votes = votes.get(reply.id, {'up': 0, 'down': 0}) %}
+                        <form method="post" action="/topics/{{ topic.id }}/vote/{{ reply.id }}">
+                            <input type="hidden" name="type_vote" value="up">
+                            <button class="vote-button">👍 <span class="vote-count">{{ reply_votes.up }}</span></button>
+                        </form>
+
+                        <form method="post" action="/topics/{{ topic.id }}/vote/{{ reply.id }}">
+                            <input type="hidden" name="type_vote" value="down">
+                            <button class="vote-button">👎 <span class="vote-count">{{ reply_votes.down }}</span></button>
+                        </form>
+                    </div>
+
+                    {% if topic.best_reply_id == reply.id %}
+                        <span class="badge-success">✅ Best Reply</span>
+                    {% elif user and user.id == topic.user_id and not topic.best_reply_id %}
+                        <form method="post" action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}">
+                            <button class="btn btn-success" type="submit">✅ Mark as Best Reply</button>
+                        </form>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No replies yet. Be the first to reply!</p>
+        {% endif %}
+
+        <hr>
+
+        {% if user and not topic.is_locked %}
+        <div class="reply-form">
+            <h3>Post a Reply</h3>
+            <form method="post" action="/topics/{{ topic.id }}/replies">
+                <textarea name="content" placeholder="Your reply..." required></textarea>
+                <button class="btn btn-primary" type="submit">Reply</button>
+            </form>
+        </div>
+        {% elif topic.is_locked %}
+            <p style="color: gray;">This topic is locked. Replies are disabled.</p>
+        {% else %}
+            <p><a href="/login">Login</a> to reply to this topic.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

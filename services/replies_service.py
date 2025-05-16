@@ -4,21 +4,15 @@ from data.models import Reply, ReplyCreate
 
 
 def get_by_topic(topics_id: int):
+    sql = """
+    SELECT r.id, r.text, r.topic_id, r.user_id, r.created_at, u.username
+    FROM replies r
+    JOIN users u ON r.user_id = u.id
+    WHERE r.topic_id = ?
+    ORDER BY r.created_at ASC
     """
-    Retrieve all replies for a given topic ID.
-
-    Args:
-        topics_id (int): The ID of the topic whose replies are fetched.
-
-    Returns:
-        Generator[Reply]: A generator yielding Reply instances.
-    """
-    data = read_query(
-        '''SELECT id, text, topic_id, user_id, created_at
-            FROM replies 
-            WHERE topic_id = ?''', (topics_id,))
-
-    return (Reply.from_query_result(*row) for row in data)
+    data = read_query(sql, (topics_id,))
+    return [Reply.from_query_result(*row) for row in data]
 
 def create(reply_data: ReplyCreate, user_id: int, topic_id: int):
     sql = """INSERT INTO replies ( text, topic_id, user_id, created_at) VALUES (?, ?, ?, ?)"""
