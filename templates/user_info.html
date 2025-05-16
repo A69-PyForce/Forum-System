@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} info</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    {% from 'macros.html' import load_navbar, load_footer %}
+</head>
+
+<body>
+    {{ load_navbar(get_user(request)) }}
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1 class="page-title">{{ user.username }}</h1>
+            <p class="page-subtitle">User Profile</p>
+        </div>
+
+        <div class="card" style="max-width: 500px; margin: 0 auto;">
+            <div class="card-header">
+                <h2 class="card-title">Account Details</h2>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem;">
+                <img src="{{ user.icon_url or 'https://res.cloudinary.com/dnp3vqe07/image/upload/default_user_avatar_jqg2vx.png' }}"
+                    alt="User Avatar"
+                    style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); background: #f5f7fa;">
+            </div>
+            <form action="/users/avatar" method="post" style="display:inline;">
+                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem;">
+                    <button type="submit">Change Avatar</button>
+                </div>
+            </form>
+            <table style="width:100%; border-collapse:collapse;">
+                <tr>
+                    <td style="font-weight:500; padding:0.5rem 0;">Username:</td>
+                    <td style="padding:0.5rem 0;">{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:500; padding:0.5rem 0;">Role:</td>
+                    {% if user.is_admin == 1 %}
+                    <td style="padding:0.5rem 0;">Admin</td>
+                    {% else %}
+                    <td style="padding:0.5rem 0;">Member</td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td style="font-weight:500; padding:0.5rem 0;">Joined:</td>
+                    <td style="padding:0.5rem 0;">{{ user.created_at or '—' }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    {{ load_footer() }}
+</body>
+
+</html>

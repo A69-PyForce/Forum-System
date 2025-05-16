@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse
 from common.template_config import CustomJinja2Templates
+import common.authenticate as authenticate
 from services import users_service
 import utils.auth_utils as auth_utils
-from data.models import UserLoginData, UserRegisterData
+from data.models import UserLoginData, UserRegisterData, User
 
 users_router = APIRouter(prefix="/users")
 templates = CustomJinja2Templates(directory='templates')
@@ -51,3 +52,12 @@ def logout():
     response = RedirectResponse(url='/', status_code=302)
     response.delete_cookie("u-token")
     return response
+
+@users_router.get('/info')
+def info(request: Request):
+    user = authenticate.get_user_if_token(request)
+    if not user:
+        return RedirectResponse("/users/login", status_code=302)
+    
+    user.password = "" # Hide password hash
+    return templates.TemplateResponse(request=request, name="user_info.html", context={"user": user})
