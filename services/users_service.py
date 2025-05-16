@@ -36,7 +36,7 @@ def register_user(user: UserRegisterData, test_db = None) -> User | None:
         generated_id = used_db.insert_query(
             "INSERT INTO users(username, password_hash, is_admin) VALUES (?, ?, ?)",
             (user.username, hashed_password, user.is_admin,))
-        return User(id=generated_id, username=user.username, password="", is_admin=user.is_admin)
+        return User(id=generated_id, username=user.username, password="", is_admin=user.is_admin,)
     except IntegrityError: return None
     
 def login_user(login_data: UserLoginData, test_db = None) -> User | None:
@@ -133,3 +133,34 @@ def is_user_authenticated(token: str, test_db = None) -> bool:
     if not db_user: return False
     
     return True
+
+def update_user_avatar_url(user_id: int, avatar_url: str, test_db = None) -> bool:
+    """
+    Update the avatar_url of a given user.
+    
+    Args:
+        user_id (int): The id of the user.
+        avatar_url (str): The new avatar url.
+        test_db: Optional database object for testing.
+        
+    Returns:
+        bool: True if update successful, False otherwise.
+    """
+    used_db = _get_db(test_db)
+    return used_db.update_query("UPDATE users SET avatar_url = ? WHERE id = ?", (avatar_url, user_id,))
+
+def get_avatar_url(username: str, test_db = None) -> str | None:
+    """
+    Get the avatar url of a given user.
+    
+    Args:
+        username (str): The username of the user.
+        test_db: Optional database object for testing.
+        
+    Returns:
+        str: The avatar url,
+        None: If avatar url is NULL in db.
+    """
+    used_db = _get_db(test_db)
+    return used_db.read_query("SELECT avatar_url FROM users WHERE username = ?", (username,))[0][0]
+    

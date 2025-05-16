@@ -9,6 +9,15 @@
     {% from 'macros.html' import load_navbar %}
 </head>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const messagesCard = document.querySelector('.messages-card');
+        if (messagesCard) {
+            messagesCard.scrollTop = messagesCard.scrollHeight;
+        }
+    });
+</script>
+
 <body>
     {{ load_navbar(get_user(request)) }}
 
@@ -21,23 +30,16 @@
             <div class="messages">
                 {% if conversation.messages %}
                 {% for msg in conversation.messages %}
-                {% if msg.username == get_user(request).username %}
-                <div class="message" style="background-color: rgba(128, 255, 0, 0.41);">
+                {% set is_me = msg.username == get_user(request).username %}
+                <div class="message{% if is_me %} message-me{% else %} message-other{% endif %}">
                     <div class="message-header">
+                        <img src="{{ get_avatar_url(msg.username) or '/static/images/default_user_avatar.png' }}"
+                            alt="User Avatar" class="message-avatar">
                         <span class="sender">{{ msg.username }}</span>
                         <span class="timestamp">{{ msg.created_at }}</span>
                     </div>
                     <div class="text">{{ msg.text }}</div>
                 </div>
-                {% else %}
-                <div class="message" style="background-color: rgba(0, 229, 255, 0.41);">
-                    <div class="message-header">
-                        <span class="sender">{{ msg.username }}</span>
-                        <span class="timestamp">{{ msg.created_at }}</span>
-                    </div>
-                    <div class="text">{{ msg.text }}</div>
-                </div>
-                {% endif %}
                 {% endfor %}
                 {% else %}
                 <p class="empty-state"> No messages found in this conversation.</p>

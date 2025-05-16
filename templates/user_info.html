@@ -9,6 +9,22 @@
     {% from 'macros.html' import load_navbar, load_footer %}
 </head>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const fileInput = document.querySelector('.avatar-upload-form input[type="file"]');
+        const label = document.querySelector('.avatar-upload-form .custom-file-upload');
+        if (fileInput && label) {
+            fileInput.addEventListener('change', function () {
+                if (fileInput.files.length > 0) {
+                    label.style.backgroundColor = '#80ff0069';
+                } else {
+                    label.style.backgroundColor = '';
+                }
+            });
+        }
+    });
+</script>
+
 <body>
     {{ load_navbar(get_user(request)) }}
 
@@ -22,34 +38,42 @@
             <div class="card-header">
                 <h2 class="card-title">Account Details</h2>
             </div>
-            <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem;">
-                <img src="{{ user.icon_url or 'https://res.cloudinary.com/dnp3vqe07/image/upload/default_user_avatar_jqg2vx.png' }}"
-                    alt="User Avatar"
-                    style="width: 96px; height: 96px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color); background: #f5f7fa;">
+
+            <div class="avatar-display-section">
+                <img src="{{ user.avatar_url or '/static/images/default_user_avatar.png' }}" alt="User Avatar"
+                    class="user-avatar-large">
             </div>
-            <form action="/users/avatar" method="post" style="display:inline;">
-                <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem;">
-                    <button type="submit">Change Avatar</button>
+
+            <div class="avatar-upload-section">
+                <form action="/users/avatar" method="post" enctype="multipart/form-data" class="avatar-upload-form">
+                    <label class="custom-file-upload">
+                        <input type="file" name="file" accept="image/*" required>
+                        Choose Image
+                    </label>
+                    <button type="submit" class="avatar-upload-btn">Upload Avatar</button>
+                </form>
+            </div>
+
+            {% if error %}
+            <h4 class="error-message"> {{ error }}</h4>
+            {% endif %}
+
+            <div class="account-details">
+                <div class="detail-row">
+                    <span class="detail-label">Username:</span>
+                    <span class="detail-value">{{ user.username }}</span>
                 </div>
-            </form>
-            <table style="width:100%; border-collapse:collapse;">
-                <tr>
-                    <td style="font-weight:500; padding:0.5rem 0;">Username:</td>
-                    <td style="padding:0.5rem 0;">{{ user.username }}</td>
-                </tr>
-                <tr>
-                    <td style="font-weight:500; padding:0.5rem 0;">Role:</td>
-                    {% if user.is_admin == 1 %}
-                    <td style="padding:0.5rem 0;">Admin</td>
-                    {% else %}
-                    <td style="padding:0.5rem 0;">Member</td>
-                    {% endif %}
-                </tr>
-                <tr>
-                    <td style="font-weight:500; padding:0.5rem 0;">Joined:</td>
-                    <td style="padding:0.5rem 0;">{{ user.created_at or '—' }}</td>
-                </tr>
-            </table>
+                <div class="detail-row">
+                    <span class="detail-label">Role:</span>
+                    <span class="detail-value">
+                        {% if user.is_admin == 1 %}Admin{% else %}Member{% endif %}
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Joined:</span>
+                    <span class="detail-value">{{ user.created_at or '—' }}</span>
+                </div>
+            </div>
         </div>
     </div>
 

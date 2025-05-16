@@ -31,7 +31,7 @@ api_conversations_router = APIRouter(prefix='/api/conversations')
 @api_conversations_router.get('/')
 def get_all_conversations(contains_user: str | None = None, u_token: str = Header()):
     """
-    Retrieve paginated list of conversations with optional filtering.
+    Retrieve a list of conversations with optional filtering.
     Args:
         contains_user (str | None): Query parameter for filtering conversations that contain the user (via username).
     Returns:
@@ -49,7 +49,7 @@ def get_all_conversations(contains_user: str | None = None, u_token: str = Heade
     if contains_user:
         user = user_service.find_user_by_username(contains_user)
         if not user: return responses.NotFound(f"No conversations of user '{auth_user.username}' found.")
-    user_ids.add(user.id)
+        user_ids.add(user.id)
     
     conversations = conversation_service.get_all_conversations(user_ids)
     if not conversations: return responses.NotFound(f"No conversations of user '{auth_user.username}' found.")
@@ -59,7 +59,7 @@ def get_all_conversations(contains_user: str | None = None, u_token: str = Heade
 @api_conversations_router.get('/{conversation_id}')
 def get_conversation(conversation_id: int, u_token: str = Header()):
     """
-    Retrieve a conversation with a given id.
+    Retrieve a detailed conversation with a given id.
     Args:
         conversation_id (int): ID of the conversation.
         u_token (str): User authentication token from header.
