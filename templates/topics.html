@@ -17,13 +17,14 @@
             <p class="page-subtitle">Browse through all existing discussions</p>
         </div>
 
+        <div class="topics-table-container">
+            {{ load_topics(topics, categories) }}
+        </div>
+
         <div class="create-button-container">
             <a href="/topics/create" class="btn-primary">+ Create New Topic</a>
         </div>
 
-        <div class="topics-table-container">
-            {{ load_topics(topics, categories) }}
-        </div>
     </div>
 </body>
 

@@ -102,15 +102,17 @@ class Reply(BaseModel):
     topic_id: int
     user_id: int
     created_at: datetime
+    username: Optional[str] = None
 
     @classmethod
-    def from_query_result(cls, id: int, text: str, topic_id: int, user_id: int, created_at: datetime) -> "Reply":
+    def from_query_result(cls, id: int, text: str, topic_id: int, user_id: int, created_at: datetime, username: Optional[str] = None) -> "Reply":
         return cls(
             id=id,
             text=text,
             topic_id=topic_id,
             user_id=user_id,
-            created_at=created_at
+            created_at=created_at,
+            username=username
         )
 
 class Name(BaseModel):

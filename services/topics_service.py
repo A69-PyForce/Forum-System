@@ -119,3 +119,11 @@ def set_locked(topic_id: int, locked: bool) -> bool:
     """
     sql = "UPDATE topics SET is_locked = ? WHERE id = ?"
     return update_query(sql, (1 if locked else 0, topic_id)) == 1
+
+def toggle_lock(topic_id: int) -> bool:
+    result = read_query("SELECT is_locked FROM topics WHERE id = ?", (topic_id,))
+    if not result:
+        return False
+
+    current_status = result[0][0]
+    return set_locked(topic_id, not current_status)
