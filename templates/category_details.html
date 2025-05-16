@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ category.name }}</title>
+</head>
+<body>
+    {% from 'macros.html' import load_navbar, load_topics %}
+
+    {{ load_navbar(user) }}
+
+    <h1>Category: {{ category.name }}</h1>
+
+    {{ load_topics(topics, categories) }}
+
+    <a href="/categories">← Back to all categories</a>
+
+    {% if user %}
+    <div class="create-container">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Create Topic in {{ category.name }}</h2>
+            </div>
+            <form action="/categories/{{ category.id }}/topics" method="post" class="create-form">
+                <div class="form-group">
+                    <input name="title" type="text" placeholder="Title" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <textarea name="content" placeholder="Content" class="form-input" required></textarea>
+                </div>
+                <input type="hidden" name="category_id" value="{{ category.id }}">
+                <button type="submit" class="submit-btn">Create Topic</button>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <p><a href="/login">Login</a> to create a new topic.</p>
+    {% endif %}
+</body>
+</html>

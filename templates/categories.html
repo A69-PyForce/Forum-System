@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Categories</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    {% from 'macros.html' import load_navbar %}
+    {{ load_navbar(user) }}
+
+    <div class="page-container">
+        <h1 class="page-title">Forum Categories</h1>
+
+        {% if categories %}
+        <ul class="category-list">
+            {% for cat in categories %}
+            <li class="category-item">
+                <a href="/categories/{{ cat.id }}">{{ cat.name }}</a>
+                {% if cat.is_private %}
+                    <span style="color: crimson;">(Private)</span>
+                {% endif %}
+                {% if cat.is_locked %}
+                    <span style="color: gray;">[Locked]</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No categories found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

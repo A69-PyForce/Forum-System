@@ -49,6 +49,56 @@
         &copy; {{ now().year if now else "2025" }} Forum System &mdash; Built with FastAPI & MariaDB
     </footer>
     {% endmacro %}
+
+    {% macro load_category_form(error=None, name='', description='') %}
+    <fieldset>
+        <input name="name" type="text" placeholder="Category Name" value="{{ name }}" required>
+    </fieldset>
+    <fieldset>
+        <input name="description" type="text" placeholder="Category Description" value="{{ description }}">
+    </fieldset>
+    {% if error %}
+    <h3 style="color: red;">Error: {{ error }}</h3>
+    {% endif %}
+    {% endmacro %}
+
+    {% macro load_topics(topics, categories=None) %}
+    {% if topics %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Content</th>
+                {% if categories %}
+                <th>Category</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for topic in topics %}
+            <tr>
+                <td>
+                    <a href="/topics/{{topic.id}}">{{topic.title}}</a>
+                </td>
+                <td>{{topic.content}}</td>
+                {% if categories %}
+                <td>
+                    {% if topic.category_id in categories %}
+                        <a href="/categories/{{topic.category_id}}">{{categories[topic.category_id].name}}</a>
+                    {% else %}
+                        <span style="color: gray;">Unknown</span>
+                    {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <h1 style="color: rebeccapurple;">No topics available yet</h1>
+    {% endif %}
+    {% endmacro %}
+
 </body>
 
 </html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Topics</title>
+    <link href="../static/css/styles.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    {% from 'macros.html' import load_navbar, load_topics %}
+    {{ load_navbar(user) }}
+
+    <div class="page-container">
+        <div class="page-header">
+            <h1 class="page-title">All Topics</h1>
+            <p class="page-subtitle">Browse through all existing discussions</p>
+        </div>
+
+        <div class="create-button-container">
+            <a href="/topics/create" class="btn-primary">+ Create New Topic</a>
+        </div>
+
+        <div class="topics-table-container">
+            {{ load_topics(topics, categories) }}
+        </div>
+    </div>
+</body>
+
+</html>
+
