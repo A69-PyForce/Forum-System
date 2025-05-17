@@ -1,40 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{{ category.name }}</title>
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
+
 <body>
-    {% from 'macros.html' import load_navbar, load_topics %}
+    {% from 'macros.html' import load_navbar, load_topics, load_footer %}
     {{ load_navbar(user) }}
 
-    <div class="page-container">
-        <h1 class="page-title">Category: {{ category.name }}</h1>
+    <div class="main-container">
+        <div class="category-details-header">
+            <img src="{{ category.image_url or '/static/images/default_category.png' }}" class="category-image">
+            <div class="category-card-content">
+                <div class="category-title-badges">
+                    <span class="page-title">{{ category.name }}</span>
+                    {% if category.is_private %}
+                    <span class="badge badge-private">Private</span>
+                    {% endif %}
+                    {% if category.is_locked %}
+                    <span class="badge badge-locked">Locked</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
 
         {% if created %}
-        <p class="success-message">✅ Topic created successfully!</p>
+        <p class="success-message">Topic created successfully!</p>
         {% endif %}
 
-        {{ load_topics(topics, categories) }}
+        <div class="topics-section">
+            {{ load_topics(topics, categories) }}
+        </div>
 
         {% if is_admin %}
         <div class="admin-controls">
             <form method="post" action="/categories/{{ category.id }}/toggle-lock" style="display:inline;">
-                <button type="submit" class="btn btn-danger">
-                    {% if category.is_locked %}🔓 Unlock Category{% else %}🔒 Lock Category{% endif %}
+                <button type="submit" class="btn">
+                    {% if category.is_locked %}Unlock Category{% else %}Lock Category{% endif %}
                 </button>
             </form>
-
             <form method="post" action="/categories/{{ category.id }}/toggle-private" style="display:inline;">
-                <button type="submit" class="btn btn-warning">
-                    {% if category.is_private %}🌐 Make Public{% else %}🔐 Make Private{% endif %}
+                <button type="submit" class="btn">
+                    {% if category.is_private %}Make Public{% else %}Make Private{% endif %}
                 </button>
             </form>
+            <form action="/categories/{{ category.id }}/image" method="post" enctype="multipart/form-data"
+                class="avatar-upload-form">
+                <button type="submit" class="btn">Upload Image</button>
+                <label class="custom-file-upload">
+                    <input type="file" name="file" accept="image/*" required>
+                    Choose Image
+                </label>
+            </form>
+            {% if image_error %}
+            <h4 class="error-message" style="margin-bottom: 0rem;">{{ image_error }}</h4>
+            {% endif %}
         </div>
         {% endif %}
 
-        {% if user %}
+        {% if user%}
+        {% if not category.is_locked %}
         <div class="create-container">
             <div class="card">
                 <div class="card-header">
@@ -42,20 +70,26 @@
                 </div>
                 <form action="/categories/{{ category.id }}/topics" method="post" class="create-form">
                     <div class="form-group">
-                        <input name="title" type="text" placeholder="Title" class="form-input" required>
+                        <input name="title" type="text" placeholder="Title" class="create-form" required>
                     </div>
                     <div class="form-group">
-                        <textarea name="content" placeholder="Content" class="form-input" required></textarea>
+                        <textarea name="content" placeholder="Content" class="form-input"
+                            style="min-height: 100px;"></textarea>
                     </div>
                     <button type="submit" class="submit-btn">Create Topic</button>
                 </form>
             </div>
         </div>
         {% else %}
-        <p><a href="/login">Login</a> to create a new topic.</p>
+        <p class="empty-state" style="padding: 1rem;">This category is locked.</p>
+        {% endif %}
+        {% else %}
+        <p><a href="/users/login">Login</a> to create a new topic.</p>
         {% endif %}
 
         <a href="/categories" class="back-link">← Back to all categories</a>
     </div>
+    {{ load_footer() }}
 </body>
+
 </html>

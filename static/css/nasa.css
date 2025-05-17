@@ -1,0 +1,30 @@
+.apod-section {
+    background: #f7f9fa;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    padding: 2em 1em;
+    margin: 2em auto;
+    max-width: 700px;
+}
+
+.apod-image {
+    display: block;
+    margin: 1.5em auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+    border: 2px solid #e3e6ea;
+}
+
+.apod-video {
+    display: block;
+    margin: 1.5em auto;
+    width: 100%;
+    max-width: 600px;
+    height: 340px;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
+    border: 2px solid #e3e6ea;
+    background: #000;
+}

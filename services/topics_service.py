@@ -16,13 +16,13 @@ def all(search: str = None, *, limit: int = None, offset: int = None):
     """
     if search is None:
         query = """
-        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id, created_at
         FROM topics"""
         params: tuple = ()
 
     else:
         query = """
-        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id, created_at
         FROM topics
         WHERE title LIKE ?"""
 
@@ -69,7 +69,7 @@ def get_by_id(id: int):
         Topic | None: The Topic instance if found, else None.
     """
     data = read_query(
-        """SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
+        """SELECT id, title, content, category_id, user_id, is_locked, best_reply_id, created_at
             FROM topics 
             WHERE id = ?""", (id,))
 
@@ -93,15 +93,15 @@ def create(topic: TopicCreate, user_id: int):
 
     if not new_id:
         return None
-
-    return Topic.from_query_result(
-        new_id,
-        topic.title,
-        topic.content,
-        topic.category_id,
-        user_id,
-        0,
-        None
+    
+    return Topic(
+        id=new_id,
+        title=topic.title,
+        content=topic.content,
+        category_id=topic.category_id,
+        user_id=user_id,
+        is_locked=0,
+        best_reply_id=None
     )
 
 def select_best_reply(topic_id: int, reply_id: int) -> bool:

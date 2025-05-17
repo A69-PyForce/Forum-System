@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <title>Macros</title>
 </head>
 
@@ -49,8 +50,8 @@
     {% endmacro %}
 
     {% macro load_footer() %}
-    <footer style="text-align:center; margin-top:3em; color:#888;">
-        &copy; {{ now().year if now else "2025" }} Forum System &mdash; Built with FastAPI & MariaDB
+    <footer style="text-align: center; margin-top: 2em; margin-bottom: 2em; color:#888;">
+        &copy; 2025 Forum System &mdash; Built with FastAPI & MariaDB
     </footer>
     {% endmacro %}
 
@@ -66,40 +67,24 @@
     {% endif %}
     {% endmacro %}
 
-    {% macro load_topics(topics, categories=None) %}
+    {% macro load_topics(topics, categories) %}
     {% if topics %}
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Content</th>
-                {% if categories %}
-                <th>Category</th>
+    <ul class="topics-list">
+        {% for topic in topics %}
+        <li class="topic-card">
+            <a href="/topics/{{ topic.id }}" class="topic-title">{{ topic.title }}</a>
+            <div class="topic-meta">
+                <span class="topic-author">By {{ find_user_by_id(topic.user_id).username }}</span>
+                <span class="topic-date">{{ topic.created_at.strftime('%b %d, %Y') }}</span>
+                {% if topic.is_locked %}
+                <span class="badge badge-locked">Locked</span>
                 {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for topic in topics %}
-            <tr>
-                <td>
-                    <a href="/topics/{{topic.id}}">{{topic.title}}</a>
-                </td>
-                <td>{{topic.content}}</td>
-                {% if categories %}
-                <td>
-                    {% if topic.category_id in categories %}
-                        <a href="/categories/{{topic.category_id}}">{{categories[topic.category_id].name}}</a>
-                    {% else %}
-                        <span style="color: gray;">Unknown</span>
-                    {% endif %}
-                </td>
-                {% endif %}
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
     {% else %}
-    <h1 style="color: rebeccapurple;">No topics available yet</h1>
+    <p class="info-message">No topics yet. Be the first to create one!</p>
     {% endif %}
     {% endmacro %}
 

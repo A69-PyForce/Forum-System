@@ -10,7 +10,7 @@ def all():
         Generator[Category]: A generator yielding Category instances.
     """
     sql = """
-      SELECT id, name, is_private, is_locked
+      SELECT id, name, is_private, is_locked, image_url
         FROM categories
     """
 
@@ -37,14 +37,14 @@ def topics_by_category(
     """
     if search is None:
         sql = """
-        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id, created_at
         FROM topics
         WHERE category_id = ?"""
         params: tuple = (category_id,)
 
     else:
         sql = """
-        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id
+        SELECT id, title, content, category_id, user_id, is_locked, best_reply_id, created_at
         FROM topics
         WHERE  = ?
         AND title LIKE ?"""
@@ -76,14 +76,14 @@ def exists(id: int):
 
 def get_by_id(category_id: int):
     data = read_query(
-        """SELECT id, name, is_private, is_locked
+        """SELECT id, name, is_private, is_locked, image_url
             FROM categories 
             WHERE id = ?""", (category_id,))
 
     return next((Category.from_query_result(*row) for row in data), None)
 
 def create(name: str) -> Category:
-    sql = """INSERT INTO categories (name, is_private, is_locked)VALUES(?,0,0)"""
+    sql = """INSERT INTO categories (name, is_private, is_locked)VALUES(?, 0, 0)"""
     new_id = insert_query(sql, (name,))
 
     return Category.from_query_result(id=new_id, name=name, is_private=0, is_locked=0)
@@ -100,3 +100,8 @@ def set_locked(category_id: int, locked: bool) -> bool:
     """
     sql = "UPDATE categories SET is_locked = ? WHERE id = ?"
     return update_query(sql, (1 if locked else 0, category_id)) == 1
+
+def update_category_image_url(category_id: int, image_url: str) -> bool:
+    return update_query(
+        "UPDATE categories SET image_url = ? WHERE id = ?", (image_url, category_id)
+    )

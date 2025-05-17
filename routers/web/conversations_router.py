@@ -44,7 +44,7 @@ def get_conversation(conversation_id: int, request: Request):
         return RedirectResponse("/conversations", status_code=302)
     
     return templates.TemplateResponse(
-        "conversation_detail.html",
+        "conversation_details.html",
         {"request": request, "user": user, "conversation": conversation}
     )
     

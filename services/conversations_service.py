@@ -126,7 +126,7 @@ def get_conversation(conversation_id: int) -> ConversationResponse | None:
     if not conversation_data: return None
     
     # Get message data
-    query = '''SELECT m.text, u.username, m.created_at
+    query = '''SELECT m.text, u.username, u.avatar_url, m.created_at
                FROM messages AS m
                JOIN users AS u ON m.sender_id = u.id
                WHERE m.conversation_id = ?

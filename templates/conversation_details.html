@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ conversation.name }}</title>
     <link rel="stylesheet" href="/static/css/styles.css">
-    {% from 'macros.html' import load_navbar %}
+    {% from 'macros.html' import load_navbar, load_footer %}
 </head>
 
 <script>
@@ -33,8 +33,8 @@
                 {% set is_me = msg.username == get_user(request).username %}
                 <div class="message{% if is_me %} message-me{% else %} message-other{% endif %}">
                     <div class="message-header">
-                        <img src="{{ get_avatar_url(msg.username) or '/static/images/default_user_avatar.png' }}"
-                            alt="User Avatar" class="message-avatar">
+                        <img src="{{ msg.avatar_url or '/static/images/default_user_avatar.png' }}" alt="User Avatar"
+                            class="message-avatar">
                         <span class="sender">{{ msg.username }}</span>
                         <span class="timestamp">{{ msg.created_at }}</span>
                     </div>
@@ -74,6 +74,7 @@
             </div>
         </div>
     </div>
+    {{ load_footer() }}
 </body>
 
 </html>

@@ -1,15 +1,13 @@
 from mariadb.connections import Connection
 from dotenv import load_dotenv
 from mariadb import connect
+import cloudinary
 import os
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# NOTE: Must have a .env file for database connection.            #
-#       Check README for instructions.                            #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-# Load environment variables from .env file
 load_dotenv()
+
+# ================================== MUSTS ==================================
+# Load DB config from .env for database connection.
 DB_CONFIG = {
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
@@ -17,6 +15,27 @@ DB_CONFIG = {
     "port": int(os.getenv("DB_PORT")),
     "database": os.getenv("DB_NAME"),
 }
+# ===========================================================================
+
+# ================================ OPTIONALS ================================
+# Load Claudinary config from .env for the user avatar and category images. |
+CLDNR_CONFIG = {
+    "cldnr_cloud_name": os.getenv("CLDNR_CLOUD_NAME"),
+    "cldnr_api_key": os.getenv("CLDNR_API_KEY"),
+    "cldnr_api_secret": os.getenv("CLDNR_API_SECRET")
+}
+if all(CLDNR_CONFIG.values()) != None:
+    cloudinary.config(
+        cloud_name=CLDNR_CONFIG["cldnr_cloud_name"],
+        api_key=CLDNR_CONFIG["cldnr_api_key"],
+        api_secret=CLDNR_CONFIG["cldnr_api_secret"]
+    )
+else:
+    CLDNR_CONFIG = None
+
+# Load NASA API key fron .env for the homepage    
+NASA_API_KEY = os.getenv("NASA_API_KEY")
+# ===========================================================================
 
 def _get_connection() -> Connection:
     """

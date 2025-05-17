@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../static/css/styles.css" type="text/css" rel="stylesheet">
+    <link href="../static/css/nasa.css" type="text/css" rel="stylesheet">
     {% from 'macros.html' import load_navbar, load_footer %}
     <title>Forum System</title>
 </head>
@@ -13,6 +14,34 @@
     {{ load_navbar(get_user(request)) }}
     <div class="container" style="margin-top:2em; text-align:center;">
         <h1>Welcome to the Forum System!</h1>
+        <div class="apod-section" style="margin-top:2em;">
+            <h2>NASA Astronomy Picture of the Day</h2>
+            <div id="apod-content">
+                <p>Loading...</p>
+            </div>
+        </div>
+        <script>
+            fetch('/api/apod')
+                .then(res => res.json())
+                .then(apod => {
+                    const el = document.getElementById('apod-content');
+                    if (apod.error) {
+                        el.innerHTML = `<h4 class="error-message">${apod.error}</h4>`;
+                        return;
+                    }
+                    let html = `<h3>${apod.title}</h3>`;
+                    if (apod.media_type === "image") {
+                        html += `<img src="${apod.url}" alt="${apod.title}" class="apod-image">`;
+                    } else if (apod.media_type === "video") {
+                        html += `<iframe src="${apod.url}" frameborder="0" allowfullscreen class="apod-video"></iframe>`;
+                    }
+                    html += `<p>${apod.explanation}</p><p><small>${apod.date}</small></p>`;
+                    el.innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('apod-content').innerHTML = '<h4 class="error-message">NASA API unavailable.</h4>';
+                });
+        </script>
     </div>
     {{ load_footer() }}
 </body>

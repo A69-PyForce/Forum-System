@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>All Categories</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+
+<body>
+    {% from 'macros.html' import load_navbar, load_footer %}
+    {{ load_navbar(user) }}
+
+    <div class="main-container">
+        <h1 class="page-title">Forum Categories</h1>
+
+        {% if categories %}
+        <ul class="category-list category-grid">
+            {% for cat in categories %}
+            {% if cat.is_private and not user.is_admin %}
+            {% else %}
+            <li class="category-item category-card">
+                <a href="/categories/{{ cat.id }}" class="category-link-card">
+                    <img src="{{ cat.image_url or '/static/images/default_category.png' }}" class="category-image">
+                    <div class="category-card-content">
+                        <div class="category-title-badges">
+                            <span class="category-title">{{ cat.name }}</span>
+                            {% if cat.is_private %}
+                            <span class="badge badge-private">Private</span>
+                            {% endif %}
+                            {% if cat.is_locked %}
+                            <span class="badge badge-locked">Locked</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No categories found.</p>
+        {% endif %}
+
+        {% if user and user.is_admin %}
+        <div class="create-container">
+            <h2>Create New Category</h2>
+            <form action="/categories/create" method="post" class="create-form">
+                <input name="name" type="text" placeholder="Category Name" class="form-input" style="margin-top: 1%;">
+                <button class="btn submit-btn" type="submit">Create Category</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if request.query_params.get("created") == "1" %}
+        <p class="success-message">✅ Category created successfully!</p>
+        {% endif %}
+    </div>
+    {{ load_footer() }}
+</body>
+
+</html>

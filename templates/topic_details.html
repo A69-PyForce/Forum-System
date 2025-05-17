@@ -1,92 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>{{ topic.title }}</title>
+    <link rel="stylesheet" href="/static/css/topic-detail.css">
     <link rel="stylesheet" href="/static/css/styles.css">
 </head>
+
 <body>
-    {% from 'macros.html' import load_navbar %}
+    {% from 'macros.html' import load_navbar, load_footer %}
     {{ load_navbar(user) }}
 
-    <div class="page-container">
-        <h1 class="page-title">
-            {{ topic.title }}
-            {% if topic.is_locked %}
-                <span class="status-lock">[Locked]</span>
-            {% endif %}
-        </h1>
-
-        <p class="topic-content">{{ topic.content }}</p>
-
-        {% if is_admin %}
-        <div class="admin-controls">
-            <form method="post" action="/topics/{{ topic.id }}/toggle-lock">
-                <button class="btn btn-danger" type="submit">
-                    {% if topic.is_locked %}🔓 Unlock Topic{% else %}🔒 Lock Topic{% endif %}
-                </button>
-            </form>
-        </div>
-        {% endif %}
-
-        <hr>
-
-        <h2>Replies</h2>
-
-        {% if replies %}
-            <ul class="reply-list">
-                {% for reply in replies %}
-                <li class="reply-item">
-                    <div class="reply-meta">
-                        <p class="reply-text">{{ reply.text }}</p>
-                        <small>
-                            By <strong>{{ reply.username }}</strong>
-                            — <em>{{ reply.created_at.strftime("%Y-%m-%d %H:%M") }}</em>
-                        </small>
-                    </div>
-
-                    <div class="vote-box">
-                        {% set reply_votes = votes.get(reply.id, {'up': 0, 'down': 0}) %}
-                        <form method="post" action="/topics/{{ topic.id }}/vote/{{ reply.id }}">
-                            <input type="hidden" name="type_vote" value="up">
-                            <button class="vote-button">👍 <span class="vote-count">{{ reply_votes.up }}</span></button>
-                        </form>
-
-                        <form method="post" action="/topics/{{ topic.id }}/vote/{{ reply.id }}">
-                            <input type="hidden" name="type_vote" value="down">
-                            <button class="vote-button">👎 <span class="vote-count">{{ reply_votes.down }}</span></button>
-                        </form>
-                    </div>
-
-                    {% if topic.best_reply_id == reply.id %}
-                        <span class="badge-success">✅ Best Reply</span>
-                    {% elif user and user.id == topic.user_id and not topic.best_reply_id %}
-                        <form method="post" action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}">
-                            <button class="btn btn-success" type="submit">✅ Mark as Best Reply</button>
-                        </form>
+    <div class="topic-detail">
+        <!-- Main Topic Card -->
+        <div class="topic-card">
+            <div class="topic-header">
+                <h1 class="topic-title">
+                    {{ topic.title }}
+                    {% if user.is_admin or user.id == topic.user_id %}
+                    <form method="post" action="/topics/{{ topic.id }}/toggle-lock">
+                        {% if topic.is_locked %}
+                        <button class="topic-badge topic-badge-unlocked">Unlock topic</button>
+                        {% else %}
+                        <button class="topic-badge topic-badge-locked">Lock topic</button>
+                        {% endif %}
+                    </form>
                     {% endif %}
+                </h1>
+                <div class="topic-meta">
+                    <div class="topic-author">
+                        <img src="{{ get_avatar_by_user_id(topic.user_id) or '/static/images/default_user_avatar.png' }}"
+                            class="topic-avatar" alt="User Avatar">
+                        <span>{{ find_user_by_id(topic.user_id).username }}</span>
+                    </div>
+                    <span class="topic-date">{{ topic.created_at.strftime('%b %d, %Y') }}</span>
+                </div>
+            </div>
+            <div class="topic-content">{{ topic.content }}</div>
+        </div>
+
+        <!-- Replies Section -->
+        <section class="replies-section">
+            <div class="replies-header">
+                <h2 class="replies-title">Replies</h2>
+                <span class="replies-count">{{ replies|length }} {{ 'reply' if replies|length == 1 else 'replies'
+                    }}</span>
+            </div>
+
+            {% if replies %}
+            <ul class="replies-list">
+                {% for reply in replies %}
+                <li class="reply-item{% if topic.best_reply_id == reply.id %} best-reply{% endif %}">
+                    {% if topic.best_reply_id == reply.id %}
+                    <div class="best-reply-banner">
+                        <span class="best-reply-icon">✓</span>
+                        <span>Best Reply</span>
+                    </div>
+                    {% endif %}
+
+                    <div class="reply-header">
+                        <div class="reply-author">
+                            <img src="{{ reply.avatar_url or '/static/images/default_user_avatar.png' }}"
+                                class="reply-avatar" alt="User Avatar">
+                            <div class="reply-author-info">
+                                <span class="reply-username">{{ reply.username }}</span>
+                                <span class="reply-date">{{ reply.created_at.strftime("%Y-%m-%d %H:%M") }}</span>
+                            </div>
+                        </div>
+
+                        <div class="reply-actions">
+                            {% if user and user.id == topic.user_id and not topic.best_reply_id and topic.best_reply_id
+                            != reply.id %}
+                            <form method="post" action="/topics/{{ topic.id }}/best-reply/{{ reply.id }}">
+                                <button class="topic-best-btn" type="submit">
+                                    <span class="best-btn-icon">✓</span>Mark as Best
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="reply-content">
+                        <p>{{ reply.text }}</p>
+                    </div>
+
+                    <div class="reply-footer">
+                        {% set reply_votes = votes.get(reply.id, {'up': 0, 'down': 0}) %}
+                        <div class="vote-container">
+                            <form method="post" action="/topics/{{ topic.id }}/vote/{{ reply.id }}" class="vote-form">
+                                <input type="hidden" name="type_vote" value="up">
+                                <button class="vote-btn vote-up" title="Upvote">
+                                    <span class="vote-icon">👍</span>
+                                    <span class="vote-count">{{ reply_votes.up }}</span>
+                                </button>
+                            </form>
+
+                            <form method="post" action="/topics/{{ topic.id }}/vote/{{ reply.id }}" class="vote-form">
+                                <input type="hidden" name="type_vote" value="down">
+                                <button class="vote-btn vote-down" title="Downvote">
+                                    <span class="vote-icon">👎</span>
+                                    <span class="vote-count">{{ reply_votes.down }}</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </li>
                 {% endfor %}
             </ul>
-        {% else %}
-            <p>No replies yet. Be the first to reply!</p>
-        {% endif %}
+            {% else %}
+            <div class="topic-message">
+                <p class="no-replies-msg">No replies yet. Be the first to reply!</p>
+            </div>
+            {% endif %}
+        </section>
 
-        <hr>
-
+        <!-- Reply Form Section -->
         {% if user and not topic.is_locked %}
-        <div class="reply-form">
-            <h3>Post a Reply</h3>
-            <form method="post" action="/topics/{{ topic.id }}/replies">
-                <textarea name="content" placeholder="Your reply..." required></textarea>
-                <button class="btn btn-primary" type="submit">Reply</button>
-            </form>
-        </div>
+        <section class="reply-form-section">
+            <div class="reply-form-wrapper">
+                <h3 class="reply-form-title">Post a Reply</h3>
+                <form method="post" action="/topics/{{ topic.id }}/replies" class="reply-form">
+                    <div class="reply-form-group">
+                        <textarea name="content" class="reply-textarea" placeholder="Share your thoughts..."
+                            required></textarea>
+                    </div>
+                    <div class="reply-form-actions">
+                        <button class="reply-submit-btn" type="submit">
+                            <span class="reply-btn-icon">✉</span>Post Reply
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
         {% elif topic.is_locked %}
-            <p style="color: gray;">This topic is locked. Replies are disabled.</p>
+        <div class="topic-card locked-msg">
+            <span class="locked-icon">🔒</span>
+            <p>This topic is locked. Replies are disabled.</p>
+        </div>
         {% else %}
-            <p><a href="/login">Login</a> to reply to this topic.</p>
+        <div class="topic-card login-msg">
+            <p><a href="/users/login">Login</a> to reply to this topic.</p>
+        </div>
         {% endif %}
     </div>
+    {{ load_footer() }}
 </body>
+
 </html>
