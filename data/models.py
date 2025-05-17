@@ -56,14 +56,16 @@ class Category(BaseModel):
     name: str
     is_private: int
     is_locked: int
+    image_url: Optional[str] = None
 
     @classmethod
-    def from_query_result(cls, id: int, name: str, is_private: int, is_locked: int):
+    def from_query_result(cls, id: int, name: str, is_private: int, is_locked: int, image_url: str | None = None):
         return cls(
             id=id,
             name=name,
             is_private=is_private,
-            is_locked=is_locked
+            is_locked=is_locked,
+            image_url=image_url
         )
 
 class Topic(BaseModel):
@@ -74,10 +76,10 @@ class Topic(BaseModel):
     user_id: int
     is_locked: int
     best_reply_id: Optional[int] = None
+    created_at: Optional[datetime] = None
 
     @classmethod
-    def from_query_result(cls, id: int, title: str, content: str,
-                          category_id: int, user_id: int, is_locked: int, best_reply_id: int | None) -> "Topic":
+    def from_query_result(cls, id, title, content, category_id, user_id, is_locked, best_reply_id, created_at) -> "Topic":
         return cls(
             id=id,
             title=title,
@@ -85,7 +87,8 @@ class Topic(BaseModel):
             category_id=category_id,
             user_id=user_id,
             is_locked=is_locked,
-            best_reply_id=best_reply_id
+            best_reply_id=best_reply_id,
+            created_at=created_at
         )
 
 class TopicCreate(BaseModel):
@@ -103,16 +106,18 @@ class Reply(BaseModel):
     user_id: int
     created_at: datetime
     username: Optional[str] = None
+    avatar_url: Optional[str] = None
 
     @classmethod
-    def from_query_result(cls, id: int, text: str, topic_id: int, user_id: int, created_at: datetime, username: Optional[str] = None) -> "Reply":
+    def from_query_result(cls, id: int, text: str, topic_id: int, user_id: int, created_at: datetime, username: Optional[str] = None, avatar_url: Optional[str] = None) -> "Reply":
         return cls(
             id=id,
             text=text,
             topic_id=topic_id,
             user_id=user_id,
             created_at=created_at,
-            username=username
+            username=username,
+            avatar_url=avatar_url
         )
 
 class Name(BaseModel):
@@ -128,13 +133,15 @@ class Message(BaseModel):
 class MessageResponse(BaseModel):
     text: str
     username: str
+    avatar_url: str | None
     created_at: datetime
     
     @classmethod
-    def from_query_result(cls, text, username, created_at):
+    def from_query_result(cls, text, username, avatar_url, created_at):
         return cls(
             text=text,
             username=username,
+            avatar_url=avatar_url,
             created_at=created_at
         )
         

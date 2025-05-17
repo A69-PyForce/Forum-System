@@ -16,7 +16,7 @@ def view_topics(request: Request):
     categories_dict = {c.id: c for c in categories}
     return templates.TemplateResponse(
         request=request,
-        name="topics.html",
+        name="topics_list.html",
         context={
             "request": request,
             "user": user,
@@ -29,7 +29,7 @@ def view_topics(request: Request):
 def add_reply(id: int, request: Request, content: str = Form(...)):
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse(url="/login", status_code=302)
+        return RedirectResponse(url="/users/login", status_code=302)
 
     reply_data = ReplyCreate(text=content)
     replies_service.create(reply_data, user.id, id)
@@ -40,7 +40,7 @@ def add_reply(id: int, request: Request, content: str = Form(...)):
 def create_topic_form(request: Request):
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse("/login", status_code=302)
+        return RedirectResponse("/users/login", status_code=302)
 
     categories = list(categories_service.all())
     # categories_dict = {cat.id: cat for cat in categories}
@@ -60,7 +60,7 @@ def topic_details(id: int, request: Request):
     if not topic:
         return RedirectResponse(url="/topics", status_code=302)
 
-    replies = list(replies_service.get_by_topic(topic.id))
+    replies = sorted(replies_service.get_by_topic(topic.id), key=lambda r: (r.id != topic.best_reply_id, r.created_at))
 
     is_admin = user and user.is_admin
 
@@ -77,7 +77,7 @@ def topic_details(id: int, request: Request):
 def create_topic(request: Request, title: str = Form(...),content: str = Form(...), category_id: int = Form(...)):
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse(url="/login", status_code=302)
+        return RedirectResponse(url="/users/login", status_code=302)
 
     topic_data = TopicCreate(title=title, content=content, category_id=category_id)
     topics_service.create(topic_data, user.id)
@@ -100,7 +100,7 @@ def mark_best_reply(topic_id: int, reply_id: int, request: Request):
 def vote_reply(topic_id: int, reply_id: int, request: Request, type_vote: str = Form(...)):
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse("/login", status_code=302)
+        return RedirectResponse("/users/login", status_code=302)
 
     votes_service.vote(reply_id=reply_id, user_id=user.id, type_vote=type_vote)
     return RedirectResponse(f"/topics/{topic_id}", status_code=302)
@@ -109,8 +109,12 @@ def vote_reply(topic_id: int, reply_id: int, request: Request, type_vote: str = 
 @topic_router.post("/{id}/toggle-lock")
 def toggle_lock(id: int, request: Request):
     user = authenticate.get_user_if_token(request)
-    if not user or not user.is_admin:
-        return RedirectResponse("/login", status_code=302)
-
-    topics_service.toggle_lock(id)
+    if not user:
+        return RedirectResponse("/users/login", status_code=302)
+    
+    topic = topics_service.get_by_id(id)
+    
+    if user.id == topic.user_id or user.is_admin:
+        topics_service.toggle_lock(id)
+    
     return RedirectResponse(f"/topics/{id}", status_code=302)

@@ -8,10 +8,10 @@
 </head>
 
 <body>
-    {% from 'macros.html' import load_navbar, load_topics %}
+    {% from 'macros.html' import load_navbar, load_topics, load_footer %}
     {{ load_navbar(user) }}
 
-    <div class="page-container">
+    <div class="main-container">
         <div class="page-header">
             <h1 class="page-title">All Topics</h1>
             <p class="page-subtitle">Browse through all existing discussions</p>
@@ -26,7 +26,7 @@
         </div>
 
     </div>
+    {{ load_footer() }}
 </body>
 
 </html>
-

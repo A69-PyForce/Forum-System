@@ -149,7 +149,7 @@ def update_user_avatar_url(user_id: int, avatar_url: str, test_db = None) -> boo
     used_db = _get_db(test_db)
     return used_db.update_query("UPDATE users SET avatar_url = ? WHERE id = ?", (avatar_url, user_id,))
 
-def get_avatar_url(username: str, test_db = None) -> str | None:
+def get_avatar_by_username(username: str, test_db = None) -> str | None:
     """
     Get the avatar url of a given user.
     
@@ -162,5 +162,29 @@ def get_avatar_url(username: str, test_db = None) -> str | None:
         None: If avatar url is NULL in db.
     """
     used_db = _get_db(test_db)
-    return used_db.read_query("SELECT avatar_url FROM users WHERE username = ?", (username,))[0][0]
+    try:
+        return used_db.read_query("SELECT avatar_url FROM users WHERE username = ?", (username,))[0][0]
+    except IndexError:
+        import traceback
+        print(traceback.format_exc())
+        return None
     
+def get_avatar_by_user_id(user_id: int, test_db = None) -> str | None:
+    """
+    Get the avatar url of a given user.
+    
+    Args:
+        id (str): The id of the user.
+        test_db: Optional database object for testing.
+        
+    Returns:
+        str: The avatar url,
+        None: If avatar url is NULL in db.
+    """
+    used_db = _get_db(test_db)
+    try:
+        return used_db.read_query("SELECT avatar_url FROM users WHERE id = ?", (user_id,))[0][0]
+    except IndexError:
+        import traceback
+        print(traceback.format_exc())
+        return None

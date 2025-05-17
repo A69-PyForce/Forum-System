@@ -1,33 +1,16 @@
-import os
 import io
 import traceback
 import cloudinary
 from PIL import Image
 import cloudinary.uploader
-from dotenv import load_dotenv
 from services import users_service
 import utils.auth_utils as auth_utils
+from data.database import CLDNR_CONFIG
 import common.authenticate as authenticate
 from fastapi.responses import RedirectResponse
 from data.models import UserLoginData, UserRegisterData
 from common.template_config import CustomJinja2Templates
 from fastapi import APIRouter, Request, Form, File, UploadFile
-
-# Load Claudinary config from .env
-load_dotenv()
-CLDNR_CONFIG = {
-    "cldnr_cloud_name": os.getenv("CLDNR_CLOUD_NAME"),
-    "cldnr_api_key": os.getenv("CLDNR_API_KEY"),
-    "cldnr_api_secret": os.getenv("CLDNR_API_SECRET")
-}
-if all(CLDNR_CONFIG.values()) != None:
-    cloudinary.config(
-        cloud_name=CLDNR_CONFIG["cldnr_cloud_name"],
-        api_key=CLDNR_CONFIG["cldnr_api_key"],
-        api_secret=CLDNR_CONFIG["cldnr_api_secret"]
-    )
-else:
-    CLDNR_CONFIG = None
 
 users_router = APIRouter(prefix="/users")
 templates = CustomJinja2Templates(directory='templates')
@@ -115,7 +98,7 @@ def change_avatar(request: Request, file: UploadFile = File(...)):
             users_service.update_user_avatar_url(user.id, image_url)
             return RedirectResponse("/users/info", status_code=302)
         
-        except Exception:
+        except:
             print(traceback.format_exc())
             pass
     

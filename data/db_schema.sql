@@ -18,8 +18,10 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`categories` (
   `name` VARCHAR(45) NOT NULL,
   `is_private` TINYINT(4) NOT NULL,
   `is_locked` TINYINT(4) NOT NULL,
+  `image_url` TEXT NULL DEFAULT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -30,12 +32,12 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`users` (
   `username` VARCHAR(45) NOT NULL,
   `password_hash` VARCHAR(255) NOT NULL,
   `is_admin` TINYINT(4) NOT NULL,
-  `avatar_url` VARCHAR(255) NULL DEFAULT NULL,
+  `avatar_url` TEXT NULL DEFAULT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   UNIQUE INDEX `user_name_UNIQUE` (`username` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 16;
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -68,7 +70,8 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`conversations` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(90) NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -98,7 +101,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`messages` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `text` TEXT NOT NULL,
+  `text` VARCHAR(255) NOT NULL,
   `conversation_id` INT(11) NOT NULL,
   `sender_id` INT(11) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
@@ -116,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`messages` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 9;
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -125,11 +128,12 @@ AUTO_INCREMENT = 9;
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`topics` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` VARCHAR(45) NOT NULL,
-  `content` TEXT NOT NULL,
+  `content` VARCHAR(1000) NOT NULL,
   `category_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `is_locked` TINYINT(4) NOT NULL,
   `best_reply_id` INT(11) NULL DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
   PRIMARY KEY (`id`),
   INDEX `fk_topics_categories_idx` (`category_id` ASC) VISIBLE,
   INDEX `fk_topics_users1_idx` (`user_id` ASC) VISIBLE,
@@ -150,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`topics` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 13;
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -158,7 +162,7 @@ AUTO_INCREMENT = 13;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `text` VARCHAR(255) NOT NULL,
+  `text` TEXT NOT NULL,
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
@@ -175,7 +179,8 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
     REFERENCES `forum_system_db`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -200,7 +205,8 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`votes` (
     REFERENCES `forum_system_db`.`users` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

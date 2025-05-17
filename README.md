@@ -115,6 +115,10 @@ Forum-System/
      CLDNR_API_KEY=your_cloudinary_api_key
      CLDNR_API_SECRET=your_cloudinary_api_secret
      # =====================================================================
+     
+     # ================= PRIVATE NASA API Key (Optional) ===================
+     NASA_API_KEY=your_nasa_api_key
+     # =====================================================================
      ```
 
    - Import the schema from `db_schema.sql` (located in the `data` folder) into your running MariaDB server.

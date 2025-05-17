@@ -5,7 +5,7 @@ from data.models import Reply, ReplyCreate
 
 def get_by_topic(topics_id: int):
     sql = """
-    SELECT r.id, r.text, r.topic_id, r.user_id, r.created_at, u.username
+    SELECT r.id, r.text, r.topic_id, r.user_id, r.created_at, u.username, u.avatar_url
     FROM replies r
     JOIN users u ON r.user_id = u.id
     WHERE r.topic_id = ?
@@ -15,16 +15,10 @@ def get_by_topic(topics_id: int):
     return [Reply.from_query_result(*row) for row in data]
 
 def create(reply_data: ReplyCreate, user_id: int, topic_id: int):
-    sql = """INSERT INTO replies ( text, topic_id, user_id, created_at) VALUES (?, ?, ?, ?)"""
+    sql = """INSERT INTO replies (text, topic_id, user_id) VALUES (?, ?, ?)"""
 
-    now = datetime.now(timezone.utc)
-
-    new_id = insert_query(sql,(reply_data.text, topic_id, user_id, now))
-
-    if not new_id:
-        return None
-
-    return Reply.from_query_result(new_id, reply_data.text, topic_id, user_id, now)
+    new_id = insert_query(sql,(reply_data.text, topic_id, user_id))
+    return True if new_id else False
 
 def exists(reply_id: int):
     return any(read_query("""SELECT 1 FROM replies WHERE id = ?""",(reply_id,)))
