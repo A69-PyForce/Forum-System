@@ -124,12 +124,12 @@ Forum-System/
    - Import the schema from `db_schema.sql` (located in the `data` folder) into your running MariaDB server.
 
 6. **Start the server**
-- **Option 1:** Run the `main.py` file with your preffered IDE.
-- **Option 2:** In CMD or Powershell, navigate to the project root and run the `main.py` file with:
-  ```sh
-  python ./main.py
-  ```
-  If everything is configured properly, the web server will be available at: [http://localhost:8000/](http://localhost:8000/)
+  - **Option 1:** Run the `main.py` file with your preffered IDE.
+  - **Option 2:** In CMD or Powershell, navigate to the project root and run the `main.py` file with:
+    ```sh
+    python ./main.py
+    ```
+    If everything is configured properly, the web server will be available at: [http://localhost:8000/](http://localhost:8000/)
 ---
 
 ## API Overview
