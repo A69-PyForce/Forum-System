@@ -9,13 +9,28 @@ from services import topics_service, categories_service
 
 
 class CategoryTopicResponseModel(BaseModel):
+    """
+    Response model combining a Category and its associated Topics.
+    """
     category: Category
     topics: list[Topic]
 
 class CategoryCreate(BaseModel):
+    """
+    Model for creating a new category.
+
+    Attributes:
+        name (str): The name of the new category.
+    """
     name: str
 
 class CategoryLockRequest(BaseModel):
+    """
+    Model for updating the lock status of a category.
+
+    Attributes:
+        is_locked (bool): Whether the category is locked or unlocked.
+    """
     is_locked: bool
 
 api_categories_router = APIRouter(prefix="/api/categories")
@@ -39,6 +54,20 @@ def get_category_by_id(
         sort_by: str | None = None,
         page: int = 1,
         size: int = 5):
+    """
+    Get a single category by ID with its related topics.
+
+    Args:
+        id (int): The ID of the category.
+        search (Optional[str]): Optional keyword for filtering topics.
+        sort (Optional[str]): Sort direction ('asc' or 'desc').
+        sort_by (Optional[str]): Attribute to sort by (e.g. 'title').
+        page (int): Page number for pagination.
+        size (int): Number of topics per page.
+
+    Returns:
+        CategoryTopicResponseModel | list[Topic] | NotFound: Category with topics or an error response.
+    """
 
     category = categories_service.get_by_id(id)
     if not category:
@@ -55,6 +84,16 @@ def get_category_by_id(
 
 @api_categories_router.post("/")
 def create_category(category_data: CategoryCreate, u_token: str = Header()):
+    """
+    Create a new category (admin only).
+
+    Args:
+        category_data (CategoryCreate): The category data.
+        u_token (str): Authentication token.
+
+    Returns:
+        Category | BadRequest | Unauthorized: Created category or error.
+    """
     user = get_user_or_raise_401(u_token)
     if not user.is_admin:
         return Unauthorized("Admin access required.")
@@ -73,6 +112,17 @@ def create_category(category_data: CategoryCreate, u_token: str = Header()):
 
 @api_categories_router.patch("/{id}/privacy", response_model=Category)
 def update_category_privacy(id: int, category_data: CategoryPrivacyUpdate, u_token: str = Header()):
+    """
+    Update a category's privacy setting (admin only).
+
+    Args:
+        id (int): The category ID.
+        category_data (CategoryPrivacyUpdate): New privacy status.
+        u_token (str): Authentication token.
+
+    Returns:
+        Category | BadRequest | NotFound | Unauthorized: Updated category or error.
+    """
     user = get_user_or_raise_401(u_token)
     if not user.is_admin:
         return Unauthorized("Admin access required.")
@@ -88,6 +138,17 @@ def update_category_privacy(id: int, category_data: CategoryPrivacyUpdate, u_tok
 
 @api_categories_router.patch("/{id}/lock", response_model=Category)
 def set_category_lock(id: int, data: CategoryLockRequest, u_token: str = Header()):
+    """
+    Lock or unlock a category (admin only).
+
+    Args:
+        id (int): The category ID.
+        data (CategoryLockRequest): Lock status to apply.
+        u_token (str): Authentication token.
+
+    Returns:
+        Category | BadRequest | NotFound | Unauthorized: Updated category or error.
+    """
     user = get_user_or_raise_401(u_token)
     if not user.is_admin:
         return Unauthorized("Admin access required.")

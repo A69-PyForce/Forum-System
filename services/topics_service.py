@@ -4,15 +4,15 @@ from data.models import Topic, TopicCreate
 
 def all(search: str = None, *, limit: int = None, offset: int = None):
     """
-    Retrieve all topics with optional search and pagination.
+    Retrieve all topics, with optional search by title and pagination.
 
     Args:
         search (str | None): Substring to filter topics by title.
-        limit (int | None): Maximum number of records to return.
-        offset (int | None): Number of records to skip.
+        limit (int | None): Maximum number of topics to return.
+        offset (int | None): Number of topics to skip (for pagination).
 
     Returns:
-        Generator[Topic]: A generator yielding Topic instances.
+        Generator[Topic]: A generator yielding Topic instances from the database.
     """
     if search is None:
         query = """
@@ -38,15 +38,15 @@ def all(search: str = None, *, limit: int = None, offset: int = None):
 
 def sort(topics: list[Topic], *, attribute="title", reverse=False):
     """
-    Sort a list of Topic instances by a given attribute.
+    Sort a list of topics by a given attribute.
 
     Args:
         topics (list[Topic]): List of topics to sort.
-        attribute (str): Attribute name to sort by ('title', 'content', or 'id').
-        reverse (bool): Whether to sort in descending order.
+        attribute (str): Attribute to sort by ('title', 'content', 'id'). Defaults to 'title'.
+        reverse (bool): Whether to sort in descending order. Defaults to False.
 
     Returns:
-        list[Topic]: Sorted list of Topic instances.
+        list[Topic]: A sorted list of topics.
     """
     if attribute == "title":
         sort_fn = lambda t: t.title
@@ -60,10 +60,10 @@ def sort(topics: list[Topic], *, attribute="title", reverse=False):
 
 def get_by_id(id: int):
     """
-    Retrieve a single topic by its ID.
+    Retrieve a topic from the database by its unique ID.
 
     Args:
-        id (int): The ID of the topic to fetch.
+        id (int): Unique identifier for the topic.
 
     Returns:
         Topic | None: The Topic instance if found, else None.
@@ -78,14 +78,14 @@ def get_by_id(id: int):
 
 def create(topic: TopicCreate, user_id: int):
     """
-    Create a new topic record in the database.
+    Create a new topic in the database.
 
     Args:
-        topic (TopicCreate): Model containing title, content, and category_id.
+        topic (TopicCreate): Pydantic model containing the title, content, and category_id.
         user_id (int): ID of the user creating the topic.
 
     Returns:
-        Topic | None: The newly created Topic instance, or None on failure.
+        Topic | None: The newly created Topic instance if successful, or None on failure.
     """
     new_id = insert_query(
         'INSERT INTO topics(title ,content , category_id, user_id, is_locked) VALUES(?,?,?,?,?)',
@@ -106,21 +106,42 @@ def create(topic: TopicCreate, user_id: int):
 
 def select_best_reply(topic_id: int, reply_id: int) -> bool:
     """
-    Marks reply_id as the best reply for topic_id.
-    Returns True if the update affected a row.
+    Mark a specific reply as the 'best reply' for a topic.
+
+    Args:
+        topic_id (int): ID of the topic.
+        reply_id (int): ID of the reply to mark as best.
+
+    Returns:
+        bool: True if the update succeeded (row was changed), False otherwise.
     """
     sql = "UPDATE topics SET best_reply_id = ? WHERE id = ?"
     return update_query(sql, (reply_id, topic_id)) > 0
 
 def set_locked(topic_id: int, locked: bool) -> bool:
     """
-    Toggle the is_locked flag for a topic.
-    Returns True if exactly one row was updated.
+    Set the is_locked flag for a topic (lock or unlock the topic).
+
+    Args:
+        topic_id (int): ID of the topic.
+        locked (bool): True to lock, False to unlock.
+
+    Returns:
+        bool: True if the update affected one row, False otherwise.
     """
     sql = "UPDATE topics SET is_locked = ? WHERE id = ?"
     return update_query(sql, (1 if locked else 0, topic_id)) == 1
 
 def toggle_lock(topic_id: int) -> bool:
+    """
+    Toggle the lock status of a topic (locked/unlocked).
+
+    Args:
+        topic_id (int): ID of the topic.
+
+    Returns:
+        bool: True if the lock status was toggled successfully, False otherwise.
+    """
     result = read_query("SELECT is_locked FROM topics WHERE id = ?", (topic_id,))
     if not result:
         return False
