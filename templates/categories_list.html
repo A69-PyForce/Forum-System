@@ -63,7 +63,7 @@
         {% if request.query_params.get("created") == "1" %}
         <p class="success-message">✅ Category created successfully!</p>
         {% elif request.query_params.get("created") == "0" %}
-        <p class="error-message">❌ An issue while creating this category.</p>
+        <p class="error-message">❌ An issue occurred while creating this category.</p>
         {% endif %}
     </div>
     {{ load_footer() }}
