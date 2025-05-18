@@ -29,6 +29,7 @@
                         el.innerHTML = `<h4 class="error-message">${apod.error}</h4>`;
                         return;
                     }
+                    if (Array.isArray(apod)) apod = apod[0];
                     let html = `<h3>${apod.title}</h3>`;
                     if (apod.media_type === "image") {
                         html += `<img src="${apod.url}" alt="${apod.title}" class="apod-image">`;

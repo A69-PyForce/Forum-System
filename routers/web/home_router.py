@@ -13,7 +13,7 @@ templates = CustomJinja2Templates(directory='templates')
 async def get_apod():
     try:
         async with httpx.AsyncClient() as client:
-            resp = await client.get(NASA_APOD_URL, params={"api_key": NASA_API_KEY})
+            resp = await client.get(NASA_APOD_URL, params={"count": 1, "api_key": NASA_API_KEY})
             if resp.status_code == 200:
                 return resp.json()
     except Exception:
