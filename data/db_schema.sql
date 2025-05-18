@@ -68,7 +68,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`conversations` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(90) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
@@ -162,7 +162,7 @@ AUTO_INCREMENT = 1;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `text` TEXT NOT NULL,
+  `text` VARCHAR(255) NOT NULL,
   `topic_id` INT(11) NOT NULL,
   `user_id` INT(11) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 1;
+AUTO_INCREMENT = 36;
 
 
 -- -----------------------------------------------------
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`votes` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 1;
+AUTO_INCREMENT = 19;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
