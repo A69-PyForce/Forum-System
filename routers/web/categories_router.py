@@ -1,3 +1,4 @@
+from urllib import response
 from fastapi import APIRouter, Request, Form, UploadFile, File
 from common import authenticate
 from common.template_config import CustomJinja2Templates
@@ -57,7 +58,7 @@ def get_category_details(id: int, request: Request):
     topics = list(categories_service.topics_by_category(category_id=id))
     categories = list(categories_service.all())
     categories_dict = {cat.id: cat for cat in categories}
-
+    
     created = request.query_params.get("created")
 
     return templates.TemplateResponse(
@@ -103,8 +104,7 @@ def create_topic_for_category(
     id: int,
     request: Request,
     title: str = Form(...),
-    content: str = Form(...),
-):
+    content: str = Form(...)):
     """
     Create a new topic in a given category (user must be logged in).
 
@@ -121,11 +121,32 @@ def create_topic_for_category(
     if not user:
         return RedirectResponse(url="/users/login", status_code=302)
 
-    topic_data = TopicCreate(title=title, content=content, category_id=id)
-    topics_service.create(topic_data, user.id)
+    try:
+        topic_data = TopicCreate(title=title, content=content, category_id=id)
+        topics_service.create(topic_data, user.id)
+        return RedirectResponse(url=f"/categories/{id}", status_code=302)
+    
+    except:
+        print(traceback.format_exc())
+        category = categories_service.get_by_id(id)
+        topics = list(categories_service.topics_by_category(category_id=id))
+        categories = list(categories_service.all())
+        categories_dict = {cat.id: cat for cat in categories}
+        return templates.TemplateResponse(
+        request=request,
+        name="category_details.html",
+        context={
+            "request": request,
+            "category": category,
+            "topics": topics,
+            "categories": categories_dict,
+            "user": user,
+            "created": "0",
+            "is_admin": user.is_admin,
+            "error": "Category creation failed."
+        })
 
-    return RedirectResponse(url=f"/categories/{id}", status_code=302)
-
+    
 @category_router.post("/{id}/toggle-lock")
 def category_lock(id: int, request: Request):
     """
@@ -205,24 +226,21 @@ async def upload_category_image(request: Request, id: int, file: UploadFile = Fi
         
         except:
             print(traceback.format_exc())
-            pass
-    
-    # Render the template with an error message
-    category = categories_service.get_by_id(id)
-    topics = list(categories_service.topics_by_category(id))
-    categories = list(categories_service.all())
-    categories_dict = {cat.id: cat for cat in categories}
+            # Render the template with an error message
+            category = categories_service.get_by_id(id)
+            topics = list(categories_service.topics_by_category(id))
+            categories = list(categories_service.all())
+            categories_dict = {cat.id: cat for cat in categories}
 
-    return templates.TemplateResponse(
-        request=request,
-        name="category_details.html",
-        context={
-            "request": request,
-            "category": category,
-            "topics": topics,
-            "categories": categories_dict,
-            "is_admin": user.is_admin,
-            "user": user,
-            "image_error": "Image upload failed."
-        }
-    )
+            return templates.TemplateResponse(
+                request=request,
+                name="category_details.html",
+                context={
+                    "request": request,
+                    "category": category,
+                    "topics": topics,
+                    "categories": categories_dict,
+                    "is_admin": user.is_admin,
+                    "user": user,
+                    "error": "Image upload failed."
+            })
