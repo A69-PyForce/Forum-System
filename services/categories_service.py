@@ -75,6 +75,15 @@ def exists(id: int):
 
 
 def get_by_id(category_id: int):
+    """
+    Retrieve a category by its ID.
+
+    Args:
+        category_id (int): The unique ID of the category.
+
+    Returns:
+        Category | None: The Category instance if found, else None.
+    """
     data = read_query(
         """SELECT id, name, is_private, is_locked, image_url
             FROM categories 
@@ -83,12 +92,31 @@ def get_by_id(category_id: int):
     return next((Category.from_query_result(*row) for row in data), None)
 
 def create(category: Category) -> Category:
+    """
+    Create a new category in the database.
+
+    Args:
+        category (Category): The Category object to insert.
+
+    Returns:
+        Category: The newly created Category object (with assigned ID).
+    """
     sql = """INSERT INTO categories (name, is_private, is_locked)VALUES(?, ?, ?)"""
     new_id = insert_query(sql, (category.name, category.is_private, category.is_locked))
 
     return Category.from_query_result(id=new_id, name=category.name, is_private=category.is_private, is_locked=category.is_locked)
 
 def set_privacy(category_id: int, is_private: bool) -> bool:
+    """
+    Set the privacy flag (public/private) of a category.
+
+    Args:
+        category_id (int): The category's ID.
+        is_private (bool): True for private, False for public.
+
+    Returns:
+        bool: True if exactly one row was updated, else False.
+    """
     sql = """UPDATE categories SET is_private = ? WHERE id = ?"""
     rows = update_query(sql, (1 if is_private else 0, category_id))
     return rows == 1
@@ -96,12 +124,28 @@ def set_privacy(category_id: int, is_private: bool) -> bool:
 def set_locked(category_id: int, locked: bool) -> bool:
     """
     Set the is_locked flag on a category.
-    Returns True if exactly one row was updated.
+
+    Args:
+        category_id (int): The category's ID.
+        locked (bool): True to lock, False to unlock.
+
+    Returns:
+        bool: True if exactly one row was updated, else False.
     """
     sql = "UPDATE categories SET is_locked = ? WHERE id = ?"
     return update_query(sql, (1 if locked else 0, category_id)) == 1
 
 def update_category_image_url(category_id: int, image_url: str) -> bool:
+    """
+    Update the image URL for a category.
+
+    Args:
+        category_id (int): The category's ID.
+        image_url (str): The new image URL.
+
+    Returns:
+        bool: True if the image URL was successfully updated, else False.
+    """
     return update_query(
         "UPDATE categories SET image_url = ? WHERE id = ?", (image_url, category_id)
     )

@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Request, Form, UploadFile, File
-from starlette.responses import RedirectResponse
 from common import authenticate
 from common.template_config import CustomJinja2Templates
 from data.models import Category, TopicCreate
 from data.database import CLDNR_CONFIG
-from services import categories_service, topics_service
+from services import topics_service
 from fastapi.responses import RedirectResponse
 from services import categories_service
 import io
@@ -17,6 +16,15 @@ templates = CustomJinja2Templates(directory='templates')
 
 @category_router.get("")
 def get_categories(request: Request):
+    """
+    Render a page displaying all forum categories.
+
+    Args:
+        request (Request): The current HTTP request.
+
+    Returns:
+        TemplateResponse: The rendered template showing the list of categories.
+    """
     user = authenticate.get_user_if_token(request)
 
     categories = list(categories_service.all())
@@ -28,6 +36,16 @@ def get_categories(request: Request):
 
 @category_router.get("/{id}")
 def get_category_details(id: int, request: Request):
+    """
+    Render a page showing details for a specific category, including its topics.
+
+    Args:
+        id (int): The category ID.
+        request (Request): The current HTTP request.
+
+    Returns:
+        TemplateResponse or RedirectResponse: The rendered details page, or a redirect if the category is not found.
+    """
     user = authenticate.get_user_if_token(request)
     is_admin = user and user.is_admin
 
@@ -58,6 +76,16 @@ def get_category_details(id: int, request: Request):
 
 @category_router.post("/create")
 def create_category(request: Request, name: str = Form(...)):
+    """
+    Create a new forum category (admin only).
+
+    Args:
+        request (Request): The current HTTP request.
+        name (str): The category name from the submitted form.
+
+    Returns:
+        RedirectResponse: Redirects to the categories list with a success or failure status.
+    """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
         return RedirectResponse(url="/users/login", status_code=302)
@@ -77,6 +105,18 @@ def create_topic_for_category(
     title: str = Form(...),
     content: str = Form(...),
 ):
+    """
+    Create a new topic in a given category (user must be logged in).
+
+    Args:
+        id (int): The category ID.
+        request (Request): The current HTTP request.
+        title (str): The topic title from the form.
+        content (str): The topic content from the form.
+
+    Returns:
+        RedirectResponse: Redirects to the category details page, or to login if not authenticated.
+    """
     user = authenticate.get_user_if_token(request)
     if not user:
         return RedirectResponse(url="/users/login", status_code=302)
@@ -88,6 +128,16 @@ def create_topic_for_category(
 
 @category_router.post("/{id}/toggle-lock")
 def category_lock(id: int, request: Request):
+    """
+    Toggle the locked/unlocked status of a category (admin only).
+
+    Args:
+        id (int): The category ID.
+        request (Request): The current HTTP request.
+
+    Returns:
+        RedirectResponse: Redirects to the category details page or home if unauthorized.
+    """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
         return RedirectResponse(url="/", status_code=302)
@@ -101,6 +151,16 @@ def category_lock(id: int, request: Request):
 
 @category_router.post("/{id}/toggle-private")
 def toggle_category_privacy(id: int, request: Request):
+    """
+    Toggle the privacy (public/private) status of a category (admin only).
+
+    Args:
+        id (int): The category ID.
+        request (Request): The current HTTP request.
+
+    Returns:
+        RedirectResponse: Redirects to the category details page or home if unauthorized.
+    """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
         return RedirectResponse(url="/", status_code=302)
@@ -114,6 +174,17 @@ def toggle_category_privacy(id: int, request: Request):
 
 @category_router.post("/{id}/image")
 async def upload_category_image(request: Request, id: int, file: UploadFile = File(...)):
+    """
+    Upload and set a new image for a category (admin only). Resizes image and uploads to Cloudinary if configured.
+
+    Args:
+        request (Request): The current HTTP request.
+        id (int): The category ID.
+        file (UploadFile): The uploaded image file.
+
+    Returns:
+        RedirectResponse or TemplateResponse: Redirects on success, or renders the details page with an error message on failure.
+    """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
         return RedirectResponse(url=f"/categories/{id}", status_code=302)

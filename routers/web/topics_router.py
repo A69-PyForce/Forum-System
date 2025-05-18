@@ -11,6 +11,15 @@ templates = CustomJinja2Templates(directory='templates')
 
 @topic_router.get("")
 def view_topics(request: Request):
+    """
+    Render a page displaying all topics.
+
+    Args:
+        request (Request): The current HTTP request.
+
+    Returns:
+        TemplateResponse: The rendered template with a list of topics.
+    """
     user = authenticate.get_user_if_token(request)
     topics = list(topics_service.all())
     categories = list(categories_service.all())
@@ -28,6 +37,17 @@ def view_topics(request: Request):
 
 @topic_router.post("/{id}/replies")
 def add_reply(id: int, request: Request, content: str = Form(...)):
+    """
+    Add a reply to a topic. User must be logged in.
+
+    Args:
+        id (int): The topic ID.
+        request (Request): The current HTTP request.
+        content (str): The reply content, from the form.
+
+    Returns:
+        RedirectResponse or TemplateResponse: Redirect to the topic, or re-render the topic page with an error.
+    """
     user = authenticate.get_user_if_token(request)
     if not user:
         return RedirectResponse(url="/users/login", status_code=302)
@@ -53,6 +73,15 @@ def add_reply(id: int, request: Request, content: str = Form(...)):
 
 @topic_router.get("/create")
 def create_topic_form(request: Request):
+    """
+    Render the form for creating a new topic.
+
+    Args:
+        request (Request): The current HTTP request.
+
+    Returns:
+        TemplateResponse or RedirectResponse: The topic creation form, or redirect to login if not authenticated.
+    """
     user = authenticate.get_user_if_token(request)
     if not user:
         return RedirectResponse("/users/login", status_code=302)
@@ -67,6 +96,16 @@ def create_topic_form(request: Request):
 
 @topic_router.get("/{id}")
 def topic_details(id: int, request: Request):
+    """
+    Render a page displaying the details of a single topic, including replies.
+
+    Args:
+        id (int): The topic ID.
+        request (Request): The current HTTP request.
+
+    Returns:
+        TemplateResponse or RedirectResponse: The topic details template, or redirect to topics list if not found.
+    """
     user = authenticate.get_user_if_token(request)
     
     topic = topics_service.get_by_id(id)
@@ -86,10 +125,23 @@ def topic_details(id: int, request: Request):
         "replies": replies,
         "is_admin": is_admin,
         "votes": votes
-    })
+    }
+)
 
 @topic_router.post("/create")
 def create_topic(request: Request, title: str = Form(...),content: str = Form(...), category_id: int = Form(...)):
+    """
+    Handle submission of the new topic creation form.
+
+    Args:
+        request (Request): The current HTTP request.
+        title (str): The topic title.
+        content (str): The topic content.
+        category_id (int): The category ID for the new topic.
+
+    Returns:
+        RedirectResponse or TemplateResponse: Redirect to topics list on success, or re-render the form with an error.
+    """
     user = authenticate.get_user_if_token(request)
     if not user:
         return RedirectResponse(url="/users/login", status_code=302)
@@ -103,10 +155,22 @@ def create_topic(request: Request, title: str = Form(...),content: str = Form(..
         categories = list(categories_service.all())
         return templates.TemplateResponse(request=request, name="create_topic.html", context={
             "request": request, "user": user, "categories": categories, "error": "An issue occured while creating your topic."
-        })
+        }
+)
 
 @topic_router.post("/{topic_id}/best-reply/{reply_id}")
 def mark_best_reply(topic_id: int, reply_id: int, request: Request):
+    """
+    Mark a reply as the best answer for a topic. Only the topic author can perform this.
+
+    Args:
+        topic_id (int): The topic ID.
+        reply_id (int): The reply ID.
+        request (Request): The current HTTP request.
+
+    Returns:
+        RedirectResponse: Redirects back to the topic details page.
+    """
     user = authenticate.get_user_if_token(request)
     topic = topics_service.get_by_id(topic_id)
 
@@ -119,6 +183,18 @@ def mark_best_reply(topic_id: int, reply_id: int, request: Request):
 
 @topic_router.post("/{topic_id}/vote/{reply_id}")
 def vote_reply(topic_id: int, reply_id: int, request: Request, type_vote: str = Form(...)):
+    """
+    Upvote or downvote a reply for a topic.
+
+    Args:
+        topic_id (int): The topic ID.
+        reply_id (int): The reply ID to vote on.
+        request (Request): The current HTTP request.
+        type_vote (str): The type of vote ('upvote' or 'downvote').
+
+    Returns:
+        RedirectResponse: Redirects back to the topic details page.
+    """
     user = authenticate.get_user_if_token(request)
     if not user:
         return RedirectResponse("/users/login", status_code=302)
@@ -129,6 +205,16 @@ def vote_reply(topic_id: int, reply_id: int, request: Request, type_vote: str = 
 
 @topic_router.post("/{id}/toggle-lock")
 def toggle_lock(id: int, request: Request):
+    """
+    Toggle the lock status of a topic (only for the topic author or admin).
+
+    Args:
+        id (int): The topic ID.
+        request (Request): The current HTTP request.
+
+    Returns:
+        RedirectResponse: Redirects back to the topic details page.
+    """
     user = authenticate.get_user_if_token(request)
     if not user:
         return RedirectResponse("/users/login", status_code=302)

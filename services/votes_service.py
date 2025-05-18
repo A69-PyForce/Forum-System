@@ -4,10 +4,20 @@ from data.models import Vote
 
 def vote(reply_id: int, user_id: int, type_vote: str):
     """
-    Creates or updates a vote. A user can only have one vote per reply.
-    If the vote exists and is the same type, returns it unchanged.
-    If it exists and is different, updates it.
-    Otherwise, inserts a new row.
+    Create or update a user's vote on a reply.
+
+    Each user can have only one vote (up or down) per reply:
+      - If the vote does not exist, insert a new vote.
+      - If the same vote type already exists, return the existing vote.
+      - If the vote exists but is a different type, update it.
+
+    Args:
+        reply_id (int): The ID of the reply being voted on.
+        user_id (int): The ID of the user casting the vote.
+        type_vote (str): The type of vote ("up" or "down").
+
+    Returns:
+        Vote: The created or updated Vote object.
     """
 
     rows = read_query("SELECT id, type_vote FROM votes WHERE reply_id = ? AND user_id = ?",
@@ -31,6 +41,17 @@ def vote(reply_id: int, user_id: int, type_vote: str):
 
 
 def count_votes_for_replies(topic_id: int) -> dict[int, dict[str, int]]:
+    """
+    Count upvotes and downvotes for all replies in a topic.
+
+    Args:
+        topic_id (int): The ID of the topic whose replies are counted.
+
+    Returns:
+        dict[int, dict[str, int]]: A dictionary mapping reply IDs to dictionaries
+        with keys 'up' and 'down', containing the respective vote counts.
+        Example: { 17: {'up': 5, 'down': 2}, ... }
+    """
     data = read_query("""
         SELECT r.id, 
                SUM(CASE WHEN v.type_vote = 'up' THEN 1 ELSE 0 END) as up_votes,
