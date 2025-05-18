@@ -180,7 +180,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`replies` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 36;
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `forum_system_db`.`votes` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 19;
+AUTO_INCREMENT = 1;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
