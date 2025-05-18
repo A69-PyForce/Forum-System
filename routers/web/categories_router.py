@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form, UploadFile, File
 from starlette.responses import RedirectResponse
 from common import authenticate
 from common.template_config import CustomJinja2Templates
-from data.models import TopicCreate
+from data.models import Category, TopicCreate
 from data.database import CLDNR_CONFIG
 from services import categories_service, topics_service
 from fastapi.responses import RedirectResponse
@@ -61,9 +61,14 @@ def create_category(request: Request, name: str = Form(...)):
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
         return RedirectResponse(url="/users/login", status_code=302)
-
-    categories_service.create(name)
-    return RedirectResponse(url="/categories?created=1", status_code=302)
+    
+    try:
+        category = Category(name=name, is_private=0, is_locked=0)
+        categories_service.create(category)
+        return RedirectResponse(url="/categories?created=1", status_code=302)
+    except:
+        print(traceback.format_exc())
+        return RedirectResponse(url="/categories?created=0", status_code=302)  
 
 @category_router.post("/{id}/topics")
 def create_topic_for_category(

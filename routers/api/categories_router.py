@@ -1,5 +1,7 @@
+import traceback
 from fastapi import APIRouter, Header
 from pydantic import BaseModel
+from common import responses
 from common.authenticate import get_user_or_raise_401
 from common.responses import NotFound, Unauthorized, BadRequest
 from data.models import Category, Topic, CategoryPrivacyUpdate
@@ -60,9 +62,14 @@ def create_category(category_data: CategoryCreate, u_token: str = Header()):
     name = category_data.name.strip()
     if not name:
         return BadRequest("Category name must not be empty.")
+    try:
+        category = Category(name=category_data.name, is_private=0, is_locked=0)
+        new_category = categories_service.create(category)
+        return new_category
 
-    new_category = categories_service.create(name)
-    return new_category
+    except:
+        print(traceback.format_exc())
+        return responses.BadRequest(f"Invalid category name: {category_data.name}")
 
 @api_categories_router.patch("/{id}/privacy", response_model=Category)
 def update_category_privacy(id: int, category_data: CategoryPrivacyUpdate, u_token: str = Header()):

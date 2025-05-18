@@ -21,31 +21,30 @@ def create_new_message(message_data: Message) -> bool:
     
     return True if last_row_id else False
 
-def create_conversation(conversation_name: str, user_ids: list[int]) -> CreateConversationResponse | None:
+def create_conversation(conv_data: CreateConversation) -> CreateConversationResponse | None:
     """
     Create a new conversation with the given name and participants.
 
     Args:
-        conversation_name (str): The name of the conversation.
-        user_ids (list[int]): List of user IDs to add to the conversation.
+        conv_data (CreateConversation): The model containing name and user ids for the conversation.
 
     Returns:
         CreateConversationResponse: The created conversation data if successful.
         None: If creation failed.
     """
-    if len(user_ids) < 1: return None
+    if len(conv_data.user_ids) < 1: return None
     
     # Create a new conversation in conversations table
     query = "INSERT INTO conversations(name) VALUES (?)"
-    conversation_id = insert_query(query, (conversation_name,))
+    conversation_id = insert_query(query, (conv_data.name,))
     
     if not conversation_id: return None
     
     # Update conversations_has_users table
     query = "INSERT INTO conversations_has_users(conversation_id, user_id) VALUES (?, ?)"
-    for id in user_ids: insert_query(query, (conversation_id, id,))
+    for id in conv_data.user_ids: insert_query(query, (conversation_id, id,))
 
-    return CreateConversationResponse.from_query_result(id=conversation_id, name=conversation_name, user_ids=user_ids)
+    return CreateConversationResponse.from_query_result(id=conversation_id, name=conv_data.name, user_ids=conv_data.user_ids)
 
 def add_user_to_conversation(user_id: int, conversation_id: int) -> bool:
     """

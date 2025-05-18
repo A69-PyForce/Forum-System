@@ -8,6 +8,18 @@
 </head>
 
 <body>
+
+    <script src="/static//js/shared.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            characterLimitStyles.trackBySelector('.form-input', 1000);
+            const titleField = document.getElementById('title');
+            if (titleField) {
+                characterLimitStyles.trackElement(titleField, 45);
+            }
+        });
+    </script>
+
     {% from 'macros.html' import load_navbar, load_footer %}
     {{ load_navbar(user) }}
 
@@ -17,7 +29,7 @@
         <div class="card">
             <form action="/topics/create" method="post" class="create-form">
                 <div class="form-group">
-                    <input type="text" name="title" placeholder="Title" class="form-input" required>
+                    <input type="text" name="title" placeholder="Title" class="form-input" id="title" required>
                 </div>
 
                 <div class="form-group">
@@ -38,6 +50,10 @@
 
                 <button type="submit" class="submit-btn">Create</button>
             </form>
+
+            {% if error %}
+            <div class="error-message" style="margin-top: 1rem; margin-bottom: 0rem;">{{ error }}</div>
+            {% endif %}
 
             <div class="back-link">
                 <a href="/topics">← Back to all topics</a>

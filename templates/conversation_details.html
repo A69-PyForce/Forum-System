@@ -9,16 +9,19 @@
     {% from 'macros.html' import load_navbar, load_footer %}
 </head>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const messagesCard = document.querySelector('.messages-card');
-        if (messagesCard) {
-            messagesCard.scrollTop = messagesCard.scrollHeight;
-        }
-    });
-</script>
-
 <body>
+    <script src="/static//js/shared.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const messagesCard = document.querySelector('.messages-card');
+            if (messagesCard) {
+                messagesCard.scrollTop = messagesCard.scrollHeight;
+            }
+            characterLimitStyles.trackBySelector('.message-input', 255);
+            characterLimitStyles.trackBySelector('.user-input', 45);
+        });
+    </script>
+
     {{ load_navbar(get_user(request)) }}
 
     <div class="main-container">
@@ -51,6 +54,10 @@
             <input type="text" name="text" class="message-input" placeholder="Type your message..." required>
             <button type="submit" class="send-btn">Send</button>
         </form>
+
+        {% if error %}
+        <div class="error-message" style="margin-top: 1rem; margin-bottom: 0rem;">{{ error }}</div>
+        {% endif %}
 
         <div class="user-management">
             <div class="user-card">

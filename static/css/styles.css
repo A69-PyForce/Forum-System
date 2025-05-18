@@ -702,6 +702,7 @@ select:focus {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    row-gap: 0rem;
 }
 
 .conversation-create-form {

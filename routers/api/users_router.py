@@ -1,7 +1,9 @@
+import traceback
 from data.models import UserRegisterData, UserLoginData, User
 import services.users_service as user_service
 from common import responses, authenticate
 from fastapi import APIRouter, Header
+from utils.regex_utils import *
 
 api_users_router = APIRouter(prefix='/api/users')
 
@@ -36,12 +38,24 @@ def user_register(user_data: UserRegisterData):
         Created: If user is successfully registered.
         BadRequest: If username is already in use or registration data is invalid.
     """
-    # Check if username exists
-    if user_service.find_user_by_username(user_data.username):
-        return responses.BadRequest(f"Username '{user_data.username}' is already in use.")
+    
+    try:
+        if not match_regex(user_data.username, USERNAME_PATTERN):
+            return responses.BadRequest("Username must be only letters, numbers and no special characters.")
+        
+        if not match_regex(user_data.password, PASSWORD_PATTERN):
+            return responses.BadRequest("Password must be at least 4 characters long and contains at least 1 letter and 1 number.")
+        
+    except:
+        print(traceback.format_exc())
+        return responses.InternalServerError("An error occured while creating your account.")
+    
     user = user_service.register_user(user_data)
-    if not user: responses.BadRequest('Invalid register data.')
-    return responses.Created('User created.')
+    if user: 
+        return responses.Created('User created.')
+    else:
+        return responses.BadRequest(f"Username '{user_data.username}' is already in use.")
+    
 
 @api_users_router.get('/info', response_model=User, response_model_exclude={"password"})
 def user_info(u_token: str = Header()):

@@ -10,6 +10,18 @@
 </head>
 
 <body>
+    <script src="/static//js/shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            characterLimitStyles.trackBySelector('.filter-input', 45);
+            characterLimitStyles.trackBySelector('.form-input', 90);
+            const titleField = document.getElementById('conv-participants');
+            if (titleField) {
+                characterLimitStyles.trackElement(titleField, 45);
+            }
+        });
+    </script>
+
     {{ load_navbar(get_user(request)) }}
 
     <div class="main-container">
@@ -62,7 +74,7 @@
                         <div class="form-group">
                             <label for="conv-name" class="form-label">Conversation Name</label>
                             <input id="conv-name" name="name" type="text" class="form-input"
-                                placeholder="e.g. Project Team" required>
+                                placeholder="e.g. Project Group" required>
                         </div>
 
                         <div class="form-group">
@@ -75,8 +87,9 @@
                     </form>
 
                     {% if error %}
-                    <div class="form-error">{{ error }}</div>
+                    <div class="error-message" style="margin-top: 1rem; margin-bottom: 0rem;">{{ error }}</div>
                     {% endif %}
+
                 </div>
             </div>
         </div>

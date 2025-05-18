@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from data.models import User
 import hashlib
 import os
+import re
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # NOTE: Must have a .env file for auth utils.                     #

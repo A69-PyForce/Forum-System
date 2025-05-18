@@ -9,6 +9,12 @@
 </head>
 
 <body>
+    <script src="/static//js/shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            characterLimitStyles.trackBySelector('.reply-textarea', 255);
+        });
+    </script>
     {% from 'macros.html' import load_navbar, load_footer %}
     {{ load_navbar(user) }}
 
@@ -130,8 +136,12 @@
                             <span class="reply-btn-icon">✉</span>Post Reply
                         </button>
                     </div>
+                    {% if error %}
+                    <div class="error-message" style="margin-top: 1rem; margin-bottom: 0rem;">{{ error }}</div>
+                    {% endif %}
                 </form>
             </div>
+
         </section>
         {% elif topic.is_locked %}
         <div class="topic-card locked-msg">

@@ -82,11 +82,11 @@ def get_by_id(category_id: int):
 
     return next((Category.from_query_result(*row) for row in data), None)
 
-def create(name: str) -> Category:
-    sql = """INSERT INTO categories (name, is_private, is_locked)VALUES(?, 0, 0)"""
-    new_id = insert_query(sql, (name,))
+def create(category: Category) -> Category:
+    sql = """INSERT INTO categories (name, is_private, is_locked)VALUES(?, ?, ?)"""
+    new_id = insert_query(sql, (category.name, category.is_private, category.is_locked))
 
-    return Category.from_query_result(id=new_id, name=name, is_private=0, is_locked=0)
+    return Category.from_query_result(id=new_id, name=category.name, is_private=category.is_private, is_locked=category.is_locked)
 
 def set_privacy(category_id: int, is_private: bool) -> bool:
     sql = """UPDATE categories SET is_private = ? WHERE id = ?"""

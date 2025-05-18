@@ -1,8 +1,10 @@
+import re
 import io
 import traceback
 import cloudinary
 from PIL import Image
 import cloudinary.uploader
+from utils.regex_utils import *
 from services import users_service
 import utils.auth_utils as auth_utils
 from data.database import CLDNR_CONFIG
@@ -41,10 +43,23 @@ def serve_register(request: Request):
 def register(request: Request, username: str = Form(...), password: str = Form(...)):
     
     try:
-        register_data = UserRegisterData(username=username, password=password, is_admin=0) # is_admin always 0 for now because no field for it
-    except ValueError as e: 
+        
+        if not match_regex(username, USERNAME_PATTERN):
+            return templates.TemplateResponse(request=request, name="register.html", context={
+        "error": "Username must be only letters, numbers and no special characters."
+        })
+            
+        if not match_regex(password, PASSWORD_PATTERN):
+            return templates.TemplateResponse(request=request, name="register.html", context={
+        "error": "Password must be at least 4 characters long and contains at least 1 letter and 1 number."
+        })
+    
+        register_data = UserRegisterData(username=username, password=password, is_admin=0)
+        
+    except:
+        print(traceback.format_exc())
         return templates.TemplateResponse(request=request, name="register.html", context={
-        "error": "Password must be at least 4 characters and contain at least 1 letter and 1 number."
+        "error": "An error occured while creating your account."
     })
     
     user = users_service.register_user(register_data)

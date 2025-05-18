@@ -111,13 +111,13 @@ def create_conversation(conv_data: CreateConversation, u_token = Header(), creat
     return conversation
 
 @api_conversations_router.post('/{conversation_id}')
-def create_message_in_conversation(conversation_id: int, message_data: CreateMessage, u_token: str = Header()):
+def create_message_in_conversation(conversation_id: int, message_data: MessageCreate, u_token: str = Header()):
     """
     Add a new message to a conversation.
 
     Args:
         conversation_id (int): ID of the conversation.
-        message_data (CreateMessage): Message content.
+        message_data (MessageCreate): Message content.
         u_token (str): User authentication token from header.
 
     Returns:
@@ -138,7 +138,7 @@ def create_message_in_conversation(conversation_id: int, message_data: CreateMes
 # -----------------------------------------------------------------------------
 
 @api_conversations_router.put('/{conversation_id}/users')
-def add_user_to_conversation(conversation_id: int, username: Name, u_token: str = Header()):
+def add_user_to_conversation(conversation_id: int, username: Username, u_token: str = Header()):
     """
     Add a user to a conversation by username.
 
@@ -172,7 +172,7 @@ def add_user_to_conversation(conversation_id: int, username: Name, u_token: str 
 # -----------------------------------------------------------------------------
 
 @api_conversations_router.delete('/{conversation_id}/users')
-def remove_user_from_conversation(conversation_id: int, username: Name, u_token: str = Header()):
+def remove_user_from_conversation(conversation_id: int, username: Username, u_token: str = Header()):
     """
     Remove a user from a conversation by username.
 

@@ -8,6 +8,15 @@
 </head>
 
 <body>
+
+    <script src="/static//js/shared.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            characterLimitStyles.trackBySelector('.form-input', 1000);
+            characterLimitStyles.trackBySelector('.create-form', 45);
+        });
+    </script>
+
     {% from 'macros.html' import load_navbar, load_topics, load_footer %}
     {{ load_navbar(user) }}
 
@@ -68,7 +77,7 @@
                 <div class="card-header">
                     <h2 class="card-title">Create Topic in {{ category.name }}</h2>
                 </div>
-                <form action="/categories/{{ category.id }}/topics" method="post" class="create-form">
+                <form action="/categories/{{ category.id }}/topics" method="post">
                     <div class="form-group">
                         <input name="title" type="text" placeholder="Title" class="create-form" required>
                     </div>

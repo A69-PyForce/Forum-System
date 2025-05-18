@@ -1,3 +1,4 @@
+import traceback
 from fastapi import APIRouter, Request, Form
 from starlette.responses import RedirectResponse
 from common.template_config import CustomJinja2Templates
@@ -31,10 +32,24 @@ def add_reply(id: int, request: Request, content: str = Form(...)):
     if not user:
         return RedirectResponse(url="/users/login", status_code=302)
 
-    reply_data = ReplyCreate(text=content)
-    replies_service.create(reply_data, user.id, id)
-
-    return RedirectResponse(url=f"/topics/{id}", status_code=302)
+    try:
+        reply_data = ReplyCreate(text=content)
+        replies_service.create(reply_data, user.id, id)
+        return RedirectResponse(url=f"/topics/{id}", status_code=302)
+    except:
+        print(traceback.format_exc())
+        topic = topics_service.get_by_id(id)
+        if not topic:
+            return RedirectResponse(url="/topics", status_code=302)
+        
+        # place marked reply on top of all others
+        replies = sorted(replies_service.get_by_topic(topic.id), key=lambda r: (r.id != topic.best_reply_id, r.created_at))
+        votes = votes_service.count_votes_for_replies(id)
+        is_admin = user and user.is_admin
+        
+        return templates.TemplateResponse(request=request, name="topic_details.html", context={
+        "request": request, "user": user, "topic": topic, "replies": replies, "is_admin": is_admin, "votes": votes,
+        "error": "An error occured while creating your reply."})
 
 @topic_router.get("/create")
 def create_topic_form(request: Request):
@@ -53,13 +68,13 @@ def create_topic_form(request: Request):
 @topic_router.get("/{id}")
 def topic_details(id: int, request: Request):
     user = authenticate.get_user_if_token(request)
+    
     topic = topics_service.get_by_id(id)
-
-    votes = votes_service.count_votes_for_replies(id)
-
     if not topic:
         return RedirectResponse(url="/topics", status_code=302)
 
+    votes = votes_service.count_votes_for_replies(id)
+    # place marked reply on top of all others
     replies = sorted(replies_service.get_by_topic(topic.id), key=lambda r: (r.id != topic.best_reply_id, r.created_at))
 
     is_admin = user and user.is_admin
@@ -79,10 +94,16 @@ def create_topic(request: Request, title: str = Form(...),content: str = Form(..
     if not user:
         return RedirectResponse(url="/users/login", status_code=302)
 
-    topic_data = TopicCreate(title=title, content=content, category_id=category_id)
-    topics_service.create(topic_data, user.id)
-
-    return RedirectResponse(url="/topics", status_code=302)
+    try:
+        topic_data = TopicCreate(title=title, content=content, category_id=category_id)
+        topics_service.create(topic_data, user.id)
+        return RedirectResponse(url="/topics", status_code=302)
+    except:
+        print(traceback.format_exc())
+        categories = list(categories_service.all())
+        return templates.TemplateResponse(request=request, name="create_topic.html", context={
+            "request": request, "user": user, "categories": categories, "error": "An issue occured while creating your topic."
+        })
 
 @topic_router.post("/{topic_id}/best-reply/{reply_id}")
 def mark_best_reply(topic_id: int, reply_id: int, request: Request):

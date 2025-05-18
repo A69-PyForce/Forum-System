@@ -2,34 +2,17 @@ from pydantic import BaseModel, StringConstraints, field_validator
 from datetime import datetime
 from typing import Annotated, Literal, Optional
 
+class Username(BaseModel):
+    name: str
+
 class UserLoginData(BaseModel):
     username: str
     password: str
 
 class UserRegisterData(BaseModel):
     
-    # Username - Only letters, numbers and no special characters.
-    # username: Annotated[str, StringConstraints(pattern=r'^[a-zA-Z0-9]+$')]
-    username: str
-    
-    # Password - Must be at least 4 characters and contain at least 1 letter and 1 number.
-    password: str
-    @field_validator("password")
-    def password_validator(cls, password: str):
-        
-        # Check if password is at least 4 characters long
-        if not len(password) >= 4:
-            raise ValueError("Password must be at least 4 characters long.")
-        
-        # Check if the string contains at least one digit
-        if not any(char.isdigit() for char in password):
-            raise ValueError("Password must contain at least one number.")
-        
-        # Check if the string contains at least one letter
-        if not any(char.isalpha() for char in password):
-            raise ValueError("Password must contain at least one letter.")
-        return password
-    
+    username: Annotated[str, StringConstraints(min_length=1, max_length=45)]
+    password: Annotated[str, StringConstraints(min_length=4, max_length=255)]
     is_admin: int
 
 class User(BaseModel):
@@ -53,7 +36,7 @@ class User(BaseModel):
 
 class Category(BaseModel):
     id: Optional[int] = None
-    name: str
+    name: Annotated[str, StringConstraints(min_length=1, max_length=45)]
     is_private: int
     is_locked: int
     image_url: Optional[str] = None
@@ -92,12 +75,12 @@ class Topic(BaseModel):
         )
 
 class TopicCreate(BaseModel):
-    title: str
-    content: str
+    title: Annotated[str, StringConstraints(min_length=1, max_length=45)]
+    content: Annotated[str, StringConstraints(min_length=1, max_length=1000)]
     category_id: int
 
 class ReplyCreate(BaseModel):
-    text: str
+    text: Annotated[str, StringConstraints(min_length=1, max_length=255)]
 
 class Reply(BaseModel):
     id: Optional[int] = None
@@ -119,9 +102,9 @@ class Reply(BaseModel):
             username=username,
             avatar_url=avatar_url
         )
-
-class Name(BaseModel):
-    name: str
+        
+class MessageCreate(BaseModel):
+    text: Annotated[str, StringConstraints(min_length=1, max_length=255)]
 
 class Message(BaseModel):
     id: Optional[int] = None
@@ -145,8 +128,9 @@ class MessageResponse(BaseModel):
             created_at=created_at
         )
         
-class CreateMessage(BaseModel):
-    text: str
+class CreateConversation(BaseModel):
+    name: Annotated[str, StringConstraints(min_length=1, max_length=90)]
+    user_ids: Optional[list[int]] = None
     
 class Conversation(BaseModel):
     id: int
@@ -207,10 +191,6 @@ class AllConversationsResponse(BaseModel):
             name=name,
             participants=participants
         )
-
-class CreateConversation(BaseModel):
-    name: str
-    user_ids: Optional[list[int]] = None
 
 class VoteCreate(BaseModel):
     type_vote: Literal['up','down']

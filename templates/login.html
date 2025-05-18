@@ -10,6 +10,13 @@
 </head>
 
 <body>
+    <script src="/static//js/shared.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            characterLimitStyles.trackBySelector('.form-control', 45);
+        });
+    </script>
+
     {{ load_navbar(get_user(request)) }}
 
     <div class="login-container">
