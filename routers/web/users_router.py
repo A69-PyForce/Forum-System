@@ -1,4 +1,3 @@
-import re
 import io
 import traceback
 import cloudinary
@@ -73,7 +72,7 @@ def register(request: Request, username: str = Form(...), password: str = Form(.
 def logout():
     response = RedirectResponse(url='/', status_code=302)
     response.delete_cookie("u-token")
-    return response
+    return response # del auth cookie and redirect to homepage
 
 @users_router.get('/info')
 def info(request: Request):
@@ -81,7 +80,7 @@ def info(request: Request):
     if not user:
         return RedirectResponse("/users/login", status_code=302)
     
-    user.password = "" # Hide password hash
+    user.password = "" # Hide password hash NO TOUCHEY!!!
     return templates.TemplateResponse(request=request, name="user_info.html", context={"user": user})
 
 @users_router.post('/avatar')

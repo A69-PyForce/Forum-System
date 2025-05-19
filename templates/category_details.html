@@ -25,7 +25,7 @@
             <img src="{{ category.image_url or '/static/images/default_category.png' }}" class="category-image">
             <div class="category-card-content">
                 <div class="category-title-badges">
-                    <span class="page-title">{{ category.name }}</span>
+                    <span class="page-title">📜 {{ category.name }}</span>
                     {% if category.is_private %}
                     <span class="badge badge-private">Private</span>
                     {% endif %}
@@ -35,10 +35,6 @@
                 </div>
             </div>
         </div>
-
-        {% if created %}
-        <p class="success-message">Topic created successfully!</p>
-        {% endif %}
 
         <div class="topics-section">
             {{ load_topics(topics, categories) }}
@@ -63,10 +59,11 @@
                     <input type="file" name="file" accept="image/*" required>
                     Choose Image
                 </label>
+                {% if error %}
+                <p class="error-message" style="margin-bottom: 0; margin-left: 1rem;">❌ {{ error }}</p>
+                {% endif %}
             </form>
-            {% if error %}
-            <h4 class="error-message" style="margin-bottom: 0rem;">{{ error }}</h4>
-            {% endif %}
+
         </div>
         {% endif %}
 
@@ -75,17 +72,20 @@
         <div class="create-container">
             <div class="card">
                 <div class="card-header">
-                    <h2 class="card-title">Create Topic in {{ category.name }}</h2>
+                    <h2 class="card-title">📝 Create Topic in {{ category.name }}</h2>
                 </div>
                 <form action="/categories/{{ category.id }}/topics" method="post">
                     <div class="form-group">
                         <input name="title" type="text" placeholder="Title" class="create-form" required>
                     </div>
-                    <div class="form-group">
+                    <div class="create-form">
                         <textarea name="content" placeholder="Content" class="form-input"
                             style="min-height: 100px;"></textarea>
+                        <button type="submit" class="btn submit-btn" style="margin-top: 2%;">Create Topic</button>
+                        {% if error and not user.is_admin %}
+                        <p class="error-message" style="margin-bottom: 0; margin-top: 1rem;">❌ {{ error }}</p>
+                        {% endif %}
                     </div>
-                    <button type="submit" class="submit-btn">Create Topic</button>
                 </form>
             </div>
         </div>

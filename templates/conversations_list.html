@@ -22,7 +22,7 @@
 
     <div class="main-container">
         <div class="page-header">
-            <h1 class="page-title">Your Conversations</h1>
+            <h1 class="page-title">💬 Your Conversations</h1>
         </div>
 
         <div class="content-grid">
@@ -42,7 +42,7 @@
                     <ul class="conversation-list">
                         {% for conv in conversations %}
                         <li class="conversation-item">
-                            <a href="/conversations/{{ conv.id }}" class="conversation-link">{{ conv.name }}</a>
+                            <a href="/conversations/{{ conv.id }}" class="conversation-link">🔊 {{ conv.name }}</a>
                             <div class="conversation-participants">
                                 <strong>Participants:</strong>
                                 {% for p in conv.participants %}

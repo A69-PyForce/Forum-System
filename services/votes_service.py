@@ -54,8 +54,8 @@ def count_votes_for_replies(topic_id: int) -> dict[int, dict[str, int]]:
     """
     data = read_query("""
         SELECT r.id, 
-               SUM(CASE WHEN v.type_vote = 'up' THEN 1 ELSE 0 END) as up_votes,
-               SUM(CASE WHEN v.type_vote = 'down' THEN 1 ELSE 0 END) as down_votes
+        SUM(CASE WHEN v.type_vote = 'up' THEN 1 ELSE 0 END) as up_votes,
+        SUM(CASE WHEN v.type_vote = 'down' THEN 1 ELSE 0 END) as down_votes
         FROM replies r
         LEFT JOIN votes v ON r.id = v.reply_id
         WHERE r.topic_id = ?

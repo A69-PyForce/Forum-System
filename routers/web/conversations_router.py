@@ -1,10 +1,10 @@
 import traceback
 from common import authenticate
-from fastapi import APIRouter, Request, Form
 from fastapi.responses import RedirectResponse
 from data.models import Message, CreateConversation
 from common.template_config import CustomJinja2Templates
 from services import conversations_service, users_service
+from fastapi import APIRouter, Request, Form, HTTPException
 
 conversations_router = APIRouter(prefix="/conversations")
 templates = CustomJinja2Templates(directory="templates")
@@ -14,7 +14,7 @@ def get_all_conversations(request: Request, contains_user: str | None = None):
     
     auth_user = authenticate.get_user_if_token(request)
     if not auth_user:
-        return RedirectResponse("/users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
     
     user_ids = set()
     user_ids.add(auth_user.id)
@@ -35,12 +35,12 @@ def get_conversation(conversation_id: int, request: Request):
     
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse("users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
     
     conversation = conversations_service.get_conversation(conversation_id)
     
     if not conversation or not conversations_service.is_user_in_conversation(user.id, conversation_id):
-        return RedirectResponse("/conversations", status_code=302)
+        raise HTTPException(status_code=404, detail="Conversation not found")
     
     return templates.TemplateResponse(
         "conversation_details.html",
@@ -51,7 +51,7 @@ def get_conversation(conversation_id: int, request: Request):
 def create_conversation(request: Request, name: str = Form(...), participants: list[str] = Form(default=[])):
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse("/users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
     
     user_ids = set()
     user_ids.add(user.id)
@@ -81,7 +81,7 @@ def create_message_in_conversation(conversation_id: int, request: Request, text:
     
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse("/users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
     
     try:
         message = Message(text=text, conversation_id=conversation_id, sender_id=user.id)
@@ -99,7 +99,7 @@ def create_message_in_conversation(conversation_id: int, request: Request, text:
 def add_user_to_conversation(conversation_id: int, request: Request, username: str = Form(...)):
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse("/users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
     
     target_user = users_service.find_user_by_username(username)
     if target_user:
@@ -116,7 +116,7 @@ def add_user_to_conversation(conversation_id: int, request: Request, username: s
 def add_user_to_conversation(conversation_id: int, request: Request, username: str = Form(...)):
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse("/users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
     
     target_user = users_service.find_user_by_username(username)
     if target_user:

@@ -131,11 +131,9 @@
                         <textarea name="content" class="reply-textarea" placeholder="Share your thoughts..."
                             required></textarea>
                     </div>
-                    <div class="reply-form-actions">
-                        <button class="reply-submit-btn" type="submit">
-                            <span class="reply-btn-icon">✉</span>Post Reply
-                        </button>
-                    </div>
+                    <button class="reply-submit-btn" type="submit" style="width: 100%; display: block;">
+                        Post Reply
+                    </button>
                     {% if error %}
                     <div class="error-message" style="margin-top: 1rem; margin-bottom: 0rem;">{{ error }}</div>
                     {% endif %}

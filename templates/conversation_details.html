@@ -26,7 +26,7 @@
 
     <div class="main-container">
         <div class="conversation-header">
-            <h1 class="conversation-title">{{ conversation.name }}</h1>
+            <h1 class="conversation-title">🗨️ {{ conversation.name }}</h1>
         </div>
 
         <div class="messages-card">
@@ -62,7 +62,7 @@
         <div class="user-management">
             <div class="user-card">
                 <div class="user-card-header">
-                    <h3 class="user-card-title">Add User</h3>
+                    <h3 class="user-card-title">➕ Add User</h3>
                 </div>
                 <form method="post" action="/conversations/{{ conversation.id }}/add_user" class="user-form">
                     <input type="text" name="username" class="user-input" placeholder="Username" required>
@@ -72,7 +72,7 @@
 
             <div class="user-card">
                 <div class="user-card-header">
-                    <h3 class="user-card-title">Remove User</h3>
+                    <h3 class="user-card-title">❌ Remove User</h3>
                 </div>
                 <form method="post" action="/conversations/{{ conversation.id }}/remove_user" class="user-form">
                     <input type="text" name="username" class="user-input" placeholder="Username" required>

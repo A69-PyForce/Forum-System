@@ -1,3 +1,4 @@
+from unittest import mock
 from data.models import User, UserLoginData, UserRegisterData
 from mariadb import IntegrityError
 from services import users_service
@@ -5,22 +6,17 @@ from unittest.mock import Mock
 from data import database
 import unittest
 
-_INVALID_TOKEN = "I am an invalid token :)"
-_INVALID_USER = "I am an invalid user :)"
-_UNIQUE_PASSWORDS = (
-    'f1GIaIUfpdxKhDGM', '8Lww5wKjJSLfNwtTExO40', 
-    'Qsu1Ule5k8MZDRBnPotdi', 'GfEe5avC', 
-    'o6zDaTrcErQLQtqj7', 'BJtqubaWwogmxUpgVvBxZXPGD1', 
-    'Y7pHXM1wRtCYmE77ok2qp', 'VAjTivErZgh4u7VAa22bGzX', 
-    'M7YAKvO4Ph8B97iVbMOgun7RLGfM2H', '6cTRlMXqEduWe1jVG1'
-)
-
-def fake_user(id: int = 1, username: str = "emko", password: str = "Pass123!", is_admin: int = 1):
+def fake_user(id: int = 1, username: str = "emko", password: str = "Pass123!", 
+              is_admin: int = 1, avatar_url: str | None = None,
+              created_at: str = "2025-05-19 10:20:03") -> Mock:
+    
     mock_user = Mock(spec=User)
     mock_user.id = id
     mock_user.username = username
     mock_user.password = password
     mock_user.is_admin = is_admin
+    mock_user.avatar_url = avatar_url
+    mock_user.created_at = created_at
     return mock_user
 
 class UsersServiceTest(unittest.TestCase):
@@ -48,7 +44,7 @@ class UsersServiceTest(unittest.TestCase):
     def test_loginUser_returnsUser_when_userFound(self):
         user = fake_user()
         mock_db = Mock(spec=database)
-        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin)]
+        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin, user.avatar_url, user.created_at)]
         
         login_data = UserLoginData(username=user.username, password=user.password)
         result = users_service.login_user(login_data, mock_db)
@@ -67,7 +63,7 @@ class UsersServiceTest(unittest.TestCase):
     def test_findUser_byUsername_returnsUser_when_userFound(self):
         user = fake_user()
         mock_db = Mock(spec=database)
-        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin)]
+        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin, user.avatar_url, user.created_at)]
         
         result = users_service.find_user_by_username(user.username, mock_db)
         self.assertIsInstance(result, User)
@@ -84,7 +80,7 @@ class UsersServiceTest(unittest.TestCase):
     def test_findUser_byId_returnsUser_when_userFound(self):
         user = fake_user()
         mock_db = Mock(spec=database)
-        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin)]
+        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin, user.avatar_url, user.created_at)]
         
         result = users_service.find_user_by_id(user.id, mock_db)
         self.assertIsInstance(result, User)
@@ -102,7 +98,7 @@ class UsersServiceTest(unittest.TestCase):
         user = fake_user()
         token = users_service.encode_user_token(user)
         mock_db = Mock(spec=database)
-        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin)]
+        mock_db.read_query.return_value = [(user.id, user.username, user.password, user.is_admin, user.avatar_url, user.created_at)]
         
         result = users_service.find_user_by_token(token, mock_db)
         self.assertIsInstance(result, User)

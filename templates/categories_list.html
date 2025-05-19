@@ -20,7 +20,7 @@
     {{ load_navbar(user) }}
 
     <div class="main-container">
-        <h1 class="page-title">Forum Categories</h1>
+        <h1 class="page-title">🗂️ Forum Categories</h1>
 
         {% if categories %}
         <ul class="category-list category-grid">
@@ -54,8 +54,8 @@
         <div class="create-container">
             <h2>Create New Category</h2>
             <form action="/categories/create" method="post" class="create-form">
-                <input name="name" type="text" placeholder="Category Name" class="form-input" style="margin-top: 1%;">
-                <button class="btn submit-btn" type="submit">Create Category</button>
+                <input name="name" type="text" placeholder="Category Name" class="form-input" style="margin-top: 2%;">
+                <button class="btn submit-btn" type="submit" style="margin-top: 2%;">Create Category</button>
             </form>
         </div>
         {% endif %}

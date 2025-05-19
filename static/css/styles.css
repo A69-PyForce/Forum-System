@@ -72,9 +72,18 @@ a:hover {
 /* ====================== */
 
 .main-container {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 20px;
+    max-width: 900px;
+    margin: 2.5rem auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    padding: 2.5rem 2rem 2rem 2rem;
+    transition: box-shadow 0.2s;
+
+}
+
+.main-container:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
 }
 
 .content-grid {
@@ -246,6 +255,7 @@ button[type="submit"] {
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.2s;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .btn:hover,
@@ -270,6 +280,7 @@ button[type="submit"]:hover {
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
+    text-decoration: none;
 }
 
 .btn-success {
@@ -980,7 +991,7 @@ select:focus {
 .detail-value {
     color: #222;
     font-size: 1.05rem;
-    font-family: Arial, Helvetica, sans-serif, monospace;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* ====================== */
@@ -1087,15 +1098,6 @@ select:focus {
 /* ====================== */
 /* Category detail        */
 /* ====================== */
-
-.main-container {
-    max-width: 900px;
-    margin: 2.5rem auto;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
-    padding: 2.5rem 2rem 2rem 2rem;
-}
 
 .category-details-header {
     display: flex;
@@ -1234,6 +1236,18 @@ select:focus {
 
 .topic-title:hover {
     text-decoration: underline;
+}
+
+.create-button-container .btn-submit-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.create-button-container .btn-submit-button:hover {
+    text-decoration: none;
 }
 
 .topic-meta {

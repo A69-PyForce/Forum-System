@@ -1,16 +1,15 @@
-from urllib import response
-from fastapi import APIRouter, Request, Form, UploadFile, File
-from common import authenticate
+from fastapi import APIRouter, Request, Form, UploadFile, File, HTTPException
 from common.template_config import CustomJinja2Templates
+from fastapi.responses import RedirectResponse
 from data.models import Category, TopicCreate
+from services import categories_service
 from data.database import CLDNR_CONFIG
 from services import topics_service
-from fastapi.responses import RedirectResponse
-from services import categories_service
-import io
-from PIL import Image
+from common import authenticate
 import cloudinary.uploader
+from PIL import Image
 import traceback
+import io
 
 category_router = APIRouter(prefix='/categories')
 templates = CustomJinja2Templates(directory='templates')
@@ -53,7 +52,7 @@ def get_category_details(id: int, request: Request):
     category = categories_service.get_by_id(id)
 
     if not category:
-        return RedirectResponse(url="/categories/", status_code=302)
+        raise HTTPException(status_code=404, detail="Category not found")
 
     topics = list(categories_service.topics_by_category(category_id=id))
     categories = list(categories_service.all())
@@ -89,7 +88,7 @@ def create_category(request: Request, name: str = Form(...)):
     """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
-        return RedirectResponse(url="/users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
     
     try:
         category = Category(name=name, is_private=0, is_locked=0)
@@ -119,7 +118,7 @@ def create_topic_for_category(
     """
     user = authenticate.get_user_if_token(request)
     if not user:
-        return RedirectResponse(url="/users/login", status_code=302)
+        raise HTTPException(status_code=403, detail="User must be logged in")
 
     try:
         topic_data = TopicCreate(title=title, content=content, category_id=id)
@@ -161,11 +160,11 @@ def category_lock(id: int, request: Request):
     """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
-        return RedirectResponse(url="/", status_code=302)
+        raise HTTPException(status_code=403, detail="Admin access only")
 
     category = categories_service.get_by_id(id)
     if not category:
-        return RedirectResponse(url="/categories", status_code=302)
+        raise HTTPException(status_code=404, detail="Category not found")
 
     categories_service.set_locked(id, not category.is_locked)
     return RedirectResponse(url=f"/categories/{id}", status_code=302)
@@ -184,11 +183,11 @@ def toggle_category_privacy(id: int, request: Request):
     """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
-        return RedirectResponse(url="/", status_code=302)
+        raise HTTPException(status_code=403, detail="Admin access only")
 
     category = categories_service.get_by_id(id)
     if not category:
-        return RedirectResponse(url="/categories", status_code=302)
+        raise HTTPException(status_code=404, detail="Category not found")
 
     categories_service.set_privacy(id, not category.is_private)
     return RedirectResponse(url=f"/categories/{id}", status_code=302)
@@ -208,7 +207,7 @@ async def upload_category_image(request: Request, id: int, file: UploadFile = Fi
     """
     user = authenticate.get_user_if_token(request)
     if not user or not user.is_admin:
-        return RedirectResponse(url=f"/categories/{id}", status_code=302)
+        raise HTTPException(status_code=403, detail="Admin access only")
     
     if CLDNR_CONFIG:
         
@@ -226,12 +225,10 @@ async def upload_category_image(request: Request, id: int, file: UploadFile = Fi
         
         except:
             print(traceback.format_exc())
-            # Render the template with an error message
             category = categories_service.get_by_id(id)
             topics = list(categories_service.topics_by_category(id))
             categories = list(categories_service.all())
             categories_dict = {cat.id: cat for cat in categories}
-
             return templates.TemplateResponse(
                 request=request,
                 name="category_details.html",
