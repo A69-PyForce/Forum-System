@@ -28,7 +28,7 @@
 - 🔐 **User Authentication:** Register, login, and JWT-based authentication.  
 - 🗣️ **Topic Discussions:** Create, view, and reply to topics.  
 - 🗂️ **Categories:** Organize topics into categories, with privacy and locking controls.  
-- 👍👎 **Voting:** Upvote or downvote replies.  
+- 👍 **Voting:** Upvote or downvote replies.  
 - 💬 **Conversations:** Private messaging between users.  
 - 🛠️ **Admin Controls:** Category creation and privacy management.  
 
