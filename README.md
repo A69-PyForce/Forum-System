@@ -1,43 +1,40 @@
-# Forum System
+![Forum System Banner](others/readme_image_header.jpg)  
 
-![Forum System Banner](others/readme_image_header.jpg)
+[![Python](https://img.shields.io/badge/python-3.13-blue)](https://www.python.org/)  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)  
 
-[![Python](https://img.shields.io/badge/python-3.13-blue)](https://www.python.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
-*A full-featured forum system built with FastAPI and MariaDB, supporting user authentication, topic discussions, replies, private messaging, voting, and category management.*
+*A full-featured forum system built with FastAPI and MariaDB, supporting user authentication, topic discussions, replies, private messaging, voting, and category management.*  
 
 ---
 
-## Table of Contents
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Database EER Diagram](#database-eer-diagram)
-- [Quickstart](#quickstart)
-- [Setup](#setup)
-- [API Overview](#api-overview)
-  - [Authentication](#authentication)
-  - [Users](#users)
-  - [Conversations](#conversations)
-  - [Topics](#topics)
-  - [Categories](#categories)
-  - [Notes](#notes)
-- [License](#license)
+## 📌 Table of Contents  
+- 🔥 [Features](#features)  
+- 🏗️ [Project Structure](#project-structure)  
+- 📊 [Database EER Diagram](#database-eer-diagram)  
+- 🚀 [Quickstart](#quickstart)  
+- ⚙️ [Setup](#setup)  
+- 🔗 [API Overview](#api-overview)  
+  - 🔑 [Authentication](#authentication)  
+  - 👥 [Users](#users)  
+  - 💬 [Conversations](#conversations)  
+  - 📌 [Topics](#topics)  
+  - 🗂️ [Categories](#categories)  
+  - 📝 [Notes](#notes)  
+- ⚖️ [License](#license)  
 
 ---
 
-## Features
+## 🔥 Features  
 
-- **User Authentication:** Register, login, and JWT-based authentication.
-- **Topic Discussions:** Create, view, and reply to topics.
-- **Categories:** Organize topics into categories, with privacy and locking controls.
-- **Voting:** Upvote or downvote replies.
-- **Conversations:** Private messaging between users.
-- **Admin Controls:** Category creation and privacy management.
+- 🔐 **User Authentication:** Register, login, and JWT-based authentication.  
+- 🗣️ **Topic Discussions:** Create, view, and reply to topics.  
+- 🗂️ **Categories:** Organize topics into categories, with privacy and locking controls.  
+- 👍👎 **Voting:** Upvote or downvote replies.  
+- 💬 **Conversations:** Private messaging between users.  
+- 🛠️ **Admin Controls:** Category creation and privacy management.  
 
 ---
 
-## Project Structure
+## 🏗️ Project Structure  
 
 ```sh
 Forum-System/
@@ -58,119 +55,105 @@ Forum-System/
 
 ---
 
-## Database EER Diagram
+## 📊 Database EER Diagram  
 
-![DB Diagram](others/db_eer_diagram.png)
+![DB Diagram](others/db_eer_diagram.png)  
 
 ---
 
-## Setup
+## ⚙️ Setup  
 
-1. **Clone the repository:**
+### 🏗️ Steps to Get Started  
+
+1️⃣ **Clone the repository:**  
    ```sh
    git clone <repo-url>
-   ```
+   ```  
 
-2. **Navigate to the repository root:**
+2️⃣ **Navigate to the repository root:**  
    ```sh
    cd Forum-System
-   ```
+   ```  
 
-3. **Install project dependencies:**
+3️⃣ **Install project dependencies:**  
    ```sh
    pip install -r requirements.txt
-   ```
+   ```  
 
-4. **Setup a working MariaDB server:**
-   - **Option 1:** Download and install from the [official MariaDB page](https://mariadb.org/download/).
-   - **Option 2:** Setup a MariaDB container with Docker:
-     - Pull MariaDB:
+4️⃣ **Setup a working MariaDB server:**  
+   - **Option 1:** 🖥️ Download and install from the [official MariaDB page](https://mariadb.org/download/).  
+   - **Option 2:** 🐳 Setup a MariaDB container with Docker:  
+     - Pull MariaDB:  
         ```sh
         docker pull mariadb
-        ```
-     - Run MariaDB:
+        ```  
+     - Run MariaDB:  
         ```sh
         docker run -p 3306:3306 --name <NAME> -e MYSQL_ROOT_PASSWORD=<PASSWORD> -d mariadb:latest
-        ```
+        ```  
 
-5. **Configure the project environment:**
-
-   - Create a `.env` file in the root directory:
+5️⃣ **Configure the project environment:**  
+   - Create a `.env` file in the root directory:  
 
      ```sh
-     # ================= PRIVATE MariaDB Connection Params =================
+     # Private MariaDB Connection Params
      DB_USER=your_db_user
      DB_PASSWORD=your_db_password
      DB_HOST=your_host_address
      DB_PORT=your_host_port
      DB_NAME=forum_system_db
-     # =====================================================================
 
-     # ==================== PRIVATE JWT Encryption Key =====================
+     # Private JWT Encryption Key
      ENCRYPT_KEY=your_secret_key
-     # =====================================================================
 
-     # =============== PRIVATE Cloudinary Config (Optional) ================
+     # Private Cloudinary Config (Optional)
      CLDNR_CLOUD_NAME=your_cloudinary_cloud_name
      CLDNR_API_KEY=your_cloudinary_api_key
      CLDNR_API_SECRET=your_cloudinary_api_secret
-     # =====================================================================
-     
-     # ================= PRIVATE NASA API Key (Optional) ===================
+
+     # Private NASA API Key (Optional)
      NASA_API_KEY=your_nasa_api_key
-     # =====================================================================
-     ```
+     ```  
 
-   - Import the schema from `db_schema.sql` (located in the `data` folder) into your running MariaDB server.
+   - Import the schema from `db_schema.sql` (located in the `data` folder) into your running MariaDB server.  
 
-6. **Start the server**
-  - **Option 1:** Run the `main.py` file with your preffered IDE.
-  - **Option 2:** In CMD or Powershell, navigate to the project root and run the `main.py` file with:
-    ```sh
-    python ./main.py
-    ```
-    If everything is configured properly, the web server will be available at: [http://localhost:8000/](http://localhost:8000/)
----
-
-## API Overview
-
-> **Interactive API docs available at:** [http://localhost:8000/docs](http://localhost:8000/docs)
-
-### API Endpoints Summary
-
-| Method | Endpoint                                           | Description                      | Auth Required |
-| ------ | -------------------------------------------------- | -------------------------------- | ------------- |
-| POST   | `/api/users/login`                                 | Authenticate user                | No            |
-| POST   | `/api/users/register`                              | Register new user                | No            |
-| GET    | `/api/users/info`                                  | Get current user info            | Yes           |
-| GET    | `/api/conversations/`                              | List user's conversations        | Yes           |
-| GET    | `/api/conversations/{conversation_id}`             | Get conversation details         | Yes           |
-| POST   | `/api/conversations/`                              | Create new conversation          | Yes           |
-| POST   | `/api/conversations/{conversation_id}`             | Add message to conversation      | Yes           |
-| PUT    | `/api/conversations/{conversation_id}/users`       | Add user to conversation         | Yes           |
-| DELETE | `/api/conversations/{conversation_id}/users`       | Remove user from conversation    | Yes           |
-| GET    | `/api/topics/`                                     | List topics (filter/sort/search) | No            |
-| GET    | `/api/topics/{topic_id}/`                          | Get topic with replies           | No            |
-| POST   | `/api/topics/`                                     | Create topic                     | Yes           |
-| POST   | `/api/topics/{topic_id}/replies/`                  | Add reply to topic               | Yes           |
-| POST   | `/api/topics/{topic_id}/replies/{reply_id}/votes/` | Vote on a reply                  | Yes           |
-| POST   | `/api/topics/{topic_id}/best/`                     | Mark reply as best               | Yes           |
-| PATCH  | `/api/topics/{topic_id}/lock/`                     | Lock topic                       | Yes           |
-| GET    | `/api/categories`                                  | List categories                  | No            |
-| GET    | `/api/categories/{category_id}/topics`             | List topics in category          | No            |
-| POST   | `/api/categories/`                                 | Create category                  | Yes           |
-| PATCH  | `/api/categories/{category_id}/privacy`            | Update category privacy          | Yes           |
-| PATCH  | `/api/categories/{category_id}/lock`               | Lock category                    | Yes           |
+6️⃣ **Start the server**  
+   - **Option 1:** Run the `main.py` file with your preferred IDE.
+   - **Option 2:** In CMD or Powershell, navigate to the project root and run:  
+     ```sh
+     python ./main.py
+     ```  
+     If everything is configured properly, the web server will be available at: [http://localhost:8000/](http://localhost:8000/)  
 
 ---
 
-### Authentication
+## 🔗 API Overview  
+
+> 📜 **Interactive API docs available at:** [http://localhost:8000/docs](http://localhost:8000/docs)  
+
+### 🚀 API Endpoints Summary  
+
+| 🔹 Method | 🔗 Endpoint                                   | 📜 Description                 | 🔑 Auth Required |
+| -------- | -------------------------------------------- | ----------------------------- | --------------- |
+| POST     | `/api/users/login`                           | Authenticate user             | No              |
+| POST     | `/api/users/register`                        | Register new user             | No              |
+| GET      | `/api/users/info`                            | Get current user info         | Yes             |
+| GET      | `/api/conversations/`                        | List user's conversations     | Yes             |
+| GET      | `/api/conversations/{conversation_id}`       | Get conversation details      | Yes             |
+| POST     | `/api/conversations/`                        | Create new conversation       | Yes             |
+| POST     | `/api/conversations/{conversation_id}`       | Add message to conversation   | Yes             |
+| PUT      | `/api/conversations/{conversation_id}/users` | Add user to conversation      | Yes             |
+| DELETE   | `/api/conversations/{conversation_id}/users` | Remove user from conversation | Yes             |
+
+---
+
+### 🔑 Authentication
 
 All authenticated endpoints require a user token (`u-token`) in the request headers.
 
 ---
 
-### Users
+### 👥 Users
 
 #### **POST** `/api/users/login`
 - **Purpose:** Authenticate an existing user.
@@ -189,7 +172,7 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ---
 
-### Conversations
+### 💬 Conversations
 
 #### **GET** `/api/conversations/`
 - **Purpose:** Retrieve user's conversations.
@@ -224,7 +207,7 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ---
 
-### Topics
+### 📌 Topics
 
 #### **GET** `/api/topics/`
 - **Purpose:** Retrieve topics with filtering.
@@ -262,7 +245,7 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ---
 
-### Categories
+### 🗂️ Categories
 
 #### **GET** `/api/categories`
 - **Purpose:** Retrieve all categories.
@@ -290,13 +273,13 @@ All authenticated endpoints require a user token (`u-token`) in the request head
 
 ---
 
-### Notes
+### 📝 Notes
 
 - Error responses include appropriate HTTP status codes and error messages.
 - Refer to the [Interactive API documentation](http://localhost:8000/docs) for up-to-date request/response formats.
 
 ---
 
-## License
+## ⚖️ License  
 
-This project is licensed under the MIT License. View [LICENSE](./LICENSE) for details.
+This project is licensed under the MIT License. View 📜 [LICENSE](./LICENSE) for details.
