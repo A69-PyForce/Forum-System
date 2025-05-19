@@ -133,17 +133,17 @@ Forum-System/
 
 ### 🚀 API Endpoints Summary  
 
-| 🔹 Method | 🔗 Endpoint                                   | 📜 Description                 | 🔑 Auth Required |
-| -------- | -------------------------------------------- | ----------------------------- | --------------- |
-| POST     | `/api/users/login`                           | Authenticate user             | No              |
-| POST     | `/api/users/register`                        | Register new user             | No              |
-| GET      | `/api/users/info`                            | Get current user info         | Yes             |
-| GET      | `/api/conversations/`                        | List user's conversations     | Yes             |
-| GET      | `/api/conversations/{conversation_id}`       | Get conversation details      | Yes             |
-| POST     | `/api/conversations/`                        | Create new conversation       | Yes             |
-| POST     | `/api/conversations/{conversation_id}`       | Add message to conversation   | Yes             |
-| PUT      | `/api/conversations/{conversation_id}/users` | Add user to conversation      | Yes             |
-| DELETE   | `/api/conversations/{conversation_id}/users` | Remove user from conversation | Yes             |
+| Method | Endpoint                                     | Description                   | Auth Required |
+| ------ | -------------------------------------------- | ----------------------------- | ------------- |
+| POST   | `/api/users/login`                           | Authenticate user             | No            |
+| POST   | `/api/users/register`                        | Register new user             | No            |
+| GET    | `/api/users/info`                            | Get current user info         | Yes           |
+| GET    | `/api/conversations/`                        | List user's conversations     | Yes           |
+| GET    | `/api/conversations/{conversation_id}`       | Get conversation details      | Yes           |
+| POST   | `/api/conversations/`                        | Create new conversation       | Yes           |
+| POST   | `/api/conversations/{conversation_id}`       | Add message to conversation   | Yes           |
+| PUT    | `/api/conversations/{conversation_id}/users` | Add user to conversation      | Yes           |
+| DELETE | `/api/conversations/{conversation_id}/users` | Remove user from conversation | Yes           |
 
 ---
 
