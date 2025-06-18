@@ -7,19 +7,19 @@
 ---
 
 ## 📌 Table of Contents  
-- 🔥 [Features](#features)  
-- 🏗️ [Project Structure](#project-structure)  
-- 📊 [Database EER Diagram](#database-eer-diagram)  
-- 🚀 [Quickstart](#quickstart)  
-- ⚙️ [Setup](#setup)  
-- 🔗 [API Overview](#api-overview)  
-  - 🔑 [Authentication](#authentication)  
-  - 👥 [Users](#users)  
-  - 💬 [Conversations](#conversations)  
-  - 📌 [Topics](#topics)  
-  - 🗂️ [Categories](#categories)  
-  - 📝 [Notes](#notes)  
-- ⚖️ [License](#license)  
+- [Features](#features)  
+- 🏗[Project Structure](#project-structure)  
+- [Database EER Diagram](#database-eer-diagram)  
+- [Quickstart](#quickstart)  
+- ⚙[Setup](#setup)  
+- [API Overview](#api-overview)  
+  - [Authentication](#authentication)  
+  - [Users](#users)  
+  - [Conversations](#conversations)  
+  - [Topics](#topics)  
+  - [Categories](#categories)  
+  - [Notes](#notes)  
+- [License](#license)  
 
 ---
 
